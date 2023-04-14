@@ -29,4 +29,15 @@ vim.keymap.set("n", "<leader>wl", "<C-w>l")
 vim.keymap.set("n", "<leader>wj", "<C-w>j")
 vim.keymap.set("n", "<leader>wk", "<C-w>k")
 vim.keymap.set("n", "<leader>wr", "<C-w>r")
-vim.keymap.set("n", "<C-k>", ":noh<cr>")
+vim.keymap.set("n", "<leader>wq", ":q<CR>")
+vim.keymap.set("n", "<C-k>", ":noh<CR>")
+
+vim.keymap.set("n", "<leader>ce", ":e " .. vim.fn.expand("$HOME/.config/nvim/") .. "<CR>")
+
+vim.keymap.set("n", "<leader>$", ":terminal<CR>")
+vim.keymap.set("n", "<leader>bc", ":bd<CR>")
+vim.keymap.set("n", "<leader>bp", ":bp<CR>")
+vim.keymap.set("n", "<leader>bn", ":bn<CR>")
+
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+
