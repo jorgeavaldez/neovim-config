@@ -26,16 +26,16 @@ lsp.set_preferences({
 lsp.on_attach(function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}
 
-  -- lsp.default_keymaps({buffer = bufnr})
+  lsp.default_keymaps({buffer = bufnr})
   -- these are only set in an lsp buffer
   -- we can add remaps in here
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "<leader>k", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.workspace_symbol() end, opts)
-  vim.keymap.set("n", "<leader>d", function() vim.lsp.diagnostic.open_float() end, opts)
-  vim.keymap.set("n", "[d", function() vim.lsp.diagnostic.goto_next() end, opts)
-  vim.keymap.set("n", "]d", function() vim.lsp.diagnostic.goto_prev() end, opts)
+  vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts)
+  vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
+  vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
   vim.keymap.set("n", "<leader>a", function() vim.lsp.buf.code_action() end, opts)
   vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts)
