@@ -18,7 +18,7 @@ vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
 
-vim.keymap.set("n", "<leader>f", function ()
+vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format()
 end)
 
@@ -40,4 +40,22 @@ vim.keymap.set("n", "<leader>bp", ":bp<CR>")
 vim.keymap.set("n", "<leader>bn", ":bn<CR>")
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+
+vim.keymap.set(
+    "n",
+    "gf",
+    function()
+        if require("obsidian").util.cursor_on_markdown_link() then
+            return "<cmd>ObsidianFollowLink<CR>"
+        else
+            return "gf"
+        end
+    end,
+    { noremap = false, expr = true }
+)
+
+vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>")
+vim.keymap.set("n", "<leader>o/", "<cmd>ObsidianSearch<CR>")
+vim.keymap.set("n", "<leader>of", "<cmd>ObsidianQuickSwitch<CR>")
+vim.keymap.set("n", "<leader><CR>", "<cmd>ObsidianFollowLink<CR>")
 

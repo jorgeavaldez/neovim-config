@@ -46,4 +46,24 @@ return require('packer').startup(function(use)
     }
 
     use('folke/which-key.nvim')
+
+    use({
+        "epwalsh/obsidian.nvim",
+        config = function ()
+            require("obsidian").setup({
+                dir = "~/obsidian/delvaze",
+                completion = {
+                    nvim_cmp = true
+                },
+                daily_notes = {
+                    folder = "daily"
+                },
+                templates = {
+                    subdir = "templates",
+                    date_format = "%Y-%M-%D",
+                    time_format = "%H:%M",
+                }
+            })
+        end
+    })
 end)
