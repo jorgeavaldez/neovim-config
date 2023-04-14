@@ -24,6 +24,7 @@ lsp.set_preferences({
 })
 
 local function rename_file()
+    -- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
     local source_file, target_file
 
     vim.ui.input({
