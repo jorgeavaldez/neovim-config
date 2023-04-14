@@ -23,6 +23,43 @@ lsp.set_preferences({
     suggest_lsp_servers = true,
 })
 
+local function rename_file()
+    local source_file, target_file
+
+    vim.ui.input({
+        prompt = "Source : ",
+        completion = "file",
+        default = vim.api.nvim_buf_get_name(0)
+    },
+        function(input)
+            source_file = input
+        end
+    )
+    vim.ui.input({
+        prompt = "Target : ",
+        completion = "file",
+        default = source_file
+    },
+        function(input)
+            target_file = input
+        end
+    )
+
+    local params = {
+        command = "_typescript.applyRenameFile",
+        arguments = {
+            {
+                sourceUri = source_file,
+                targetUri = target_file,
+            },
+        },
+        title = ""
+    }
+
+    vim.lsp.util.rename(source_file, target_file)
+    vim.lsp.buf.execute_command(params)
+end
+
 lsp.on_attach(function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}
 
@@ -40,6 +77,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+  vim.keymap.set("n", "<leader>fR", rename_file, opts)
 end)
 
 -- (Optional) Configure lua language server for neovim
