@@ -22,6 +22,10 @@ vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format()
 end)
 
+vim.keymap.set("n", "<C-k>", ":noh<CR>", { desc = "Clear search results" })
+vim.keymap.set("n", "<leader>ce", ":e " .. vim.fn.expand("$HOME/.config/nvim/") .. "<CR>", { desc = "Open config dir" })
+
+-- windows
 vim.keymap.set("n", "<leader>wv", vim.cmd.vsplit)
 vim.keymap.set("n", "<leader>ws", vim.cmd.split)
 vim.keymap.set("n", "<leader>wh", "<C-w>h")
@@ -30,17 +34,25 @@ vim.keymap.set("n", "<leader>wj", "<C-w>j")
 vim.keymap.set("n", "<leader>wk", "<C-w>k")
 vim.keymap.set("n", "<leader>wr", "<C-w>r")
 vim.keymap.set("n", "<leader>wq", ":q<CR>")
-vim.keymap.set("n", "<C-k>", ":noh<CR>")
+vim.keymap.set("n", "<leader>wm", ":wincmd _<Bar>wincmd <Bar><CR>", { desc = "Maximize buffer" })
+vim.keymap.set("n", "<leader>wM", "<C-w>=", { desc = "Minimize buffer" })
+vim.keymap.set("n", "<leader>wT", "<C-w>T", { desc = "Move window to new tab" })
+vim.keymap.set("n", "<leader>wt", ":tab split<CR>", { desc = "Open buffer in new tab, maintain state" })
 
-vim.keymap.set("n", "<leader>ce", ":e " .. vim.fn.expand("$HOME/.config/nvim/") .. "<CR>")
+-- Tabs
+vim.keymap.set("n", "<leader>tn", ":tabnext<CR>", { desc = "Next tab" })
+vim.keymap.set("n", "<leader>tp", ":tabprevious<CR>", { desc = "Previous tab" })
 
-vim.keymap.set("n", "<leader>$", ":terminal<CR>")
+-- buffers
 vim.keymap.set("n", "<leader>bc", ":bd<CR>")
 vim.keymap.set("n", "<leader>bp", ":bp<CR>")
 vim.keymap.set("n", "<leader>bn", ":bn<CR>")
 
+-- terminal
+vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
+-- obsidian
 vim.keymap.set(
     "n",
     "gf",
