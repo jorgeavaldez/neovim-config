@@ -12,6 +12,18 @@ config and i can do what i want.
 
 i'm also learning, and i'm not sure i have a good understanding of everything yet. but we're experimenting so whatever.
 
+## project files and ripgrep
+i made it so ripgrep will show hidden files but also respect gitignore and hide .git directories.
+
+if you want to also undo stuff gitignore is ignoring, like .env files, make sure to add a .ignore directory with
+something like this:
+
+```
+!.env
+!.env.*
+!.env.*.local
+```
+
 ## questions
 - the lsp stuff doesn't seem to immediately pop up for me, did i do something to turn that off?
 - is there a better way to deal with packer? 
@@ -19,3 +31,4 @@ i'm also learning, and i'm not sure i have a good understanding of everything ye
 ## todo
 - [ ] i set up all the textobject stuff and immediately realized i could have that stuff live in telescope. this todo is
   move everything to telescope
+
