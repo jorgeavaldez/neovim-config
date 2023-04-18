@@ -88,6 +88,7 @@ require'nvim-treesitter.configs'.setup {
             goto_previous_start = {
                 ["[f"] = {query = "@function.outer", desc = "Previous function"},
                 ["[c"] = {query = "@class.outer", desc = "Previous class"},
+                ["[s"] = {query = "@scope", query_group = "locals", desc = "Prevoius scope"},
             },
             goto_previous_end = {
                 ["[F"] = {query = "@function.outer", desc = "Previous function"},
