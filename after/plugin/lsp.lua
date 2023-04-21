@@ -80,7 +80,7 @@ lsp.ensure_installed({
   "eslint",
   "pyright",
   "rust_analyzer",
-  "lua-language-server",
+  "lua_ls",
 })
 
 -- (Optional) Configure lua language server for neovim
