@@ -84,6 +84,12 @@ _G.packer_plugins = {
     path = "/Users/jorge/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
     url = "https://github.com/hrsh7th/cmp-nvim-lsp"
   },
+  ["fidget.nvim"] = {
+    config = { "\27LJ\2\n4\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\vfidget\frequire\0" },
+    loaded = true,
+    path = "/Users/jorge/.local/share/nvim/site/pack/packer/start/fidget.nvim",
+    url = "https://github.com/j-hui/fidget.nvim"
+  },
   harpoon = {
     loaded = true,
     path = "/Users/jorge/.local/share/nvim/site/pack/packer/start/harpoon",
@@ -133,7 +139,7 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
   },
   ["obsidian.nvim"] = {
-    config = { "\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\16time_format\n%H:%M\vsubdir\14templates\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0" },
+    config = { "\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\vsubdir\14templates\16time_format\n%H:%M\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0" },
     loaded = true,
     path = "/Users/jorge/.local/share/nvim/site/pack/packer/start/obsidian.nvim",
     url = "https://github.com/epwalsh/obsidian.nvim"
@@ -183,12 +189,16 @@ _G.packer_plugins = {
 time([[Defining packer_plugins]], false)
 -- Config for: obsidian.nvim
 time([[Config for obsidian.nvim]], true)
-try_loadstring("\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\16time_format\n%H:%M\vsubdir\14templates\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0", "config", "obsidian.nvim")
+try_loadstring("\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\vsubdir\14templates\16time_format\n%H:%M\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0", "config", "obsidian.nvim")
 time([[Config for obsidian.nvim]], false)
 -- Config for: nvim-surround
 time([[Config for nvim-surround]], true)
 try_loadstring("\27LJ\2\n?\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\18nvim-surround\frequire\0", "config", "nvim-surround")
 time([[Config for nvim-surround]], false)
+-- Config for: fidget.nvim
+time([[Config for fidget.nvim]], true)
+try_loadstring("\27LJ\2\n4\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\vfidget\frequire\0", "config", "fidget.nvim")
+time([[Config for fidget.nvim]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
