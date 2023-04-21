@@ -2,12 +2,6 @@ local lsp = require('lsp-zero')
 
 lsp.preset("recommended")
 
-lsp.ensure_installed({
-  "tsserver",
-  "eslint",
-  "pyright",
-  "rust_analyzer",
-})
 
 local cmp = require('cmp')
 local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -80,6 +74,14 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
   vim.keymap.set("n", "<leader>fR", rename_file, opts)
 end)
+
+lsp.ensure_installed({
+  "tsserver",
+  "eslint",
+  "pyright",
+  "rust_analyzer",
+  "lua-language-server",
+})
 
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
