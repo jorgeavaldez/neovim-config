@@ -14,7 +14,7 @@ PREF = {
   },
 
   ui = {
-    colorscheme = 'tokyonight',
+    -- colorscheme = 'tokyonight',
     italic_comment = true,
   },
 
@@ -78,7 +78,7 @@ local options = {
   winbar = ' ',
   spell = false,
   spelllang = 'en_us',
-  termguicolors = true,
+  -- termguicolors = true,
   scrolloff = 8,
 }
 
