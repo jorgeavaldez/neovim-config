@@ -26,6 +26,7 @@ return require('packer').startup(function(use)
         'folke/tokyonight.nvim',
         as = "tokyonight",
     }
+    use { 'nyoom-engineering/oxocarbon.nvim' }
     use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
     use('nvim-treesitter/playground')
     use({

@@ -15,6 +15,7 @@ PREF = {
 
   ui = {
     -- colorscheme = 'tokyonight',
+    background = "dark",
     italic_comment = true,
   },
 
@@ -45,6 +46,7 @@ local options = {
   relativenumber = true,
   signcolumn = "yes",
   -- colorcolumn = "80",
+  background = PREF.ui.background,
 
   -- ==========================================================================
   -- Text
@@ -78,7 +80,7 @@ local options = {
   winbar = ' ',
   spell = false,
   spelllang = 'en_us',
-  -- termguicolors = true,
+  termguicolors = true,
   scrolloff = 8,
 }
 
