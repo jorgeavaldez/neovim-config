@@ -18,7 +18,7 @@ vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
 
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>ff", function()
     vim.lsp.buf.format()
 end)
 
@@ -44,9 +44,10 @@ vim.keymap.set("n", "<leader>tn", ":tabnext<CR>", { desc = "Next tab" })
 vim.keymap.set("n", "<leader>tp", ":tabprevious<CR>", { desc = "Previous tab" })
 
 -- buffers
-vim.keymap.set("n", "<leader>bc", ":bd<CR>")
-vim.keymap.set("n", "<leader>bp", ":bp<CR>")
-vim.keymap.set("n", "<leader>bn", ":bn<CR>")
+vim.keymap.set("n", "<leader>bc", ":bp<bar>sp<bar>bn<bar>bd<CR>", { desc = "Close Buffer" })
+vim.keymap.set("n", "<leader>bd", ":bp<bar>sp<bar>bn<bar>bd<CR>", { desc = "Close Buffer" })
+vim.keymap.set("n", "<leader>bp", ":bp<CR>", { desc = "Previous Buffer" })
+vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 
 -- terminal
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
