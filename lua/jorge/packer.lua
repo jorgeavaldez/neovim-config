@@ -63,6 +63,7 @@ return require('packer').startup(function(use)
         requires = { "nvim-lua/plenary.nvim" },
     })
 
+    --[[
     use {
         'j-hui/fidget.nvim',
         requires = 'VonHeikemen/lsp-zero.nvim',
@@ -70,6 +71,7 @@ return require('packer').startup(function(use)
             require("fidget").setup()
         end
     }
+    --]]
 
     use {
         "folke/trouble.nvim",

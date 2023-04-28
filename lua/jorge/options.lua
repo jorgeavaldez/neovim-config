@@ -14,7 +14,7 @@ PREF = {
   },
 
   ui = {
-    -- colorscheme = 'tokyonight',
+    colorscheme = 'oxocarbon',
     background = "dark",
     italic_comment = true,
   },
