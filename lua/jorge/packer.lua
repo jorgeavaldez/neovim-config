@@ -9,9 +9,9 @@ local ensure_packer = function()
     return false
 end
 
-local packer_bootstrap = ensure_packer()
+local _ = ensure_packer()
 
-vim.cmd [[packadd packer.nvim]]
+-- vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function(use)
     -- Packer can manage itself
@@ -47,9 +47,7 @@ return require('packer').startup(function(use)
             {
                 -- Optional
                 'williamboman/mason.nvim',
-                run = function()
-                    pcall(vim.cmd, 'MasonUpdate')
-                end,
+                run = ':MasonUpdate',
             },
             { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
@@ -60,12 +58,25 @@ return require('packer').startup(function(use)
         }
     }
 
+    use({
+        "jose-elias-alvarez/null-ls.nvim",
+        requires = { "nvim-lua/plenary.nvim" },
+    })
+
     use {
         'j-hui/fidget.nvim',
         requires = 'VonHeikemen/lsp-zero.nvim',
         config = function()
             require("fidget").setup()
         end
+    }
+
+    use {
+        "folke/trouble.nvim",
+        requires = {
+            { "nvim-telescope/telescope.nvim" },
+            { "nvim-tree/nvim-web-devicons" },
+        },
     }
 
     use('folke/which-key.nvim')

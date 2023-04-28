@@ -110,6 +110,11 @@ _G.packer_plugins = {
     path = "/home/jorge/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
   },
+  ["null-ls.nvim"] = {
+    loaded = true,
+    path = "/home/jorge/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
+    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
+  },
   ["nvim-cmp"] = {
     loaded = true,
     path = "/home/jorge/.local/share/nvim/site/pack/packer/start/nvim-cmp",
@@ -138,8 +143,13 @@ _G.packer_plugins = {
     path = "/home/jorge/.local/share/nvim/site/pack/packer/opt/nvim-treesitter-textobjects",
     url = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
   },
+  ["nvim-web-devicons"] = {
+    loaded = true,
+    path = "/home/jorge/.local/share/nvim/site/pack/packer/start/nvim-web-devicons",
+    url = "https://github.com/nvim-tree/nvim-web-devicons"
+  },
   ["obsidian.nvim"] = {
-    config = { "\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16time_format\n%H:%M\vsubdir\14templates\16date_format\r%Y-%M-%D\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0" },
+    config = { "\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\vsubdir\14templates\16time_format\n%H:%M\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0" },
     loaded = true,
     path = "/home/jorge/.local/share/nvim/site/pack/packer/start/obsidian.nvim",
     url = "https://github.com/epwalsh/obsidian.nvim"
@@ -174,6 +184,11 @@ _G.packer_plugins = {
     path = "/home/jorge/.local/share/nvim/site/pack/packer/start/tokyonight",
     url = "https://github.com/folke/tokyonight.nvim"
   },
+  ["trouble.nvim"] = {
+    loaded = true,
+    path = "/home/jorge/.local/share/nvim/site/pack/packer/start/trouble.nvim",
+    url = "https://github.com/folke/trouble.nvim"
+  },
   undotree = {
     loaded = true,
     path = "/home/jorge/.local/share/nvim/site/pack/packer/start/undotree",
@@ -192,18 +207,18 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: nvim-surround
+time([[Config for nvim-surround]], true)
+try_loadstring("\27LJ\2\n?\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\18nvim-surround\frequire\0", "config", "nvim-surround")
+time([[Config for nvim-surround]], false)
 -- Config for: fidget.nvim
 time([[Config for fidget.nvim]], true)
 try_loadstring("\27LJ\2\n4\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\vfidget\frequire\0", "config", "fidget.nvim")
 time([[Config for fidget.nvim]], false)
 -- Config for: obsidian.nvim
 time([[Config for obsidian.nvim]], true)
-try_loadstring("\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16time_format\n%H:%M\vsubdir\14templates\16date_format\r%Y-%M-%D\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0", "config", "obsidian.nvim")
+try_loadstring("\27LJ\2\nå\1\0\0\4\0\n\0\r6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\0025\3\6\0=\3\a\0025\3\b\0=\3\t\2B\0\2\1K\0\1\0\14templates\1\0\3\16date_format\r%Y-%M-%D\vsubdir\14templates\16time_format\n%H:%M\16daily_notes\1\0\1\vfolder\ndaily\15completion\1\0\1\rnvim_cmp\2\1\0\1\bdir\23~/obsidian/delvaze\nsetup\robsidian\frequire\0", "config", "obsidian.nvim")
 time([[Config for obsidian.nvim]], false)
--- Config for: nvim-surround
-time([[Config for nvim-surround]], true)
-try_loadstring("\27LJ\2\n?\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\18nvim-surround\frequire\0", "config", "nvim-surround")
-time([[Config for nvim-surround]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
