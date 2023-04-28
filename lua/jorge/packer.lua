@@ -9,9 +9,7 @@ local ensure_packer = function()
     return false
 end
 
-local _ = ensure_packer()
-
--- vim.cmd [[packadd packer.nvim]]
+local packer_bootstrap = ensure_packer()
 
 return require('packer').startup(function(use)
     -- Packer can manage itself
@@ -110,4 +108,8 @@ return require('packer').startup(function(use)
             })
         end
     })
+
+    if packer_bootstrap then
+        require("packer").sync()
+    end
 end)
