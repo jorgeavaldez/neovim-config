@@ -50,6 +50,7 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>")
 
 -- terminal
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
+vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 
 -- obsidian
 vim.keymap.set(
