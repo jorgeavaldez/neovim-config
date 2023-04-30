@@ -85,7 +85,7 @@ vim.diagnostic.config({
 -- Autocomplete and Snippets
 
 local cmp = require('cmp')
-local cmp_action = lsp.cmp_action()
+-- local cmp_action = lsp.cmp_action()
 
 cmp.setup({
     mapping = {

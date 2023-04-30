@@ -6,7 +6,7 @@ PREF = {
 
   lsp = {
     format_on_save = false,
-    virtual_text = false,
+    virtual_text = true,
     show_signature_on_insert = false,
     show_diagnostic = true,
     -- Use take_over_mode for vue projects or not
@@ -88,3 +88,6 @@ for option_name, value in pairs(options) do
   vim.opt[option_name] = value
 end
 
+vim.wo.foldmethod = 'expr';
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
+vim.wo.foldenable = false;
