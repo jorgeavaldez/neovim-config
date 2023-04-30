@@ -53,7 +53,7 @@ local options = {
   -- ==========================================================================
   textwidth = PREF.common.textwidth,
   wrap = true,
-  linebreak = true,
+  linebreak = false,
 
   -- ==========================================================================
   -- Search
@@ -91,3 +91,8 @@ end
 vim.wo.foldmethod = 'expr';
 vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
 vim.wo.foldenable = false;
+
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    pattern = { "*" },
+    command = "normal zx zR",
+})

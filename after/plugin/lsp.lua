@@ -3,9 +3,9 @@ local lsp = require('lsp-zero')
 
 lsp.set_preferences({
     suggest_lsp_servers = true,
-})
+});
 
-lsp.preset("recommended")
+lsp.preset("recommended");
 
 local function rename_file()
     -- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
@@ -48,21 +48,21 @@ end
 lsp.on_attach(function(_, bufnr)
     local opts = { buffer = bufnr, remap = false }
 
-    lsp.default_keymaps({ buffer = bufnr })
+    lsp.default_keymaps({ buffer = bufnr });
     -- these are only set in an lsp buffer
     -- we can add remaps in here
 
-    -- vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-    vim.keymap.set("n", "<leader>k", function() vim.lsp.buf.hover() end, opts)
-    -- vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.document_symbol() end, opts)
-    -- vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts)
-    vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-    vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-    vim.keymap.set("n", "<leader>a", function() vim.lsp.buf.code_action() end, opts)
-    -- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts)
-    vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts)
-    vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-    vim.keymap.set("n", "<leader>fR", rename_file, opts)
+    -- vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts);
+    vim.keymap.set("n", "<leader>k", function() vim.lsp.buf.hover() end, opts);
+    -- vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.document_symbol() end, opts);
+    vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts);
+    vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, opts);
+    vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, opts);
+    vim.keymap.set("n", "<leader>a", function() vim.lsp.buf.code_action() end, opts);
+    -- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts);
+    vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts);
+    vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts);
+    vim.keymap.set("n", "<leader>fR", rename_file, opts);
 end)
 
 lsp.ensure_installed({
@@ -71,21 +71,21 @@ lsp.ensure_installed({
     "pyright",
     "rust_analyzer",
     "lua_ls",
-})
+});
 
 -- (Optional) Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls());
 
-lsp.setup()
+lsp.setup();
 
 vim.diagnostic.config({
     virtual_text = true
-})
+});
 
 -- Autocomplete and Snippets
 
-local cmp = require('cmp')
--- local cmp_action = lsp.cmp_action()
+local cmp = require('cmp');
+-- local cmp_action = lsp.cmp_action();
 
 cmp.setup({
     mapping = {
@@ -94,14 +94,14 @@ cmp.setup({
         --[[
         ["<Tab>"] = cmp_action.luasnip_supertab(),
         ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
-        ]]--
+        ]] --
     },
     preselect = 'item',
     --[[
     completion = {
         completeopt = 'menu,menuone,noinsert'
     },
-    ]]--
+    ]] --
 });
 
 local null_ls = require("null-ls");

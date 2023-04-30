@@ -24,10 +24,6 @@ something like this:
 !.env.*.local
 ```
 
-## questions
-- the lsp stuff doesn't seem to immediately pop up for me, did i do something to turn that off?
-- is there a better way to deal with packer? 
-
 ## todo
 - [ ] i set up all the textobject stuff and immediately realized i could have that stuff live in telescope. this todo is
   move everything to telescope
