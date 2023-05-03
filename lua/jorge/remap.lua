@@ -67,7 +67,7 @@ vim.keymap.set(
     { noremap = false, expr = true }
 )
 
-vim.keymap.set("n", "<leader>oN", "<cmd>ObsidianNew", { desc = "New Obsidian Note with name" })
+vim.keymap.set("n", "<leader>oN", ":ObsidianNew ", { desc = "New Obsidian Note with name" })
 vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>")
 vim.keymap.set("n", "<leader>o/", "<cmd>ObsidianSearch<CR>")
 vim.keymap.set("n", "<leader>of", "<cmd>ObsidianQuickSwitch<CR>")
