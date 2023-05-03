@@ -45,7 +45,7 @@ return require('packer').startup(function(use)
             {
                 -- Optional
                 'williamboman/mason.nvim',
-                run = function ()
+                run = function()
                     pcall(vim.cmd, "MasonUpdate")
                 end
             },
@@ -90,6 +90,8 @@ return require('packer').startup(function(use)
             })
         end
     })
+
+    use({ 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' })
 
     use({
         "epwalsh/obsidian.nvim",
