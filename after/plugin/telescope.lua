@@ -22,6 +22,6 @@ vim.keymap.set("n", "<leader>ps", builtin.lsp_dynamic_workspace_symbols, { desc 
 vim.keymap.set("n", "gr", builtin.lsp_references, { desc = "Go to references" });
 vim.keymap.set("n", "gd", builtin.lsp_definitions, { desc = "Go to definitions" });
 vim.keymap.set("n", "gi", builtin.lsp_implementations, { desc = "Go to Implementations" });
-vim.keymap.set("n", "<leader>T", function()
+vim.keymap.set("n", "<leader>Tt", function()
     builtin.colorscheme({ enable_preview = true })
 end, { desc = "Theme picker" });
