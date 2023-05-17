@@ -14,6 +14,7 @@ local packer_bootstrap = ensure_packer()
 return require('packer').startup(function(use)
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
+    use "folke/neodev.nvim"
 
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
@@ -62,6 +63,13 @@ return require('packer').startup(function(use)
         "jose-elias-alvarez/null-ls.nvim",
         requires = { "nvim-lua/plenary.nvim" },
     })
+
+    use 'mfussenegger/nvim-dap'
+    use({
+        'mfussenegger/nvim-dap-python',
+        requires = { 'mfussenegger/nvim-dap' },
+    })
+    use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
 
     use {
         'j-hui/fidget.nvim',

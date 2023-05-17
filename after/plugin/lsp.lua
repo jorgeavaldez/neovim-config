@@ -1,5 +1,8 @@
-local lsp = require('lsp-zero')
+require("neodev").setup({
+    library = { plugins = { "nvim-dap-ui" }, types = true },
+})
 
+local lsp = require('lsp-zero')
 
 lsp.set_preferences({
     suggest_lsp_servers = true,
@@ -41,7 +44,7 @@ local function rename_file()
         title = ""
     }
 
-    vim.lsp.util.rename(source_file, target_file)
+    vim.lsp.util.rename(source_file, target_file, {})
     vim.lsp.buf.execute_command(params)
 end
 
