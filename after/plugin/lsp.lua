@@ -12,17 +12,9 @@ lsp.preset("recommended");
 
 local function rename_file()
     -- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
-    local source_file, target_file
+    local source_file = vim.api.nvim_buf_get_name(0)
+    local target_file
 
-    vim.ui.input({
-            prompt = "Source : ",
-            completion = "file",
-            default = vim.api.nvim_buf_get_name(0)
-        },
-        function(input)
-            source_file = input
-        end
-    )
     vim.ui.input({
             prompt = "Target : ",
             completion = "file",
@@ -33,6 +25,7 @@ local function rename_file()
         end
     )
 
+    --[[
     local params = {
         command = "_typescript.applyRenameFile",
         arguments = {
@@ -43,17 +36,14 @@ local function rename_file()
         },
         title = ""
     }
+    --]]
 
     vim.lsp.util.rename(source_file, target_file, {})
-    vim.lsp.buf.execute_command(params)
+    -- vim.lsp.buf.execute_command(params)
 end
 
-lsp.on_attach(function(_, bufnr)
+local function default_on_attach(client, bufnr)
     local opts = { buffer = bufnr, remap = false }
-
-    lsp.default_keymaps({ buffer = bufnr });
-    -- these are only set in an lsp buffer
-    -- we can add remaps in here
 
     -- vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts);
     vim.keymap.set("n", "<leader>k", function() vim.lsp.buf.hover() end, opts);
@@ -66,10 +56,25 @@ lsp.on_attach(function(_, bufnr)
     vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts);
     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts);
     vim.keymap.set("n", "<leader>fR", rename_file, opts);
+
+    -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-nvim-navic
+    if client.server_capabilities.documentSymbolProvider then
+        require('nvim-navic').attach(client, bufnr)
+    end
+end
+
+lsp.on_attach(function(client, bufnr)
+    lsp.default_keymaps({ buffer = bufnr });
+    -- these are only set in an lsp buffer
+    -- we can add remaps in here
+
+    default_on_attach(client, bufnr)
 end)
 
+lsp.skip_server_setup({ 'tsserver' })
+
 lsp.ensure_installed({
-    "tsserver",
+    -- "tsserver",
     "tailwindcss",
     "eslint",
     "pyright",
@@ -81,6 +86,17 @@ lsp.ensure_installed({
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls());
 
 lsp.setup();
+
+-- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-typescriptnvim
+require('typescript').setup({
+    server = {
+        on_attach = function (client, bufnr)
+            default_on_attach(client, bufnr)
+
+            vim.keymap.set("n", "<leader>fR", "<cmd>TypescriptRenameFile<cr>", { buffer = bufnr, remap = false });
+        end
+    }
+})
 
 vim.diagnostic.config({
     virtual_text = true
@@ -119,5 +135,8 @@ null_ls.setup({
         null_ls.builtins.diagnostics.flake8,
 
         null_ls.builtins.formatting.jq,
+
+        -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
+        require("typescript.extensions.null-ls.code-actions"),
     },
 });

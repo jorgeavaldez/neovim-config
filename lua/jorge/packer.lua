@@ -64,6 +64,12 @@ return require('packer').startup(function(use)
         requires = { "nvim-lua/plenary.nvim" },
     })
 
+    use "jose-elias-alvarez/typescript.nvim"
+    use {
+        "SmiteshP/nvim-navic",
+        requires = "neovim/nvim-lspconfig"
+    }
+
     use 'mfussenegger/nvim-dap'
     use({
         'mfussenegger/nvim-dap-python',
