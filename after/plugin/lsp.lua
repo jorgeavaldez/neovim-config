@@ -70,6 +70,7 @@ end)
 
 lsp.ensure_installed({
     "tsserver",
+    "tailwindcss",
     "eslint",
     "pyright",
     "rust_analyzer",
