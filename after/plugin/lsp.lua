@@ -135,6 +135,8 @@ null_ls.setup({
         null_ls.builtins.diagnostics.flake8,
 
         null_ls.builtins.formatting.jq,
+        null_ls.builtins.formatting.prismaFmt,
+        null_ls.builtins.formatting.prettier,
 
         -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
         require("typescript.extensions.null-ls.code-actions"),
