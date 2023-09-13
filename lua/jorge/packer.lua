@@ -79,6 +79,7 @@ return require('packer').startup(function(use)
 
     use {
         'j-hui/fidget.nvim',
+        tag = "legacy",
         requires = 'VonHeikemen/lsp-zero.nvim',
         config = function()
             require("fidget").setup()
@@ -128,6 +129,8 @@ return require('packer').startup(function(use)
             })
         end
     })
+
+    use "tpope/vim-sleuth"
 
     if packer_bootstrap then
         require("packer").sync()
