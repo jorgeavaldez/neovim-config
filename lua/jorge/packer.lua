@@ -131,6 +131,7 @@ return require('packer').startup(function(use)
     })
 
     use "tpope/vim-sleuth"
+    use 'ray-x/go.nvim'
 
     if packer_bootstrap then
         require("packer").sync()

@@ -90,12 +90,17 @@ lsp.setup();
 -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-typescriptnvim
 require('typescript').setup({
     server = {
-        on_attach = function (client, bufnr)
+        on_attach = function(client, bufnr)
             default_on_attach(client, bufnr)
 
             vim.keymap.set("n", "<leader>fR", "<cmd>TypescriptRenameFile<cr>", { buffer = bufnr, remap = false });
         end
     }
+})
+require('go').setup({
+    lsp_cfg = true,
+    lsp_on_attach = default_on_attach,
+    lsp_keymaps = false,
 })
 
 vim.diagnostic.config({
