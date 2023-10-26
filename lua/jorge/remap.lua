@@ -54,6 +54,7 @@ vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 
 -- obsidian
+--[[
 vim.keymap.set(
     "n",
     "gf",
@@ -66,6 +67,7 @@ vim.keymap.set(
     end,
     { noremap = false, expr = true }
 )
+--]]
 
 vim.keymap.set("n", "<leader>oN", ":ObsidianNew ", { desc = "New Obsidian Note with name" })
 vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>")
