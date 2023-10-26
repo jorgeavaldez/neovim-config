@@ -125,7 +125,16 @@ return require('packer').startup(function(use)
                     subdir = "templates",
                     date_format = "%Y-%M-%D",
                     time_format = "%H:%M",
-                }
+                },
+                mappings = {
+                    ["gf"] = {
+                        action = function()
+                            return require("obsidian").util.gf_passthrough()
+                        end,
+                        opts = { noremap = false, expr = true, buffer = true },
+                    },
+                },
+                overwrite_mappings = true,
             })
         end
     })
