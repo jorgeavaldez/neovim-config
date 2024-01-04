@@ -21,11 +21,10 @@ return require('packer').startup(function(use)
         requires = { { 'nvim-lua/plenary.nvim' } }
     }
 
-    use {
-        'folke/tokyonight.nvim',
-        as = "tokyonight",
-    }
-    use { 'nyoom-engineering/oxocarbon.nvim' }
+    -- use { 'folke/tokyonight.nvim', as = "tokyonight" }
+    -- use { 'nyoom-engineering/oxocarbon.nvim' }
+    --
+    use { "catppuccin/nvim", as = "catppuccin" }
     use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
     use('nvim-treesitter/playground')
     use({
@@ -112,6 +111,7 @@ return require('packer').startup(function(use)
 
     use({
         "epwalsh/obsidian.nvim",
+        tag = "*",
         config = function()
             require("obsidian").setup({
                 dir = "~/obsidian/delvaze",
@@ -134,7 +134,6 @@ return require('packer').startup(function(use)
                         opts = { noremap = false, expr = true, buffer = true },
                     },
                 },
-                overwrite_mappings = true,
             })
         end
     })

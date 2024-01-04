@@ -12,7 +12,7 @@ PREF = {
         -- tom_enable = true,
     },
     ui = {
-        colorscheme = 'oxocarbon',
+        colorscheme = 'catppuccin-mocha',
         background = "dark",
         italic_comment = true,
     },
@@ -75,6 +75,7 @@ local options = {
     spelllang = 'en_us',
     termguicolors = true,
     scrolloff = 8,
+    conceallevel = 1,
 }
 
 for option_name, value in pairs(options) do

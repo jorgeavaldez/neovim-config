@@ -1,8 +1,9 @@
 function ColorMePretty(color)
     -- color = color or "tokyonight-night"
-    color = color or "oxocarbon"
+    color = color or "catppuccin-mocha"
     vim.cmd.colorscheme(color)
 
+    --[[
     local oxocarbon = require("oxocarbon")
     vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = oxocarbon.blend, bg = oxocarbon.blend })
     vim.api.nvim_set_hl(0, "TelescopePromptBorder", { fg = oxocarbon.base02, bg = oxocarbon.base02 })
@@ -40,6 +41,7 @@ function ColorMePretty(color)
 
     -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
     -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+    --]]
 end
 
 ColorMePretty()
