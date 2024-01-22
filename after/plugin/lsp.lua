@@ -154,6 +154,9 @@ null_ls.setup({
         null_ls.builtins.formatting.prismaFmt,
         null_ls.builtins.formatting.prettier,
 
+        null_ls.builtins.diagnostics.yamllint,
+        null_ls.builtins.formatting.yamlfmt,
+
         -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
         require("typescript.extensions.null-ls.code-actions"),
     },
