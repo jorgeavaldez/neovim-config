@@ -2,6 +2,8 @@ require("neodev").setup({
     library = { plugins = { "nvim-dap-ui" }, types = true },
 })
 
+vim.filetype.add({ extension = { templ = "templ" } })
+
 local lsp = require('lsp-zero')
 
 lsp.set_preferences({
@@ -9,6 +11,8 @@ lsp.set_preferences({
 });
 
 lsp.preset("recommended");
+
+local lspconfig = require('lspconfig')
 
 local function rename_file()
     -- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
@@ -80,10 +84,17 @@ lsp.ensure_installed({
     "pyright",
     "rust_analyzer",
     "lua_ls",
+    "gopls",
+    "html",
 });
 
 -- (Optional) Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls());
+lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
+
+-- configure templ
+lspconfig.html.setup({
+    filetypes = { "html", "templ" }
+});
 
 lsp.setup();
 
