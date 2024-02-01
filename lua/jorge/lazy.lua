@@ -75,7 +75,7 @@ require('lazy').setup({
 
     {
         'j-hui/fidget.nvim',
-        tag = "legacy",
+        config = true,
         dependencies = { 'VonHeikemen/lsp-zero.nvim' },
     },
 
