@@ -1,7 +1,3 @@
-require("neodev").setup({
-    library = { plugins = { "nvim-dap-ui" }, types = true },
-})
-
 vim.filetype.add({ extension = { templ = "templ" } })
 
 local lsp = require('lsp-zero')

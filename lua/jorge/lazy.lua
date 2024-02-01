@@ -13,7 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 
-    "folke/neodev.nvim",
+    { "folke/neodev.nvim",               config = true },
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.5',
