@@ -66,6 +66,18 @@ require('lazy').setup({
         dependencies = { "neovim/nvim-lspconfig" }
     },
 
+    {
+        'nvimdev/lspsaga.nvim',
+        event = 'LspAttach',
+        config = function()
+            require('lspsaga').setup({})
+        end,
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter', -- optional
+            'nvim-tree/nvim-web-devicons'      -- optional
+        }
+    },
+
     'mfussenegger/nvim-dap',
     {
         'mfussenegger/nvim-dap-python',
@@ -87,7 +99,19 @@ require('lazy').setup({
         },
     },
 
-    'folke/which-key.nvim',
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 300
+        end,
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        }
+    },
 
     {
         "kylechui/nvim-surround",
