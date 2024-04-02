@@ -157,3 +157,6 @@ null_ls.setup({
         require("typescript.extensions.null-ls.code-actions"),
     },
 });
+
+local fidget = require("fidget")
+fidget.setup({})

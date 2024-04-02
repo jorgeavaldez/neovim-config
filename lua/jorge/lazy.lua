@@ -32,7 +32,7 @@ require('lazy').setup({
     },
 
     "nvim-lua/plenary.nvim",
-    { "ThePrimeagen/harpoon", branch = "harpoon2",                       dependencies = { "nvim-lua/plenary.nvim" } },
+    { "ThePrimeagen/harpoon", branch = "harpoon2",                                                dependencies = { "nvim-lua/plenary.nvim" } },
     "mbbill/undotree",
     "tpope/vim-fugitive",
 
@@ -83,11 +83,12 @@ require('lazy').setup({
         'mfussenegger/nvim-dap-python',
         dependencies = { 'mfussenegger/nvim-dap' },
     },
-    { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap" } },
+
+    { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
 
     {
         'j-hui/fidget.nvim',
-        config = true,
+        -- config = true,
         dependencies = { 'VonHeikemen/lsp-zero.nvim' },
     },
 
