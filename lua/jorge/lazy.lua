@@ -60,7 +60,7 @@ require('lazy').setup({
         dependencies = { "nvim-lua/plenary.nvim" },
     },
 
-    "jose-elias-alvarez/typescript.nvim",
+    -- "jose-elias-alvarez/typescript.nvim",
     {
         "SmiteshP/nvim-navic",
         dependencies = { "neovim/nvim-lspconfig" }
@@ -129,7 +129,11 @@ require('lazy').setup({
         "epwalsh/obsidian.nvim",
         version = "*",
         lazy = true,
-        ft = "markdown",
+        event = {
+            -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+            "BufReadPre " .. vim.fn.expand "~" .. "/obsidian/delvaze/**.md",
+            "BufNewFile " .. vim.fn.expand "~" .. "/obsidian/delvaze/**.md",
+        },
         dependencies = {
             "nvim-lua/plenary.nvim",
         },

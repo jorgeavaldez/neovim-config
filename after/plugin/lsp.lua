@@ -71,7 +71,7 @@ lsp.on_attach(function(client, bufnr)
     default_on_attach(client, bufnr)
 end)
 
-lsp.skip_server_setup({ 'tsserver' })
+-- lsp.skip_server_setup({ 'tsserver' })
 
 lsp.ensure_installed({
     -- "tsserver",
@@ -95,6 +95,7 @@ lspconfig.html.setup({
 lsp.setup();
 
 -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-typescriptnvim
+--[[
 require('typescript').setup({
     server = {
         on_attach = function(client, bufnr)
@@ -104,6 +105,8 @@ require('typescript').setup({
         end
     }
 })
+--]]
+
 require('go').setup({
     lsp_cfg = true,
     lsp_on_attach = default_on_attach,
@@ -139,6 +142,7 @@ cmp.setup({
 local null_ls = require("null-ls");
 
 null_ls.setup({
+    debug = true,
     sources = {
         null_ls.builtins.formatting.djhtml,
         null_ls.builtins.formatting.djlint,
@@ -157,7 +161,7 @@ null_ls.setup({
         null_ls.builtins.formatting.yamlfmt,
 
         -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
-        require("typescript.extensions.null-ls.code-actions"),
+        -- require("typescript.extensions.null-ls.code-actions"),
     },
 });
 
