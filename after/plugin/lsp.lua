@@ -160,6 +160,7 @@ null_ls.setup({
         null_ls.builtins.diagnostics.yamllint,
         null_ls.builtins.formatting.yamlfmt,
 
+        null_ls.builtins.formatting.sqlfmt,
         -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
         -- require("typescript.extensions.null-ls.code-actions"),
     },
