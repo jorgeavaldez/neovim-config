@@ -1,6 +1,7 @@
 local trouble = require("trouble.sources.telescope")
 
 local telescope = require("telescope")
+local telescope_actions = require("telescope.actions")
 
 telescope.setup({
     defaults = {
@@ -9,6 +10,15 @@ telescope.setup({
             n = { ["<c-t>"] = trouble.open },
         },
     },
+    pickers = {
+        buffers = {
+            mappings = {
+                i = {
+                    ["<c-d>"] = telescope_actions.delete_buffer + telescope_actions.move_to_top,
+                }
+            }
+        }
+    }
 })
 
 vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
