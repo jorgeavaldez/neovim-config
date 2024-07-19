@@ -94,10 +94,8 @@ require('lazy').setup({
 
     {
         "folke/trouble.nvim",
-        dependencies = {
-            "nvim-telescope/telescope.nvim",
-            "nvim-tree/nvim-web-devicons",
-        },
+        opts = {},
+        cmd = "Trouble",
     },
 
     {
