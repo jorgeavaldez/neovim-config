@@ -12,30 +12,35 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-
-    { "folke/neodev.nvim",               config = true },
+    { "folke/neodev.nvim",      config = true },
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.5',
         dependencies = { 'nvim-lua/plenary.nvim' }
     },
-
-    { "catppuccin/nvim",                 name = "catppuccin", priority = 1000 },
-
-    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
-
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000
+    },
+    {
+        'nvim-treesitter/nvim-treesitter',
+        build = ':TSUpdate'
+    },
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
         dependencies = {
             "nvim-treesitter/nvim-treesitter"
         }
     },
-
     "nvim-lua/plenary.nvim",
-    { "ThePrimeagen/harpoon", branch = "harpoon2",                                                dependencies = { "nvim-lua/plenary.nvim" } },
+    {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        dependencies = { "nvim-lua/plenary.nvim" },
+    },
     "mbbill/undotree",
     "tpope/vim-fugitive",
-
     {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
@@ -54,18 +59,15 @@ require('lazy').setup({
             { 'L3MON4D3/LuaSnip' },     -- Required
         }
     },
-
     {
         "nvimtools/none-ls.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
     },
-
     -- "jose-elias-alvarez/typescript.nvim",
     {
         "SmiteshP/nvim-navic",
         dependencies = { "neovim/nvim-lspconfig" }
     },
-
     {
         'nvimdev/lspsaga.nvim',
         event = 'LspAttach',
@@ -77,27 +79,28 @@ require('lazy').setup({
             'nvim-tree/nvim-web-devicons'      -- optional
         }
     },
-
     'mfussenegger/nvim-dap',
     {
         'mfussenegger/nvim-dap-python',
         dependencies = { 'mfussenegger/nvim-dap' },
     },
-
-    { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
-
+    {
+        "rcarriga/nvim-dap-ui",
+        dependencies = {
+            "mfussenegger/nvim-dap",
+            "nvim-neotest/nvim-nio"
+        }
+    },
     {
         'j-hui/fidget.nvim',
         -- config = true,
         dependencies = { 'VonHeikemen/lsp-zero.nvim' },
     },
-
     {
         "folke/trouble.nvim",
         opts = {},
         cmd = "Trouble",
     },
-
     {
         "folke/which-key.nvim",
         event = "VeryLazy",
@@ -111,18 +114,14 @@ require('lazy').setup({
             -- refer to the configuration section below
         }
     },
-
     {
         "kylechui/nvim-surround",
         version = "*", -- Use for stability; omit to use `main` branch for the latest features
         event = "VeryLazy",
         config = true
     },
-
     { 'sindrets/diffview.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
-
     { 'gelguy/wilder.nvim' },
-
     {
         "epwalsh/obsidian.nvim",
         version = "*",
@@ -154,7 +153,6 @@ require('lazy').setup({
             },
         },
     },
-
     "tpope/vim-sleuth",
     {
         'ray-x/go.nvim',
@@ -164,4 +162,5 @@ require('lazy').setup({
             "nvim-treesitter/nvim-treesitter",
         },
     },
+    { "windwp/nvim-ts-autotag" },
 })

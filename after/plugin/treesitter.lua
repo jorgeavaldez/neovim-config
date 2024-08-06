@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup({
+require("nvim-treesitter.configs").setup({
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
     ensure_installed = { "javascript", "typescript", "lua", "vim", "vimdoc", "rust", "markdown", "markdown_inline" },
     -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -38,9 +38,9 @@ require('nvim-treesitter.configs').setup({
             -- and should return the mode ('v', 'V', or '<c-v>') or a table
             -- mapping query_strings to modes.
             selection_modes = {
-                ['@parameter.outer'] = 'v', -- charwise
-                ['@function.outer'] = 'V',  -- linewise
-                ['@class.outer'] = '<c-v>', -- blockwise
+                ["@parameter.outer"] = "v", -- charwise
+                ["@function.outer"] = "V", -- linewise
+                ["@class.outer"] = "<c-v>", -- blockwise
             },
             -- If you set this to `true` (default is `false`) then any textobject is
             -- extended to include preceding or succeeding whitespace. Succeeding
@@ -99,7 +99,24 @@ require('nvim-treesitter.configs').setup({
             peek_definition_code = {
                 ["<leader>df"] = "@function.outer",
                 ["<leader>dc"] = "@class.outer",
-            }
-        }
-    }
-});
+            },
+        },
+    },
+})
+
+require('nvim-ts-autotag').setup({
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = false -- Auto close on trailing </
+  },
+  -- Also override individual filetype configs, these take priority.
+  -- Empty by default, useful if one of the "opts" global settings
+  -- doesn't work well in a specific filetype
+  -- per_filetype = {
+  --   ["html"] = {
+  --     enable_close = false
+  --   }
+  -- }
+})
