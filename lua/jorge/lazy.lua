@@ -163,4 +163,5 @@ require('lazy').setup({
         },
     },
     { "windwp/nvim-ts-autotag" },
+    { "f-person/auto-dark-mode.nvim" },
 })
