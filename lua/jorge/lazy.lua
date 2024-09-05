@@ -41,9 +41,14 @@ require('lazy').setup({
     },
     "mbbill/undotree",
     "tpope/vim-fugitive",
+
+    {
+        'neovim/nvim-lspconfig',
+        commit = '0ef64599b8aa0187ee5f6d92cb39c951f348f041',
+    },
     {
         'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
+        branch = 'v4.x',
         dependencies = {
             -- LSP Support
             { 'neovim/nvim-lspconfig' }, -- Required

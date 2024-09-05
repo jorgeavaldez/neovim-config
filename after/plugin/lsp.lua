@@ -1,14 +1,16 @@
-vim.filetype.add({ extension = { templ = "templ" } })
+-- vim.filetype.add({ extension = { templ = "templ" } })
 
 local lsp = require('lsp-zero')
+local lspconfig = require('lspconfig')
 
+--[[
 lsp.set_preferences({
     suggest_lsp_servers = true,
 });
 
 lsp.preset("recommended");
+--]]
 
-local lspconfig = require('lspconfig')
 
 local function rename_file()
     -- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
@@ -25,21 +27,7 @@ local function rename_file()
         end
     )
 
-    --[[
-    local params = {
-        command = "_typescript.applyRenameFile",
-        arguments = {
-            {
-                sourceUri = source_file,
-                targetUri = target_file,
-            },
-        },
-        title = ""
-    }
-    --]]
-
     vim.lsp.util.rename(source_file, target_file, {})
-    -- vim.lsp.buf.execute_command(params)
 end
 
 local function default_on_attach(client, bufnr)
@@ -63,6 +51,7 @@ local function default_on_attach(client, bufnr)
     end
 end
 
+--[[
 lsp.on_attach(function(client, bufnr)
     lsp.default_keymaps({ buffer = bufnr });
     -- these are only set in an lsp buffer
@@ -70,42 +59,56 @@ lsp.on_attach(function(client, bufnr)
 
     default_on_attach(client, bufnr)
 end)
+--]]
+--
+lsp.extend_lspconfig({
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    lsp_attach = function(client, bufnr)
+        lsp.default_keymaps({ buffer = bufnr });
+        -- these are only set in an lsp buffer
+        -- we can add remaps in here
 
--- lsp.skip_server_setup({ 'tsserver' })
+        default_on_attach(client, bufnr)
+    end,
+    float_border = 'rounded',
+    sign_text = true,
+})
 
-lsp.ensure_installed({
-    -- "tsserver",
-    "tailwindcss",
-    "eslint",
-    "pyright",
-    "rust_analyzer",
-    "lua_ls",
-    "gopls",
-    "html",
-});
+require('mason').setup({})
+require('mason-lspconfig').setup({
+    ensure_installed = {
+        "tsserver",
+        "tailwindcss",
+        "eslint",
+        "pyright",
+        "rust_analyzer",
+        "lua_ls",
+        "gopls",
+        "html",
+    },
+    handlers = {
+        function(server_name)
+            lspconfig[server_name].setup({})
+        end
+    },
+    lua_ls = function()
+        lspconfig.lua_ls.setup({
+            on_init = function(client)
+                lsp.nvim_lua_settings(client, {})
+            end
+        })
+    end
+})
 
 -- (Optional) Configure lua language server for neovim
-lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
+-- lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
 
 -- configure templ
 lspconfig.html.setup({
     filetypes = { "html", "templ" }
 });
 
-lsp.setup();
-
--- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-typescriptnvim
---[[
-require('typescript').setup({
-    server = {
-        on_attach = function(client, bufnr)
-            default_on_attach(client, bufnr)
-
-            vim.keymap.set("n", "<leader>fR", "<cmd>TypescriptRenameFile<cr>", { buffer = bufnr, remap = false });
-        end
-    }
-})
---]]
+-- lsp.setup();
 
 require('go').setup({
     lsp_cfg = true,
@@ -122,16 +125,23 @@ vim.diagnostic.config({
 local cmp = require('cmp');
 -- local cmp_action = lsp.cmp_action();
 
+local default_mapping = cmp.mapping.preset.insert({
+    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+    ["<C-Space>"] = cmp.mapping.complete(),
+
+    --[[
+    ["<Tab>"] = cmp_action.luasnip_supertab(),
+    ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
+    ]] --
+})
+
 cmp.setup({
-    mapping = {
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        --[[
-        ["<Tab>"] = cmp_action.luasnip_supertab(),
-        ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
-        ]] --
-    },
+    formatting = lsp.cmp_format(),
+    mapping = default_mapping,
     preselect = 'item',
+    sources = {
+        { name = 'nvim_lsp' },
+    },
     --[[
     completion = {
         completeopt = 'menu,menuone,noinsert'
@@ -162,8 +172,6 @@ null_ls.setup({
 
         null_ls.builtins.formatting.sqlfmt,
         null_ls.builtins.formatting.stylua,
-        -- https://github.com/jose-elias-alvarez/typescript.nvim#setup-1
-        -- require("typescript.extensions.null-ls.code-actions"),
     },
 });
 
