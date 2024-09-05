@@ -12,8 +12,8 @@ PREF = {
         -- tom_enable = true,
     },
     ui = {
-        colorscheme = 'catppuccin-mocha',
-        background = "dark",
+        colorscheme = 'catppuccin-latte',
+        background = "light",
         italic_comment = true,
     },
     git = {
@@ -42,7 +42,8 @@ local options = {
     relativenumber = true,
     signcolumn = "yes",
     -- colorcolumn = "80",
-    background = PREF.ui.background,
+    -- background = PREF.ui.background,
+    -- colorscheme = "vim",
     -- ==========================================================================
     -- Text
     -- ==========================================================================
@@ -82,6 +83,7 @@ for option_name, value in pairs(options) do
     vim.opt[option_name] = value
 end
 
+vim.cmd.colorscheme("vim")
 vim.wo.foldmethod = 'expr';
 vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
 vim.wo.foldenable = false;
