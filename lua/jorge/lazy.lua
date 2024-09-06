@@ -22,6 +22,21 @@ require("lazy").setup({
 		"catppuccin/nvim",
 		name = "catppuccin",
 		priority = 1000,
+		setup = {
+			cmp = true,
+			gitsigns = true,
+			nvimtree = true,
+			treesitter = true,
+			notify = true,
+			diffview = true,
+			fidget = true,
+			harpoon = true,
+			lsp_saga = true,
+			markdown = true,
+			mason = true,
+			render_markdown = true,
+			which_key = true,
+		},
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -125,7 +140,7 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = true,
 	},
-	{ "sindrets/diffview.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+	-- { "sindrets/diffview.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 	{ "gelguy/wilder.nvim" },
 	{
 		"epwalsh/obsidian.nvim",
@@ -168,6 +183,7 @@ require("lazy").setup({
 		},
 	},
 	{ "windwp/nvim-ts-autotag" },
+	--[[
 	{
 		"f-person/auto-dark-mode.nvim",
 		lazy = false,
@@ -184,14 +200,39 @@ require("lazy").setup({
 			end
 		end,
 	},
+	--]]
+
 	-- oh boy...
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
 		lazy = false,
-		version = true, -- set this if you want to always pull the latest change
+		-- version = true, -- set this if you want to always pull the latest change
 		opts = {
-			-- add any opts here
+			provider = "openrouter",
+			vendors = {
+				openrouter = {
+					endpoint = "https://openrouter.ai/api/v1/chat/completions",
+					model = "anthropic/claude-3.5-sonnet",
+					api_key_name = "cmd:op item get --fields credential ms2yywrtuchrm62fus2mvjqdx4",
+					---@type fun(opts: AvanteProvider, code_opts: AvantePromptOptions): AvanteCurlOutput
+					parse_curl_args = function(opts, code_opts)
+						return {
+							url = opts.endpoint,
+							headers = {
+								["Accept"] = "application/json",
+								["Content-Type"] = "application/json",
+								["Authorization"] = "Bearer " .. opts.parse_api_key(),
+							},
+							body = require("avante.providers.claude").parse_curl_args(opts, code_opts).body,
+						}
+					end,
+
+					parse_response_data = function(data_stream, event_state, opts)
+						require("avante.providers").openai.parse_response(data_stream, event_state, opts)
+					end,
+				},
+			},
 		},
 		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 		build = "make",
@@ -220,6 +261,7 @@ require("lazy").setup({
 					},
 				},
 			},
+
 			{
 				-- Make sure to set this up properly if you have lazy=true
 				"MeanderingProgrammer/render-markdown.nvim",

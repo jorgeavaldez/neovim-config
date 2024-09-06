@@ -71,27 +71,29 @@ local options = {
     backup = false,
     swapfile = false,
     completeopt = { 'menuone', 'noselect' },
-    winbar = ' ',
+    -- winbar = ' ',
     spell = false,
     spelllang = 'en_us',
     termguicolors = true,
     scrolloff = 8,
-    conceallevel = 1,
+    conceallevel = 2,
 }
 
 for option_name, value in pairs(options) do
     vim.opt[option_name] = value
 end
 
-vim.cmd.colorscheme("vim")
-vim.wo.foldmethod = 'expr';
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
-vim.wo.foldenable = false;
+-- vim.cmd.colorscheme("vim")
+-- vim.wo.foldmethod = 'expr';
+-- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
+-- vim.wo.foldenable = false;
 
+--[[
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
     pattern = { "*" },
     command = "normal zx zR",
 })
+--]]
 
 if vim.g.neovide then
     vim.g.neovide_cursor_animation_length = 0

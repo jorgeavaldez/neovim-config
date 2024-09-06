@@ -39,7 +39,7 @@ local function default_on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts);
     vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, opts);
     vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, opts);
-    vim.keymap.set("n", "<leader>a", function() vim.lsp.buf.code_action() end, opts);
+    vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, opts);
     -- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts);
     vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts);
     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts);
@@ -123,30 +123,27 @@ vim.diagnostic.config({
 -- Autocomplete and Snippets
 
 local cmp = require('cmp');
--- local cmp_action = lsp.cmp_action();
+local cmp_action = lsp.cmp_action();
 
 local default_mapping = cmp.mapping.preset.insert({
     ["<CR>"] = cmp.mapping.confirm({ select = false }),
     ["<C-Space>"] = cmp.mapping.complete(),
 
-    --[[
     ["<Tab>"] = cmp_action.luasnip_supertab(),
     ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
-    ]] --
 })
 
 cmp.setup({
-    formatting = lsp.cmp_format(),
+    formatting = lsp.cmp_format({ details = true }),
     mapping = default_mapping,
     preselect = 'item',
     sources = {
         { name = 'nvim_lsp' },
+        { name = 'luasnip' },
     },
-    --[[
     completion = {
         completeopt = 'menu,menuone,noinsert'
     },
-    ]] --
 });
 
 local null_ls = require("null-ls");
