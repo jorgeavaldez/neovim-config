@@ -214,7 +214,7 @@ require("lazy").setup({
 				openrouter = {
 					endpoint = "https://openrouter.ai/api/v1/chat/completions",
 					model = "anthropic/claude-3.5-sonnet",
-					api_key_name = "cmd:op item get --fields credential ms2yywrtuchrm62fus2mvjqdx4",
+					api_key_name = "AVANTE_API_KEY",
 					---@type fun(opts: AvanteProvider, code_opts: AvantePromptOptions): AvanteCurlOutput
 					parse_curl_args = function(opts, code_opts)
 						return {
