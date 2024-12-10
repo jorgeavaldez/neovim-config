@@ -207,31 +207,24 @@ require("lazy").setup({
 		"yetone/avante.nvim",
 		event = "VeryLazy",
 		lazy = false,
-		-- version = true, -- set this if you want to always pull the latest change
+		version = true, -- set this if you want to always pull the latest change
 		opts = {
-			provider = "openrouter",
-			vendors = {
-				openrouter = {
-					endpoint = "https://openrouter.ai/api/v1/chat/completions",
-					model = "anthropic/claude-3.5-sonnet",
-					api_key_name = "AVANTE_API_KEY",
-					---@type fun(opts: AvanteProvider, code_opts: AvantePromptOptions): AvanteCurlOutput
-					parse_curl_args = function(opts, code_opts)
-						return {
-							url = opts.endpoint,
-							headers = {
-								["Accept"] = "application/json",
-								["Content-Type"] = "application/json",
-								["Authorization"] = "Bearer " .. opts.parse_api_key(),
-							},
-							body = require("avante.providers.claude").parse_curl_args(opts, code_opts).body,
-						}
-					end,
-
-					parse_response_data = function(data_stream, event_state, opts)
-						require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-					end,
-				},
+			provider = "claude",
+			auto_suggestions_provider = "claude",
+			behavior = {
+				auto_suggestions = false, -- TODO: autocomplete doesn't work with cmp rn
+				auto_set_highlight_group = true,
+				auto_set_keymaps = true,
+				auto_apply_diff_after_generation = false,
+				support_paste_from_clipboard = true,
+				minimize_diff = true,
+			},
+			hints = { enabled = true },
+			claude = {
+				endpoint = "https://api.anthropic.com",
+				model = "claude-3-5-sonnet-20241022",
+				temperature = 0,
+				max_tokens = 4096,
 			},
 		},
 		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

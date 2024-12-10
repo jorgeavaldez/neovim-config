@@ -77,6 +77,8 @@ local options = {
     termguicolors = true,
     scrolloff = 8,
     conceallevel = 2,
+    -- avante?
+    laststatus = 3,
 }
 
 for option_name, value in pairs(options) do
