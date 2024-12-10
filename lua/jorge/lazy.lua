@@ -140,7 +140,7 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = true,
 	},
-	-- { "sindrets/diffview.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+	{ "sindrets/diffview.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 	{ "gelguy/wilder.nvim" },
 	{
 		"epwalsh/obsidian.nvim",
