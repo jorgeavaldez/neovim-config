@@ -203,6 +203,7 @@ require("lazy").setup({
 	--]]
 
 	-- oh boy...
+	--[[
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
@@ -265,4 +266,32 @@ require("lazy").setup({
 			},
 		},
 	},
+	--]]
+
+	{
+		"monkoose/neocodeium",
+		event = "VeryLazy",
+		config = function()
+			local neocodeium = require("neocodeium")
+			neocodeium.setup({
+				filetypes = {
+					TelescopePrompt = false,
+					["dap-repl"] = false,
+				},
+			})
+			vim.keymap.set("i", "<C-.>", neocodeium.accept)
+		end,
+	},
+
+	--[[
+	{
+		"ggml-org/llama.vim",
+		init = function()
+			vim.g.llama_config = {
+				endpoint = "https://openrouter.ai/api/v1",
+				api_key = "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",
+			}
+		end,
+	},
+		--]]
 })
