@@ -152,6 +152,7 @@ cmp.setup({
 	mapping = default_mapping,
 	preselect = "item",
 	sources = {
+		{ name = "supermaven" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 	},
