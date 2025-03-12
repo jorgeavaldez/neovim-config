@@ -88,7 +88,7 @@ lsp.extend_lspconfig({
 require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"ts_ls",
+		"tsserver",
 		"tailwindcss",
 		"eslint",
 		"pyright",
@@ -96,14 +96,6 @@ require("mason-lspconfig").setup({
 		"lua_ls",
 		"gopls",
 		"html",
-	},
-	handlers = {
-		function(server_name)
-			if server_name == "ts_ls" then
-				server_name = "tsserver"
-			end
-			lspconfig[server_name].setup({})
-		end,
 	},
 	lua_ls = function()
 		lspconfig.lua_ls.setup({
