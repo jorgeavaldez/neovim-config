@@ -96,6 +96,7 @@ require("mason-lspconfig").setup({
 		"lua_ls",
 		"gopls",
 		"html",
+		"bashls",
 	},
 	lua_ls = function()
 		lspconfig.lua_ls.setup({
