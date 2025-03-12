@@ -88,7 +88,7 @@ lsp.extend_lspconfig({
 require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"tsserver",
+		"ts_ls",
 		"tailwindcss",
 		"eslint",
 		"pyright",
@@ -108,7 +108,7 @@ require("mason-lspconfig").setup({
 })
 
 -- (Optional) Configure lua language server for neovim
--- lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
+lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
 
 -- configure templ
 lspconfig.html.setup({
@@ -141,6 +141,11 @@ local default_mapping = cmp.mapping.preset.insert({
 })
 
 cmp.setup({
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
 	formatting = lsp.cmp_format({ details = true }),
 	mapping = default_mapping,
 	preselect = "item",

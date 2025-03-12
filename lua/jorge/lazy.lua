@@ -183,107 +183,6 @@ require("lazy").setup({
 		},
 	},
 	{ "windwp/nvim-ts-autotag" },
-	--[[
-	{
-		"f-person/auto-dark-mode.nvim",
-		lazy = false,
-		priority = 9999,
-		init = function()
-			-- Get the current hour
-			local current_hour = tonumber(os.date("%H"))
-
-			-- Set the background based on the time of day
-			if current_hour >= 9 and current_hour < 17 then
-				vim.opt.background = "light"
-			else
-				vim.opt.background = "dark"
-			end
-		end,
-	},
-	--]]
-
-	-- oh boy...
-	--[[
-	{
-		"yetone/avante.nvim",
-		event = "VeryLazy",
-		lazy = false,
-		version = true, -- set this if you want to always pull the latest change
-		opts = {
-			provider = "claude",
-			auto_suggestions_provider = "claude",
-			behavior = {
-				auto_suggestions = false, -- TODO: autocomplete doesn't work with cmp rn
-				auto_set_highlight_group = true,
-				auto_set_keymaps = true,
-				auto_apply_diff_after_generation = false,
-				support_paste_from_clipboard = true,
-				minimize_diff = true,
-			},
-			hints = { enabled = true },
-			claude = {
-				endpoint = "https://api.anthropic.com",
-				model = "claude-3-5-sonnet-20241022",
-				temperature = 0,
-				max_tokens = 4096,
-			},
-		},
-		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-		build = "make",
-		-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-		dependencies = {
-			"stevearc/dressing.nvim",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			--- The below dependencies are optional,
-			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-			-- "zbirenbaum/copilot.lua", -- for providers='copilot'
-			{
-				-- support for image pasting
-				"HakonHarnes/img-clip.nvim",
-				event = "VeryLazy",
-				opts = {
-					-- recommended settings
-					default = {
-						embed_image_as_base64 = false,
-						prompt_for_file_name = false,
-						drag_and_drop = {
-							insert_mode = true,
-						},
-						-- required for Windows users
-						use_absolute_path = true,
-					},
-				},
-			},
-
-			{
-				-- Make sure to set this up properly if you have lazy=true
-				"MeanderingProgrammer/render-markdown.nvim",
-				opts = {
-					file_types = { "markdown", "Avante" },
-				},
-				ft = { "markdown", "Avante" },
-			},
-		},
-	},
-	--]]
-
-	--[[
-	{
-		"monkoose/neocodeium",
-		event = "VeryLazy",
-		config = function()
-			local neocodeium = require("neocodeium")
-			neocodeium.setup({
-				filetypes = {
-					TelescopePrompt = false,
-					["dap-repl"] = false,
-				},
-			})
-			vim.keymap.set("i", "<C-.>", neocodeium.accept)
-		end,
-	},
-	--]]
 	{
 		"supermaven-inc/supermaven-nvim",
 		config = function()
@@ -293,13 +192,6 @@ require("lazy").setup({
 					clear_suggestion = "<C-]>",
 					-- accept_word = "<C-j>",
 				},
-				-- ignore_filetypes = { cpp = true }, -- or { "cpp", }
-				--[[
-				color = {
-					suggestion_color = "#ffffff",
-					cterm = 244,
-				},
-				--]]
 				log_level = "info", -- set to "off" to disable logging completely
 				disable_inline_completion = true, -- disables inline completion for use with cmp
 				disable_keymaps = true, -- disables built in keymaps for more manual control
@@ -309,16 +201,4 @@ require("lazy").setup({
 			})
 		end,
 	},
-
-	--[[
-	{
-		"ggml-org/llama.vim",
-		init = function()
-			vim.g.llama_config = {
-				endpoint = "https://openrouter.ai/api/v1",
-				api_key = "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",
-			}
-		end,
-	},
-		--]]
 })
