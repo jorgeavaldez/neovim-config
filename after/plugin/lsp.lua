@@ -104,6 +104,10 @@ require("mason-lspconfig").setup({
 	}
 })
 
+lspconfig.biome.setup({
+	cmd = { 'bunx', 'biome', 'lsp-proxy' },
+})
+
 -- (Optional) Configure lua language server for neovim
 lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
 
