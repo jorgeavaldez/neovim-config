@@ -48,7 +48,7 @@ require("lazy").setup({
 			"nvim-treesitter/nvim-treesitter",
 		},
 	},
-	"nvim-lua/plenary.nvim",
+	{ "nvim-lua/plenary.nvim" },
 	{
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
@@ -59,7 +59,7 @@ require("lazy").setup({
 
 	{
 		"neovim/nvim-lspconfig",
-		tag = "v1.7.0"
+		tag = "v1.7.0",
 	},
 	{
 		"VonHeikemen/lsp-zero.nvim",
@@ -198,6 +198,33 @@ require("lazy").setup({
 				condition = function()
 					return false
 				end, -- condition to check for stopping supermaven, `true` means to stop supermaven when the condition is true.
+			})
+		end,
+	},
+	{
+		"milanglacier/minuet-ai.nvim",
+		config = function()
+			require("minuet").setup({
+				provider = "openai_compatible",
+				request_timeout = 2.5,
+				throttle = 1500, -- Increase to reduce costs and avoid rate limits
+				debounce = 600, -- Increase to reduce costs and avoid rate limits
+				provider_options = {
+					openai_compatible = {
+						api_key = "OPENROUTER_API_KEY",
+						end_point = "https://openrouter.ai/api/v1/chat/completions",
+						model = "google/gemini-2.0-flash-001",
+						name = "Openrouter",
+						optional = {
+							-- max_tokens = 128,
+							-- top_p = 0.9,
+							provider = {
+								-- Prioritize throughput for faster completion
+								sort = "throughput",
+							},
+						},
+					},
+				},
 			})
 		end,
 	},

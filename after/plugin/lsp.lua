@@ -149,9 +149,13 @@ cmp.setup({
 	mapping = default_mapping,
 	preselect = "item",
 	sources = {
+		{ name = "minuet" },
 		{ name = "supermaven" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
+	},
+	performance = {
+		fetching_timeout = 2000,
 	},
 	completion = {
 		completeopt = "menu,menuone,noinsert",
