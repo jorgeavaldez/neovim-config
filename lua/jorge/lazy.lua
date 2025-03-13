@@ -59,7 +59,7 @@ require("lazy").setup({
 
 	{
 		"neovim/nvim-lspconfig",
-		commit = "0ef64599b8aa0187ee5f6d92cb39c951f348f041",
+		tag = "v1.7.0"
 	},
 	{
 		"VonHeikemen/lsp-zero.nvim",

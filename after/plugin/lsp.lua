@@ -3,14 +3,6 @@
 local lsp = require("lsp-zero")
 local lspconfig = require("lspconfig")
 
---[[
-lsp.set_preferences({
-    suggest_lsp_servers = true,
-});
-
-lsp.preset("recommended");
---]]
-
 local function rename_file()
 	-- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
 	local source_file = vim.api.nvim_buf_get_name(0)
@@ -105,6 +97,11 @@ require("mason-lspconfig").setup({
 			end,
 		})
 	end,
+	handlers = {
+		function(server_name)
+			require('lspconfig')[server_name].setup({})
+		end,
+	}
 })
 
 -- (Optional) Configure lua language server for neovim
@@ -114,8 +111,6 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
 lspconfig.html.setup({
 	filetypes = { "html", "templ" },
 })
-
--- lsp.setup();
 
 require("go").setup({
 	lsp_cfg = true,

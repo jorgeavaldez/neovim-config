@@ -14,4 +14,4 @@ auto_dark_mode.setup({
 })
 
 --]]
-vim.cmd.colorscheme("catppuccin-latte")
+vim.cmd.colorscheme("catppuccin-mocha")
