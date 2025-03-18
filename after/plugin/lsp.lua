@@ -76,11 +76,12 @@ lsp.extend_lspconfig({
 	float_border = "rounded",
 	sign_text = true,
 })
+require("typescript-tools").setup({})
 
 require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"ts_ls",
+		-- "ts_ls",
 		"tailwindcss",
 		"eslint",
 		"pyright",
@@ -99,17 +100,20 @@ require("mason-lspconfig").setup({
 	end,
 	handlers = {
 		function(server_name)
-			require('lspconfig')[server_name].setup({})
+			-- we're using typescript-tools instead
+			if server_name ~= "ts_ls" then
+				require("lspconfig")[server_name].setup({})
+			end
 		end,
-	}
+	},
 })
 
 lspconfig.biome.setup({
-	cmd = { 'bunx', 'biome', 'lsp-proxy' },
+	cmd = { "bunx", "biome", "lsp-proxy" },
 })
 
 -- (Optional) Configure lua language server for neovim
-lspconfig.lua_ls.setup(lsp.nvim_lua_ls());
+lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 
 -- configure templ
 lspconfig.html.setup({
@@ -155,7 +159,7 @@ cmp.setup({
 		{ name = "luasnip" },
 	},
 	performance = {
-		fetching_timeout = 2000,
+		fetching_timeout = 500,
 	},
 	completion = {
 		completeopt = "menu,menuone,noinsert",

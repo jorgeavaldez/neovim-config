@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{ "folke/neodev.nvim", config = true },
+	{ "folke/neodev.nvim",    config = true },
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.5",
@@ -83,7 +83,6 @@ require("lazy").setup({
 		"nvimtools/none-ls.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	-- "jose-elias-alvarez/typescript.nvim",
 	{
 		"SmiteshP/nvim-navic",
 		dependencies = { "neovim/nvim-lspconfig" },
@@ -182,6 +181,10 @@ require("lazy").setup({
 			"nvim-treesitter/nvim-treesitter",
 		},
 	},
+	{
+		"pmizio/typescript-tools.nvim",
+		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+	},
 	{ "windwp/nvim-ts-autotag" },
 	{
 		"supermaven-inc/supermaven-nvim",
@@ -192,7 +195,7 @@ require("lazy").setup({
 					clear_suggestion = "<C-]>",
 					-- accept_word = "<C-j>",
 				},
-				log_level = "info", -- set to "off" to disable logging completely
+				log_level = "info",   -- set to "off" to disable logging completely
 				disable_inline_completion = true, -- disables inline completion for use with cmp
 				disable_keymaps = true, -- disables built in keymaps for more manual control
 				condition = function()
