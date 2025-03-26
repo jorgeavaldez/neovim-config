@@ -51,7 +51,7 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 
 -- terminal
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
-vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
+-- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 
 -- obsidian
 vim.keymap.set(
