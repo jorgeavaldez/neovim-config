@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{ "folke/neodev.nvim",    config = true },
+	{ "folke/neodev.nvim", config = true },
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.5",
@@ -195,7 +195,7 @@ require("lazy").setup({
 					clear_suggestion = "<C-]>",
 					-- accept_word = "<C-j>",
 				},
-				log_level = "info",   -- set to "off" to disable logging completely
+				log_level = "info", -- set to "off" to disable logging completely
 				disable_inline_completion = true, -- disables inline completion for use with cmp
 				disable_keymaps = true, -- disables built in keymaps for more manual control
 				condition = function()
@@ -230,5 +230,17 @@ require("lazy").setup({
 				},
 			})
 		end,
+	},
+	{
+		"stevearc/oil.nvim",
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {},
+		-- Optional dependencies
+		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+		-- use the `-` key to go up a directory
+		lazy = false,
 	},
 })
