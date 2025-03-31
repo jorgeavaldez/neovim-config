@@ -2,7 +2,8 @@ vim.g.mapleader = ' '
 
 vim.keymap.set('', '<Space>', '<Nop>')
 
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+-- vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>pv", "<CMD>Oil<CR>", { desc = 'Open file view' })
 
 -- move selected lines
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -77,4 +78,3 @@ vim.keymap.set("n", "<leader>oln", "<cmd>ObsidianLinkNew")
 vim.keymap.set("n", "<leader>olN", "<cmd>ObsidianLinkNew<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianLink<CR>")
 vim.keymap.set("n", "<leader><CR>", "<cmd>ObsidianFollowLink<CR>")
-
