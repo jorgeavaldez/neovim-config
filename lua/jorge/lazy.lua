@@ -210,7 +210,7 @@ require("lazy").setup({
 			require("minuet").setup({
 				provider = "openai_compatible",
 				request_timeout = 2.5,
-				throttle = 1500, -- Increase to reduce costs and avoid rate limits
+				throttle = 800, -- Increase to reduce costs and avoid rate limits
 				debounce = 600, -- Increase to reduce costs and avoid rate limits
 				provider_options = {
 					openai_compatible = {

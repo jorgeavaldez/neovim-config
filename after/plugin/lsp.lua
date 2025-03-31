@@ -159,7 +159,7 @@ cmp.setup({
 		{ name = "luasnip" },
 	},
 	performance = {
-		fetching_timeout = 500,
+		fetching_timeout = 1000,
 	},
 	completion = {
 		completeopt = "menu,menuone,noinsert",
