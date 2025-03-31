@@ -85,7 +85,7 @@ for option_name, value in pairs(options) do
     vim.opt[option_name] = value
 end
 
--- vim.cmd.colorscheme("vim")
+-- vim.cmd.colorscheme("catppuccin-latte")
 -- vim.wo.foldmethod = 'expr';
 -- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()';
 -- vim.wo.foldenable = false;

@@ -153,6 +153,11 @@ cmp.setup({
 	mapping = default_mapping,
 	preselect = "item",
 	sources = {
+		{
+			name = "lazydev",
+			-- set to 0 to skip loading luals completions
+			group_index = 0,
+		},
 		{ name = "minuet" },
 		{ name = "supermaven" },
 		{ name = "nvim_lsp" },

@@ -12,7 +12,17 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{ "folke/neodev.nvim", config = true },
+	{
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {
+			library = {
+				-- load luvit types when the `vim.uv` word is found
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+				-- 'oil.nvim',
+			},
+		},
+	},
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.5",
@@ -37,6 +47,9 @@ require("lazy").setup({
 			render_markdown = true,
 			which_key = true,
 		},
+        config = function()
+            vim.cmd.colorscheme("catppuccin-latte")
+        end
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -61,6 +74,7 @@ require("lazy").setup({
 		"neovim/nvim-lspconfig",
 		tag = "v1.7.0",
 	},
+	{ "hrsh7th/nvim-cmp" },
 	{
 		"VonHeikemen/lsp-zero.nvim",
 		branch = "v4.x",
@@ -150,6 +164,9 @@ require("lazy").setup({
 			"nvim-lua/plenary.nvim",
 		},
 		opts = {
+			ui = {
+				enable = false
+			},
 			dir = "~/obsidian/delvaze",
 			completion = {
 				nvim_cmp = true,
@@ -235,12 +252,20 @@ require("lazy").setup({
 		"stevearc/oil.nvim",
 		---@module 'oil'
 		---@type oil.SetupOpts
-		opts = {},
+		opts = {
+			view_options = {
+				show_hidden = true,
+			},
+		},
 		-- Optional dependencies
 		dependencies = { { "echasnovski/mini.icons", opts = {} } },
 		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		-- use the `-` key to go up a directory
+		lazy = false,
+	},
+	{
+		"OXY2DEV/markview.nvim",
 		lazy = false,
 	},
 })
