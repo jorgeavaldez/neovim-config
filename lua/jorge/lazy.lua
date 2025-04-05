@@ -59,8 +59,8 @@ require("lazy").setup({
 				which_key = true,
 			},
 			config = function()
-				-- vim.cmd.colorscheme("catppuccin-latte")
-				vim.cmd.colorscheme("catppuccin-mocha")
+				vim.cmd.colorscheme("catppuccin-latte")
+				-- vim.cmd.colorscheme("catppuccin-mocha")
 			end,
 		},
 		{
@@ -285,6 +285,7 @@ require("lazy").setup({
 	--]]
 		{
 			"jorgeavaldez/avante.nvim",
+			branch = "feat/web-search/searxng",
 			event = "VeryLazy",
 			version = "feat/web-search/searxng",
 			dev = false, -- set to true to load from local source
@@ -302,8 +303,7 @@ require("lazy").setup({
 						endpoint = "https://openrouter.ai/api/v1",
 						api_key_name = "OPENROUTER_API_KEY",
 						-- model = "google/gemini-2.5-pro-preview-03-25",
-						model = "anthropic/claude-3.7-sonnet:beta"
-
+						model = "anthropic/claude-3.7-sonnet:beta",
 					},
 				},
 			},
