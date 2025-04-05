@@ -223,6 +223,7 @@ require("lazy").setup({
 	},
 	{
 		"milanglacier/minuet-ai.nvim",
+		enabled = false,
 		config = function()
 			require("minuet").setup({
 				provider = "openai_compatible",
@@ -274,6 +275,8 @@ require("lazy").setup({
 		"yetone/avante.nvim",
 		event = "VeryLazy",
 		version = "*",
+		---@module 'avante'
+		---@type avante.Config
 		opts = {
 			provider = "openrouter",
 			vendors = {
