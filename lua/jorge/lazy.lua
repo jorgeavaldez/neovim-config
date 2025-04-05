@@ -166,7 +166,38 @@ require("lazy").setup({
 			config = true,
 		},
 		{ "sindrets/diffview.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-		{ "gelguy/wilder.nvim" },
+		{
+			"gelguy/wilder.nvim",
+			config = function()
+				local wilder = require("wilder")
+				wilder.setup({ modes = { ":", "/", "?" } })
+
+				wilder.set_option("pipeline", {
+					wilder.branch(
+						wilder.cmdline_pipeline({
+							fuzzy = 1,
+							fuzzy_filter = wilder.lua_fzy_filter(),
+						}),
+						wilder.vim_search_pipeline()
+					),
+				})
+
+				wilder.set_option(
+					"renderer",
+					wilder.renderer_mux({
+						[":"] = wilder.popupmenu_renderer({
+							highlighter = wilder.lua_fzy_highlighter(),
+						}),
+						["/"] = wilder.wildmenu_renderer({
+							highlighter = wilder.lua_fzy_highlighter(),
+						}),
+					})
+				)
+			end,
+			dependencies = {
+				"romgrk/fzy-lua-native",
+			},
+		},
 		{
 			"epwalsh/obsidian.nvim",
 			version = "*",
