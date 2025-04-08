@@ -378,5 +378,9 @@ require("lazy").setup({
 				},
 			},
 		},
+		{
+			"stevearc/overseer.nvim",
+			opts = {},
+		},
 	},
 })
