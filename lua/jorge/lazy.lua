@@ -337,7 +337,7 @@ require("lazy").setup({
 						endpoint = "https://openrouter.ai/api/v1",
 						api_key_name = "OPENROUTER_API_KEY",
 						-- model = "google/gemini-2.5-pro-preview-03-25",
-						model = "anthropic/claude-3.7-sonnet:beta",
+						model = "anthropic/claude-3.7-sonnet",
 					},
 				},
 				system_prompt = function()
@@ -422,6 +422,8 @@ require("lazy").setup({
 			config = function()
 				vim.fn.setenv("MCP_PROJECT_ROOT_PATH", commands.get_project_root())
 				require("mcphub").setup({
+					-- config = vim.fn.expand("~/.config/mcphub/servers.json"),
+					config = vim.fn.expand("~/dots/mcphub/servers.json"),
 					extensions = {
 						avante = {
 							make_slash_commands = true,
