@@ -34,3 +34,20 @@ vim.api.nvim_create_user_command("SortWords", function(_)
 
 	vim.api.nvim_buf_set_text(0, s_start[2] - 1, s_start[3] - 1, s_end[2] - 1, s_end[3], { new_value })
 end, { range = true })
+
+M.get_project_root = function()
+	-- Try to get git root
+	local git_root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null"):gsub("\n$", "")
+	if git_root ~= "" and vim.v.shell_error == 0 then
+		return git_root
+	end
+
+	-- Fall back to current working directory
+	return vim.fn.getcwd()
+end
+
+vim.api.nvim_create_user_command("GetProjectRoot", function (_)
+	print(M.get_project_root())
+end, {})
+
+return M

@@ -1,4 +1,6 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local commands = require("jorge.commands")
+
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -12,6 +14,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+	---@diagnostic disable-next-line: assign-type-mismatch
 	dev = {
 		path = "~/proj",
 	},
@@ -337,6 +340,30 @@ require("lazy").setup({
 						model = "anthropic/claude-3.7-sonnet:beta",
 					},
 				},
+				system_prompt = function()
+					local hub = require("mcphub").get_hub_instance()
+					if hub ~= nil then
+						return hub:get_active_servers_prompt()
+					end
+				end,
+				custom_tools = function()
+					return {
+						require("mcphub.extensions.avante").mcp_tool(),
+					}
+				end,
+				-- disabled because we can use the mcp hub neovim server
+				disabled_tools = {
+					"list_files",
+					"search_files",
+					"read_file",
+					"create_file",
+					"rename_file",
+					"delete_file",
+					"create_dir",
+					"rename_dir",
+					"delete_dir",
+					"bash",
+				},
 			},
 			build = "make",
 			dependencies = {
@@ -381,6 +408,27 @@ require("lazy").setup({
 		{
 			"stevearc/overseer.nvim",
 			opts = {},
+		},
+		{
+			"ravitemer/mcphub.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
+			},
+			-- comment the following line to ensure hub will be ready at the earliest
+			cmd = "MCPHub", -- lazy load by default
+			build = "mise install npm:mcp-hub@latest && mise use npm:mcp-hub@latest", -- Installs required mcp-hub npm module
+			-- uncomment this if you don't want mcp-hub to be available globally or can't use -g
+			-- build = "bundled_build.lua",  -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
+			config = function()
+				vim.fn.setenv("MCP_PROJECT_ROOT_PATH", commands.get_project_root())
+				require("mcphub").setup({
+					extensions = {
+						avante = {
+							make_slash_commands = true,
+						},
+					},
+				})
+			end,
 		},
 	},
 })
