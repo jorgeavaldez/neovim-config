@@ -278,7 +278,7 @@ require("lazy").setup({
 					debounce = 600, -- Increase to reduce costs and avoid rate limits
 					provider_options = {
 						openai_compatible = {
-							api_key = "OPENROUTER_API_KEY",
+							api_key = "AVANTE_OPENROUTER_API_KEY",
 							end_point = "https://openrouter.ai/api/v1/chat/completions",
 							model = "google/gemini-2.0-flash-001",
 							name = "Openrouter",
@@ -318,10 +318,10 @@ require("lazy").setup({
 	},
 	--]]
 		{
-			"jorgeavaldez/avante.nvim",
-			branch = "feat/web-search/searxng",
+			"yetone/avante.nvim",
 			event = "VeryLazy",
-			version = "feat/web-search/searxng",
+			-- commit = "e295fe82f0714188615a524604bdaccd266ced35",
+			version = false,
 			dev = false, -- set to true to load from local source
 			---@module 'avante'
 			---@type avante.Config
@@ -335,9 +335,10 @@ require("lazy").setup({
 					openrouter = {
 						__inherited_from = "openai",
 						endpoint = "https://openrouter.ai/api/v1",
-						api_key_name = "OPENROUTER_API_KEY",
+						api_key_name = "AVANTE_OPENROUTER_API_KEY",
 						-- model = "google/gemini-2.5-pro-preview-03-25",
 						model = "anthropic/claude-3.7-sonnet",
+						-- model = "google/gemini-2.5-pro-exp-03-25:free",
 					},
 				},
 				system_prompt = function()
