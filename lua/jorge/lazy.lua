@@ -328,16 +328,20 @@ require("lazy").setup({
 			opts = {
 				debug = false, -- set to true for logs
 				provider = "openrouter",
+				-- provider = "gemini",
 				web_search_engine = {
 					provider = "searxng",
+				},
+				gemini = {
+					model = "gemini-2.5-pro-exp-03-25",
 				},
 				vendors = {
 					openrouter = {
 						__inherited_from = "openai",
 						endpoint = "https://openrouter.ai/api/v1",
 						api_key_name = "AVANTE_OPENROUTER_API_KEY",
-						-- model = "google/gemini-2.5-pro-preview-03-25",
 						model = "anthropic/claude-3.7-sonnet",
+						-- model = "google/gemini-2.5-pro-preview-03-25",
 						-- model = "google/gemini-2.5-pro-exp-03-25:free",
 					},
 				},
