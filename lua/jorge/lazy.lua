@@ -327,13 +327,14 @@ require("lazy").setup({
 			---@type avante.Config
 			opts = {
 				debug = false, -- set to true for logs
-				provider = "openrouter",
-				-- provider = "gemini",
+				-- provider = "openrouter",
+				provider = "gemini",
 				web_search_engine = {
 					provider = "searxng",
 				},
 				gemini = {
 					model = "gemini-2.5-pro-exp-03-25",
+					max_tokens = 1000000,
 				},
 				vendors = {
 					openrouter = {
@@ -345,6 +346,7 @@ require("lazy").setup({
 						-- model = "google/gemini-2.5-pro-exp-03-25:free",
 					},
 				},
+				--[[
 				system_prompt = function()
 					local hub = require("mcphub").get_hub_instance()
 					if hub ~= nil then
@@ -369,6 +371,7 @@ require("lazy").setup({
 					"delete_dir",
 					"bash",
 				},
+				--]]
 			},
 			build = "make",
 			dependencies = {
@@ -416,6 +419,7 @@ require("lazy").setup({
 		},
 		{
 			"ravitemer/mcphub.nvim",
+			enabled = false,
 			dependencies = {
 				"nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
 			},
