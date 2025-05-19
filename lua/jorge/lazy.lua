@@ -30,16 +30,16 @@ require("lazy").setup({
 				},
 				library = {
 					-- load luvit types when the `vim.uv` word is found
-					{ path = "${3rd}/luv/library",          words = { "vim%.uv" } },
-					{ path = "~/workspace/avante.nvim/lua", words = { "avante" } },
-					{ path = "luvit-meta/library",          words = { "vim%.uv" } },
+					{ path = "${3rd}/luv/library",     words = { "vim%.uv" } },
+					{ path = "~/proj/avante.nvim/lua", words = { "avante" } },
+					{ path = "luvit-meta/library",     words = { "vim%.uv" } },
 					-- 'oil.nvim',
 				},
 			},
 		},
 		{
 			"nvim-telescope/telescope.nvim",
-			tag = "0.1.5",
+			branch = "0.1.x",
 			dependencies = { "nvim-lua/plenary.nvim" },
 		},
 		{
@@ -125,8 +125,6 @@ require("lazy").setup({
 		},
 		{
 			"j-hui/fidget.nvim",
-			-- config = true,
-			-- dependencies = { "VonHeikemen/lsp-zero.nvim" },
 		},
 		{
 			"folke/trouble.nvim",
@@ -140,15 +138,10 @@ require("lazy").setup({
 				vim.o.timeout = true
 				vim.o.timeoutlen = 300
 			end,
-			opts = {
-				-- your configuration comes here
-				-- or leave it empty to use the default settings
-				-- refer to the configuration section below
-			},
 		},
 		{
 			"kylechui/nvim-surround",
-			version = "*", -- Use for stability; omit to use `main` branch for the latest features
+			version = "*",
 			event = "VeryLazy",
 			config = true,
 		},
@@ -478,7 +471,6 @@ require("lazy").setup({
 			config = function()
 				vim.fn.setenv("MCP_PROJECT_ROOT_PATH", commands.get_project_root())
 				require("mcphub").setup({
-					-- config = vim.fn.expand("~/.config/mcphub/servers.json"),
 					config = vim.fn.expand("~/dots/mcphub/servers.json"),
 					extensions = {
 						avante = {

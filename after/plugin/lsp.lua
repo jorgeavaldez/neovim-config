@@ -136,7 +136,7 @@ cmp.setup({
 		{
 			name = "lazydev",
 			-- set to 0 to skip loading luals completions
-			group_index = 1,
+			group_index = 0,
 		},
 		-- { name = "minuet" },
 		{ name = "supermaven" },
