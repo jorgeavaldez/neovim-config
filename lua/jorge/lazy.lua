@@ -30,9 +30,9 @@ require("lazy").setup({
 				},
 				library = {
 					-- load luvit types when the `vim.uv` word is found
-					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+					{ path = "${3rd}/luv/library",          words = { "vim%.uv" } },
 					{ path = "~/workspace/avante.nvim/lua", words = { "avante" } },
-					{ path = "luvit-meta/library", words = { "vim%.uv" } },
+					{ path = "luvit-meta/library",          words = { "vim%.uv" } },
 					-- 'oil.nvim',
 				},
 			},
@@ -62,8 +62,8 @@ require("lazy").setup({
 				which_key = true,
 			},
 			config = function()
-				vim.cmd.colorscheme("catppuccin-latte")
-				-- vim.cmd.colorscheme("catppuccin-mocha")
+				-- vim.cmd.colorscheme("catppuccin-latte")
+				vim.cmd.colorscheme("catppuccin-mocha")
 			end,
 		},
 		{
@@ -77,48 +77,32 @@ require("lazy").setup({
 			},
 		},
 		{ "nvim-lua/plenary.nvim" },
-		{
-			"ThePrimeagen/harpoon",
-			branch = "harpoon2",
-			dependencies = { "nvim-lua/plenary.nvim" },
-		},
 		"mbbill/undotree",
 		"tpope/vim-fugitive",
 
 		{
 			"neovim/nvim-lspconfig",
-			tag = "v1.7.0",
 		},
-		{ "hrsh7th/nvim-cmp" },
 		{
-			"VonHeikemen/lsp-zero.nvim",
-			branch = "v4.x",
+			"hrsh7th/nvim-cmp",
 			dependencies = {
-				-- LSP Support
-				{ "neovim/nvim-lspconfig" }, -- Required
-				{
-					-- Optional
-					"williamboman/mason.nvim",
-				},
-				{ "williamboman/mason-lspconfig.nvim" }, -- Optional
-
-				-- Autocompletion
-				{ "hrsh7th/nvim-cmp" }, -- Required
 				{ "hrsh7th/cmp-nvim-lsp" }, -- Required
 				{ "L3MON4D3/LuaSnip" }, -- Required
-			},
+				{ "L3MON4D3/LuaSnip" }, -- Required
+				{ "onsails/lspkind.nvim" },
+			}
+		},
+		{
+			"mason-org/mason-lspconfig.nvim",
+			opts = {},
+			dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
 		},
 		{
 			"nvimtools/none-ls.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 		},
 		{
-			"SmiteshP/nvim-navic",
-			dependencies = { "neovim/nvim-lspconfig" },
-		},
-		{
 			"nvimdev/lspsaga.nvim",
-			event = "LspAttach",
 			config = function()
 				require("lspsaga").setup({})
 			end,
@@ -142,7 +126,7 @@ require("lazy").setup({
 		{
 			"j-hui/fidget.nvim",
 			-- config = true,
-			dependencies = { "VonHeikemen/lsp-zero.nvim" },
+			-- dependencies = { "VonHeikemen/lsp-zero.nvim" },
 		},
 		{
 			"folke/trouble.nvim",
@@ -318,7 +302,70 @@ require("lazy").setup({
 	},
 	--]]
 		{
+			"olimorris/codecompanion.nvim",
+			config = function()
+				require("codecompanion").setup({
+					extensions = {
+						mcphub = {
+							callback = "mcphub.extensions.codecompanion",
+							opts = {
+								make_vars = true,
+								make_slash_commands = true,
+								show_result_in_chat = true,
+							},
+						},
+						history = {
+							enabled = true,
+							opts = {
+								-- Keymap to open history from chat buffer (default: gh)
+								keymap = "gh",
+								-- Keymap to save the current chat manually (when auto_save is disabled)
+								save_chat_keymap = "sc",
+								-- Save all chats by default (disable to save only manually using 'sc')
+								auto_save = true,
+								-- Number of days after which chats are automatically deleted (0 to disable)
+								expiration_days = 0,
+								-- Picker interface ("telescope" or "snacks" or "fzf-lua" or "default")
+								picker = "telescope",
+								---Automatically generate titles for new chats
+								auto_generate_title = true,
+								title_generation_opts = {
+									---Adapter for generating titles (defaults to current chat adapter)
+									adapter = nil, -- "copilot"
+									---Model for generating titles (defaults to current chat model)
+									model = nil, -- "gpt-4o"
+								},
+								---On exiting and entering neovim, loads the last chat on opening chat
+								continue_last_chat = false,
+								---When chat is cleared with `gx` delete the chat from history
+								delete_on_clearing_chat = false,
+								---Directory path to save the chats
+								dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+								---Enable detailed logging for history extension
+								enable_logging = false,
+							},
+						},
+					},
+					strategies = {
+						chat = {
+							adapter = "gemini",
+						},
+						inline = {
+							adapter = "gemini",
+						},
+					},
+				})
+			end,
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-treesitter/nvim-treesitter",
+				"ravitemer/mcphub.nvim",
+				"ravitemer/codecompanion-history.nvim",
+			},
+		},
+		{
 			"yetone/avante.nvim",
+			enabled = false,
 			event = "VeryLazy",
 			-- commit = "e295fe82f0714188615a524604bdaccd266ced35",
 			version = false,
@@ -382,8 +429,8 @@ require("lazy").setup({
 				--- The below dependencies are optional,
 				"echasnovski/mini.pick", -- for file_selector provider mini.pick
 				"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-				"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-				"ibhagwan/fzf-lua", -- for file_selector provider fzf
+				"hrsh7th/nvim-cmp",  -- autocompletion for avante commands and mentions
+				"ibhagwan/fzf-lua",  -- for file_selector provider fzf
 				"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 				-- "zbirenbaum/copilot.lua", -- for providers='copilot'
 				{
@@ -419,12 +466,12 @@ require("lazy").setup({
 		},
 		{
 			"ravitemer/mcphub.nvim",
-			enabled = false,
+			enabled = true,
 			dependencies = {
 				"nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
 			},
 			-- comment the following line to ensure hub will be ready at the earliest
-			cmd = "MCPHub", -- lazy load by default
+			cmd = "MCPHub",                                                  -- lazy load by default
 			build = "mise install npm:mcp-hub@latest && mise use npm:mcp-hub@latest", -- Installs required mcp-hub npm module
 			-- uncomment this if you don't want mcp-hub to be available globally or can't use -g
 			-- build = "bundled_build.lua",  -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
@@ -436,6 +483,14 @@ require("lazy").setup({
 					extensions = {
 						avante = {
 							make_slash_commands = true,
+						},
+						codecompanion = {
+							callback = "mcphub.extensions.codecompanion",
+							opts = {
+								make_vars = true,
+								make_slash_commands = true,
+								show_result_in_chat = true,
+							},
 						},
 					},
 				})

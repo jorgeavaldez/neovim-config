@@ -1,6 +1,3 @@
--- vim.filetype.add({ extension = { templ = "templ" } })
-
-local lsp = require("lsp-zero")
 local lspconfig = require("lspconfig")
 
 local function rename_file()
@@ -19,63 +16,39 @@ local function rename_file()
 	vim.lsp.util.rename(source_file, target_file, {})
 end
 
-local function default_on_attach(client, bufnr)
-	local opts = { buffer = bufnr, remap = false }
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local opts = { buffer = args.buf, remap = false }
 
-	-- vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts);
-	vim.keymap.set("n", "<leader>k", function()
-		vim.lsp.buf.hover()
-	end, opts)
-	-- vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.document_symbol() end, opts);
-	vim.keymap.set("n", "<leader>d", function()
-		vim.diagnostic.open_float()
-	end, opts)
-	vim.keymap.set("n", "]d", function()
-		vim.diagnostic.goto_next()
-	end, opts)
-	vim.keymap.set("n", "[d", function()
-		vim.diagnostic.goto_prev()
-	end, opts)
-	vim.keymap.set("n", "<leader>ca", function()
-		vim.lsp.buf.code_action()
-	end, opts)
-	-- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts);
-	vim.keymap.set("n", "<leader>r", function()
-		vim.lsp.buf.rename()
-	end, opts)
-	vim.keymap.set("i", "<C-h>", function()
-		vim.lsp.buf.signature_help()
-	end, opts)
-	vim.keymap.set("n", "<leader>fR", rename_file, opts)
-
-	-- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/quick-recipes.md#setup-with-nvim-navic
-	if client.server_capabilities.documentSymbolProvider then
-		require("nvim-navic").attach(client, bufnr)
-	end
-end
-
---[[
-lsp.on_attach(function(client, bufnr)
-    lsp.default_keymaps({ buffer = bufnr });
-    -- these are only set in an lsp buffer
-    -- we can add remaps in here
-
-    default_on_attach(client, bufnr)
-end)
---]]
---
-lsp.extend_lspconfig({
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	lsp_attach = function(client, bufnr)
-		lsp.default_keymaps({ buffer = bufnr })
-		-- these are only set in an lsp buffer
-		-- we can add remaps in here
-
-		default_on_attach(client, bufnr)
+		vim.keymap.set("n", "<leader>k", function()
+			vim.lsp.buf.hover()
+		end, opts)
+		-- vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.document_symbol() end, opts);
+		vim.keymap.set("n", "<leader>d", function()
+			vim.diagnostic.open_float()
+		end, opts)
+		vim.keymap.set("n", "]d", function()
+			vim.diagnostic.jump({ count = 1 })
+		end, opts)
+		vim.keymap.set("n", "[d", function()
+			vim.diagnostic.jump({
+				count = -1,
+			})
+		end, opts)
+		vim.keymap.set("n", "<leader>ca", function()
+			vim.lsp.buf.code_action()
+		end, opts)
+		-- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts);
+		vim.keymap.set("n", "<leader>r", function()
+			vim.lsp.buf.rename()
+		end, opts)
+		vim.keymap.set("i", "<C-h>", function()
+			vim.lsp.buf.signature_help()
+		end, opts)
+		vim.keymap.set("n", "<leader>fR", rename_file, opts)
 	end,
-	float_border = "rounded",
-	sign_text = true,
 })
+
 require("typescript-tools").setup({})
 
 require("mason").setup({})
@@ -91,43 +64,16 @@ require("mason-lspconfig").setup({
 		"html",
 		"bashls",
 	},
-	lua_ls = function()
-		lspconfig.lua_ls.setup({
-			on_init = function(client)
-				lsp.nvim_lua_settings(client, {
-					Lua = {
-						runtime = {
-							version = "LuaJIT",
-							special = { reload = "require" },
-						},
-						workspace = {
-							library = {
-								vim.fn.expand("$VIMRUNTIME/lua"),
-								vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-								vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
-							},
-						},
-					},
-				})
-			end,
-		})
-	end,
-	handlers = {
-		function(server_name)
-			-- we're using typescript-tools instead
-			if server_name ~= "ts_ls" then
-				require("lspconfig")[server_name].setup({})
-			end
-		end,
+	automatic_enable = {
+		exclude = {
+			"ts_ls",
+		},
 	},
 })
 
 lspconfig.biome.setup({
 	cmd = { "bunx", "biome", "lsp-proxy" },
 })
-
--- (Optional) Configure lua language server for neovim
-lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 
 -- configure templ
 lspconfig.html.setup({
@@ -136,7 +82,8 @@ lspconfig.html.setup({
 
 require("go").setup({
 	lsp_cfg = true,
-	lsp_on_attach = default_on_attach,
+	-- TODO: check this works w/ the global on_attach
+	-- lsp_on_attach = default_on_attach,
 	lsp_keymaps = false,
 })
 
@@ -147,14 +94,31 @@ vim.diagnostic.config({
 -- Autocomplete and Snippets
 
 local cmp = require("cmp")
-local cmp_action = lsp.cmp_action()
+local luasnip = require("luasnip")
+local lspkind = require("lspkind")
 
 local default_mapping = cmp.mapping.preset.insert({
 	["<CR>"] = cmp.mapping.confirm({ select = false }),
 	["<C-Space>"] = cmp.mapping.complete(),
 
-	["<Tab>"] = cmp_action.luasnip_supertab(),
-	["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
+	["<Tab>"] = cmp.mapping(function(fallback)
+		if cmp.visible() then
+			cmp.select_next_item()
+		elseif luasnip.locally_jumpable(1) then
+			luasnip.jump(1)
+		else
+			fallback()
+		end
+	end, { "i", "s" }),
+	["<S-Tab>"] = cmp.mapping(function(fallback)
+		if cmp.visible() then
+			cmp.select_prev_item()
+		elseif luasnip.locally_jumpable(-1) then
+			luasnip.jump(-1)
+		else
+			fallback()
+		end
+	end, { "i", "s" }),
 })
 
 cmp.setup({
@@ -163,19 +127,24 @@ cmp.setup({
 			require("luasnip").lsp_expand(args.body)
 		end,
 	},
-	formatting = lsp.cmp_format({ details = true }),
+	formatting = {
+		format = lspkind.cmp_format(),
+	},
 	mapping = default_mapping,
 	preselect = "item",
 	sources = {
 		{
 			name = "lazydev",
 			-- set to 0 to skip loading luals completions
-			group_index = 0,
+			group_index = 1,
 		},
-		{ name = "minuet" },
+		-- { name = "minuet" },
 		{ name = "supermaven" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
+		per_filetype = {
+			codecompanion = { "codecompanion" },
+		},
 	},
 	performance = {
 		fetching_timeout = 1000,
@@ -208,7 +177,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.yamlfmt,
 
 		null_ls.builtins.formatting.sqlfmt,
-		null_ls.builtins.formatting.stylua,
+		-- null_ls.builtins.formatting.stylua,
 	},
 })
 
