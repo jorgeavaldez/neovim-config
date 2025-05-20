@@ -49,6 +49,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if client == nil then
+			return
+		end
+
+		if client.name == 'ruff' then
+			-- disable hover for ruff in favor of pyright
+			client.server_capabilities.hoverProvider = false
+		end
+	end,
+	desc = 'LSP: Disable ruff hover capability',
+})
+
 require("typescript-tools").setup({})
 
 require("mason").setup({})
@@ -79,6 +95,17 @@ lspconfig.biome.setup({
 lspconfig.html.setup({
 	filetypes = { "html", "templ" },
 })
+
+lspconfig.pyright.setup({
+	settings = {
+		pyright = {
+			-- use ruff's import organizer
+			disableOrganizeImports = true,
+		},
+	}
+})
+
+vim.lsp.enable('ruff')
 
 require("go").setup({
 	lsp_cfg = true,
@@ -161,10 +188,9 @@ null_ls.setup({
 	sources = {
 		null_ls.builtins.formatting.djhtml,
 		null_ls.builtins.formatting.djlint,
-		null_ls.builtins.formatting.black,
-		null_ls.builtins.formatting.isort,
 
-		--[[
+		--[[ ruff takes care of this
+		null_ls.builtins.formatting.isort,
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.formatting.jq,
         null_ls.builtins.formatting.prismaFmt,
