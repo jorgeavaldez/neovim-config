@@ -1,5 +1,7 @@
 local lspconfig = require("lspconfig")
 
+vim.diagnostic.config({ jump = { float = true }})
+
 local function rename_file()
 	-- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
 	local source_file = vim.api.nvim_buf_get_name(0)
@@ -23,28 +25,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "<leader>k", function()
 			vim.lsp.buf.hover()
 		end, opts)
+
 		-- vim.keymap.set("n", "<leader>s", function() vim.lsp.buf.document_symbol() end, opts);
+
 		vim.keymap.set("n", "<leader>d", function()
 			vim.diagnostic.open_float()
 		end, opts)
-		vim.keymap.set("n", "]d", function()
-			vim.diagnostic.jump({ count = 1 })
-		end, opts)
-		vim.keymap.set("n", "[d", function()
-			vim.diagnostic.jump({
-				count = -1,
-			})
-		end, opts)
+
 		vim.keymap.set("n", "<leader>ca", function()
 			vim.lsp.buf.code_action()
 		end, opts)
+
 		-- vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts);
+
 		vim.keymap.set("n", "<leader>r", function()
 			vim.lsp.buf.rename()
 		end, opts)
+
 		vim.keymap.set("i", "<C-h>", function()
 			vim.lsp.buf.signature_help()
 		end, opts)
+
 		vim.keymap.set("n", "<leader>fR", rename_file, opts)
 	end,
 })
