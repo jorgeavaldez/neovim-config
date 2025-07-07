@@ -106,6 +106,8 @@ lspconfig.pyright.setup({
 	}
 })
 
+lspconfig.ruff.setup({})
+
 vim.lsp.enable('ruff')
 
 require("go").setup({
