@@ -206,6 +206,9 @@ null_ls.setup({
 		null_ls.builtins.formatting.yamlfmt,
 
 		null_ls.builtins.formatting.sqlfmt,
+		null_ls.builtins.formatting.shfmt.with({
+			filetypes = { "sh", "bash", "zsh" },
+		}),
 		-- null_ls.builtins.formatting.stylua,
 	},
 })
