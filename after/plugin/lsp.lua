@@ -1,6 +1,6 @@
 local lspconfig = require("lspconfig")
 
-vim.diagnostic.config({ jump = { float = true }})
+vim.diagnostic.config({ jump = { float = true } })
 
 local function rename_file()
 	-- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
@@ -68,7 +68,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 require("typescript-tools").setup({})
 
-require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		-- "ts_ls",
