@@ -15,7 +15,21 @@ local function rename_file()
 		target_file = input
 	end)
 
-	vim.lsp.util.rename(source_file, target_file, {})
+	local params = {
+		oldUri = vim.uri_from_fname(source_file),
+		newUri = vim.uri_from_fname(target_file),
+	}
+	vim.lsp.buf_request(0, "workspace/willRenameFiles", {
+		files = { params }
+	}, function(err, result)
+		if err then
+			vim.notify("Error renaming file: " .. err.message, vim.log.levels.ERROR)
+			return
+		end
+		if result then
+			vim.lsp.util.apply_workspace_edit(result, "utf-16")
+		end
+	end)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -47,6 +61,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end, opts)
 
 		vim.keymap.set("n", "<leader>fR", rename_file, opts)
+
+		vim.keymap.set("n", "gd", function()
+			vim.lsp.buf.definition()
+		end, opts)
 	end,
 })
 
@@ -66,7 +84,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	desc = 'LSP: Disable ruff hover capability',
 })
 
-require("typescript-tools").setup({})
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+
+require("typescript-tools").setup({
+	capabilities = capabilities,
+})
 
 require("mason-lspconfig").setup({
 	ensure_installed = {
@@ -85,15 +108,26 @@ require("mason-lspconfig").setup({
 			"ts_ls",
 		},
 	},
+	handlers = {
+		function(server_name)
+			local capabilities = vim.lsp.protocol.make_client_capabilities()
+			capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+			lspconfig[server_name].setup({
+				capabilities = capabilities,
+			})
+		end,
+	},
 })
 
 lspconfig.biome.setup({
 	cmd = { "bunx", "biome", "lsp-proxy" },
+	capabilities = capabilities,
 })
 
 -- configure templ
 lspconfig.html.setup({
 	filetypes = { "html", "templ" },
+	capabilities = capabilities,
 })
 
 lspconfig.pyright.setup({
@@ -102,15 +136,20 @@ lspconfig.pyright.setup({
 			-- use ruff's import organizer
 			disableOrganizeImports = true,
 		},
-	}
+	},
+	capabilities = capabilities,
 })
 
-lspconfig.ruff.setup({})
+lspconfig.ruff.setup({
+	capabilities = capabilities,
+})
 
 vim.lsp.enable('ruff')
 
 require("go").setup({
-	lsp_cfg = true,
+	lsp_cfg = {
+		capabilities = capabilities,
+	},
 	-- TODO: check this works w/ the global on_attach
 	-- lsp_on_attach = default_on_attach,
 	lsp_keymaps = false,

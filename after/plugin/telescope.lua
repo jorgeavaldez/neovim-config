@@ -20,7 +20,7 @@ vim.keymap.set("n", "<leader>s", builtin.lsp_document_symbols, { desc = "Show sy
 vim.keymap.set("n", "<leader>ps", builtin.lsp_dynamic_workspace_symbols, { desc = "Dynamically show workspace symbols" });
 -- vim.keymap.set("n", "<leader>d", builtin.diagnostics, { desc = "List diagnostics" });
 vim.keymap.set("n", "gr", builtin.lsp_references, { desc = "Go to references" });
-vim.keymap.set("n", "gd", builtin.lsp_definitions, { desc = "Go to definitions" });
+-- vim.keymap.set("n", "gd", builtin.lsp_definitions, { desc = "Go to definitions" });
 vim.keymap.set("n", "gi", builtin.lsp_implementations, { desc = "Go to Implementations" });
 vim.keymap.set("n", "<leader>Tt", function()
     builtin.colorscheme({ enable_preview = true })
