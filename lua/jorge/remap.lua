@@ -56,6 +56,29 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 -- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 
+-- wf workflow manager
+vim.keymap.set("n", "<leader>wfp", function()
+    local filepath = vim.fn.expand('%:p')
+    if filepath == '' then
+        print("No file in current buffer")
+        return
+    end
+    local cmd = 'wf add-prompt "' .. filepath .. '"'
+    local output = vim.fn.system(cmd)
+    print("wf add-prompt result: " .. output:gsub('\n$', ''))
+end, { desc = "Add current file as wf prompt" })
+
+vim.keymap.set("n", "<leader>wfa", function()
+    local filepath = vim.fn.expand('%:p')
+    if filepath == '' then
+        print("No file in current buffer")
+        return
+    end
+    local cmd = 'wf add-artifact "' .. filepath .. '"'
+    local output = vim.fn.system(cmd)
+    print("wf add-artifact result: " .. output:gsub('\n$', ''))
+end, { desc = "Add current file as wf artifact" })
+
 -- obsidian
 vim.keymap.set(
     "n",

@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(nvim:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(wf tool-content:*)",
+      "Bash(wf tool-overview:*)"
     ],
     "deny": []
   }
