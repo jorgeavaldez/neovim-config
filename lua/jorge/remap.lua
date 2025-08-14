@@ -63,7 +63,7 @@ vim.keymap.set("n", "<leader>wfp", function()
         print("No file in current buffer")
         return
     end
-    local cmd = 'wf add-prompt "' .. filepath .. '"'
+    local cmd = 'wf add-prompt "' .. filepath .. '" --summarize'
     local output = vim.fn.system(cmd)
     print("wf add-prompt result: " .. output:gsub('\n$', ''))
 end, { desc = "Add current file as wf prompt" })
@@ -74,7 +74,7 @@ vim.keymap.set("n", "<leader>wfa", function()
         print("No file in current buffer")
         return
     end
-    local cmd = 'wf add-artifact "' .. filepath .. '"'
+    local cmd = 'wf add-artifact "' .. filepath .. '" --summarize'
     local output = vim.fn.system(cmd)
     print("wf add-artifact result: " .. output:gsub('\n$', ''))
 end, { desc = "Add current file as wf artifact" })
