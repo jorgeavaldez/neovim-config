@@ -63,9 +63,16 @@ vim.keymap.set("n", "<leader>wfp", function()
         print("No file in current buffer")
         return
     end
-    local cmd = 'wf add-prompt "' .. filepath .. '" --summarize'
-    local output = vim.fn.system(cmd)
-    print("wf add-prompt result: " .. output:gsub('\n$', ''))
+    print("Adding file to wf prompt (async)...")
+    vim.fn.jobstart({'wf', 'add-prompt', filepath, '--summarize'}, {
+        on_exit = function(_, code)
+            if code == 0 then
+                print("wf add-prompt completed successfully")
+            else
+                print("wf add-prompt failed with code: " .. code)
+            end
+        end
+    })
 end, { desc = "Add current file as wf prompt" })
 
 vim.keymap.set("n", "<leader>wfa", function()
@@ -74,9 +81,16 @@ vim.keymap.set("n", "<leader>wfa", function()
         print("No file in current buffer")
         return
     end
-    local cmd = 'wf add-artifact "' .. filepath .. '" --summarize'
-    local output = vim.fn.system(cmd)
-    print("wf add-artifact result: " .. output:gsub('\n$', ''))
+    print("Adding file to wf artifact (async)...")
+    vim.fn.jobstart({'wf', 'add-artifact', filepath, '--summarize'}, {
+        on_exit = function(_, code)
+            if code == 0 then
+                print("wf add-artifact completed successfully")
+            else
+                print("wf add-artifact failed with code: " .. code)
+            end
+        end
+    })
 end, { desc = "Add current file as wf artifact" })
 
 -- obsidian
