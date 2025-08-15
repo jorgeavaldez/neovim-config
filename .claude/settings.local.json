@@ -4,7 +4,8 @@
       "Bash(nvim:*)",
       "WebFetch(domain:github.com)",
       "Bash(wf tool-content:*)",
-      "Bash(wf tool-overview:*)"
+      "Bash(wf tool-overview:*)",
+      "WebSearch"
     ],
     "deny": []
   }

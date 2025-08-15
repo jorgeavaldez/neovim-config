@@ -57,41 +57,90 @@ vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 -- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 
 -- wf workflow manager
-vim.keymap.set("n", "<leader>wfp", function()
+-- Track added files for listing
+_G.wf_added_files = _G.wf_added_files or {}
+
+-- Shared function for wf CLI operations
+local function run_wf_command(args, command_name, track_type)
     local filepath = vim.fn.expand('%:p')
     if filepath == '' then
-        print("No file in current buffer")
+        local msg = "No file in current buffer"
+        print(msg)
+        require("fidget").notify(msg, vim.log.levels.WARN)
         return
     end
-    print("Adding file to wf prompt (async)...")
-    vim.fn.jobstart({'wf', 'add-prompt', filepath, '--summarize'}, {
+
+    local start_msg = command_name .. ": " .. vim.fn.fnamemodify(filepath, ':t')
+    print(start_msg)
+    require("fidget").notify(command_name .. "...")
+
+    local output_lines = {}
+    local cmd = vim.list_extend({ 'wf' }, args)
+
+    vim.fn.jobstart(cmd, {
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stdout = function(_, data)
+            if data then
+                for _, line in ipairs(data) do
+                    if line ~= "" then
+                        table.insert(output_lines, line)
+                    end
+                end
+            end
+        end,
         on_exit = function(_, code)
             if code == 0 then
-                print("wf add-prompt completed successfully")
+                local output = table.concat(output_lines, "\n")
+                if output ~= "" then
+                    print("wf " .. args[1] .. " result: " .. output)
+                else
+                    print("wf " .. args[1] .. " completed successfully")
+                end
+                require("fidget").notify("wf " .. args[1] .. " completed ✓", vim.log.levels.INFO)
+                if track_type then
+                    -- Extract ID from output (looks for #number pattern)
+                    local id = output:match("#(%d+)")
+                    table.insert(_G.wf_added_files, {
+                        type = track_type,
+                        file = filepath,
+                        time = os.date("%H:%M:%S"),
+                        id = id
+                    })
+                end
             else
-                print("wf add-prompt failed with code: " .. code)
+                local error_msg = "wf " ..
+                args[1] .. " failed (code: " .. code .. "): " .. vim.fn.fnamemodify(filepath, ':t')
+                print(error_msg)
+                require("fidget").notify("wf " .. args[1] .. " failed (code: " .. code .. ")", vim.log.levels.ERROR)
             end
         end
     })
+end
+
+vim.keymap.set("n", "<leader>wfp", function()
+    local filepath = vim.fn.expand('%:p')
+    run_wf_command({ 'add-prompt', filepath, '--summarize' }, "Adding file to wf prompt", "prompt")
 end, { desc = "Add current file as wf prompt" })
 
 vim.keymap.set("n", "<leader>wfa", function()
     local filepath = vim.fn.expand('%:p')
-    if filepath == '' then
-        print("No file in current buffer")
+    run_wf_command({ 'add-artifact', filepath, '--summarize' }, "Adding file to wf artifact", "artifact")
+end, { desc = "Add current file as wf artifact" })
+
+-- Command to list recently added wf files
+vim.keymap.set("n", "<leader>wfl", function()
+    if #_G.wf_added_files == 0 then
+        print("No files added to wf yet")
         return
     end
-    print("Adding file to wf artifact (async)...")
-    vim.fn.jobstart({'wf', 'add-artifact', filepath, '--summarize'}, {
-        on_exit = function(_, code)
-            if code == 0 then
-                print("wf add-artifact completed successfully")
-            else
-                print("wf add-artifact failed with code: " .. code)
-            end
-        end
-    })
-end, { desc = "Add current file as wf artifact" })
+    print("Recently added wf files:")
+    for i = #_G.wf_added_files, math.max(1, #_G.wf_added_files - 9), -1 do
+        local item = _G.wf_added_files[i]
+        local id_str = item.id and ("#" .. item.id) or "no-id"
+        print(string.format("[%s] %s %s: %s", item.time, item.type, id_str, vim.fn.fnamemodify(item.file, ':~:.')))
+    end
+end, { desc = "List recently added wf files" })
 
 -- obsidian
 vim.keymap.set(
