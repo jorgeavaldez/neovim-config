@@ -65,13 +65,13 @@ local function run_wf_command(args, command_name, track_type)
     local filepath = vim.fn.expand('%:p')
     if filepath == '' then
         local msg = "No file in current buffer"
-        print(msg)
+        vim.notify(msg, vim.log.levels.WARN)
         require("fidget").notify(msg, vim.log.levels.WARN)
         return
     end
 
     local start_msg = command_name .. ": " .. vim.fn.fnamemodify(filepath, ':t')
-    print(start_msg)
+    vim.notify(start_msg)
     require("fidget").notify(command_name .. "...")
 
     local output_lines = {}
@@ -93,9 +93,9 @@ local function run_wf_command(args, command_name, track_type)
             if code == 0 then
                 local output = table.concat(output_lines, "\n")
                 if output ~= "" then
-                    print("wf " .. args[1] .. " result: " .. output)
+                    vim.notify("wf " .. args[1] .. " result: " .. output)
                 else
-                    print("wf " .. args[1] .. " completed successfully")
+                    vim.notify("wf " .. args[1] .. " completed successfully")
                 end
                 require("fidget").notify("wf " .. args[1] .. " completed ✓", vim.log.levels.INFO)
                 if track_type then
@@ -111,7 +111,7 @@ local function run_wf_command(args, command_name, track_type)
             else
                 local error_msg = "wf " ..
                 args[1] .. " failed (code: " .. code .. "): " .. vim.fn.fnamemodify(filepath, ':t')
-                print(error_msg)
+                vim.notify(error_msg, vim.log.levels.ERROR)
                 require("fidget").notify("wf " .. args[1] .. " failed (code: " .. code .. ")", vim.log.levels.ERROR)
             end
         end
@@ -131,16 +131,22 @@ end, { desc = "Add current file as wf artifact" })
 -- Command to list recently added wf files
 vim.keymap.set("n", "<leader>wfl", function()
     if #_G.wf_added_files == 0 then
-        print("No files added to wf yet")
+        vim.notify("No files added to wf yet")
         return
     end
-    print("Recently added wf files:")
-    for i = #_G.wf_added_files, math.max(1, #_G.wf_added_files - 9), -1 do
+    local qf_list = {}
+    for i = #_G.wf_added_files, 1, -1 do
         local item = _G.wf_added_files[i]
         local id_str = item.id and ("#" .. item.id) or "no-id"
-        print(string.format("[%s] %s %s: %s", item.time, item.type, id_str, vim.fn.fnamemodify(item.file, ':~:.')))
+        table.insert(qf_list, {
+            filename = item.file,
+            text = string.format("[%s] %s %s", item.time, item.type, id_str)
+        })
     end
-end, { desc = "List recently added wf files" })
+    vim.fn.setqflist(qf_list, 'r')
+    vim.cmd('copen')
+    vim.notify("Loaded " .. #qf_list .. " wf files to quickfix list")
+end, { desc = "List recently added wf files in quickfix" })
 
 -- obsidian
 vim.keymap.set(
