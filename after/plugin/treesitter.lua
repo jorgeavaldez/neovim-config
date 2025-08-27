@@ -1,6 +1,6 @@
 require("nvim-treesitter.configs").setup({
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
-    ensure_installed = { "javascript", "typescript", "lua", "vim", "vimdoc", "rust", "markdown", "markdown_inline" },
+    ensure_installed = { "javascript", "typescript", "lua", "vim", "vimdoc", "rust", "markdown", "markdown_inline", "terraform", "hcl" },
     -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
     -- Automatically install missing parsers when entering buffer

@@ -102,6 +102,7 @@ require("mason-lspconfig").setup({
 		"gopls",
 		"html",
 		"bashls",
+		"terraformls",
 	},
 	automatic_enable = {
 		exclude = {
