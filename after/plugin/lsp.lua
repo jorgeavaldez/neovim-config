@@ -91,9 +91,9 @@ require("typescript-tools").setup({
 	capabilities = capabilities,
 })
 
+require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		-- "ts_ls",
 		"tailwindcss",
 		"eslint",
 		"pyright",
@@ -107,14 +107,15 @@ require("mason-lspconfig").setup({
 	automatic_enable = {
 		exclude = {
 			"ts_ls",
+			"pyright",
 		},
 	},
 	handlers = {
 		function(server_name)
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+			local caps = vim.lsp.protocol.make_client_capabilities()
+			caps.general.positionEncodings = { "utf-16", "utf-8" }
 			lspconfig[server_name].setup({
-				capabilities = capabilities,
+				capabilities = caps,
 			})
 		end,
 	},
