@@ -146,7 +146,6 @@ lspconfig.ruff.setup({
 	capabilities = capabilities,
 })
 
-vim.lsp.enable('ruff')
 
 require("go").setup({
 	lsp_cfg = {
