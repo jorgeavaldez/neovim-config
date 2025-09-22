@@ -399,6 +399,11 @@ require("lazy").setup({
 			"olimorris/codecompanion.nvim",
 			config = function()
 				require("codecompanion").setup({
+					-- Ensure Anthropic is the default provider for all strategies
+					strategies = {
+						chat = { adapter = "anthropic" },
+						inline = { adapter = "anthropic" },
+					},
 					extensions = {
 						mcphub = {
 							callback = "mcphub.extensions.codecompanion",
@@ -438,14 +443,6 @@ require("lazy").setup({
 								---Enable detailed logging for history extension
 								enable_logging = false,
 							},
-						},
-					},
-					strategies = {
-						chat = {
-							adapter = "gemini",
-						},
-						inline = {
-							adapter = "gemini",
 						},
 					},
 				})
