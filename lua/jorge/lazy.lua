@@ -130,7 +130,13 @@ require("lazy").setup({
 		},
 		{
 			"folke/trouble.nvim",
-			opts = {},
+			opts = {
+				modes = {
+					lsp_references = {
+						auto_refresh = false,
+					},
+				},
+			},
 			cmd = "Trouble",
 		},
 		{
