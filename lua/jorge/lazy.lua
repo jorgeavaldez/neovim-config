@@ -154,105 +154,105 @@ require("lazy").setup({
 			config = true,
 		},
 		{
-		"sindrets/diffview.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
-		opts = {
-			diff_binaries = false,
-			enhanced_diff_hl = true,
-			git_cmd = { "git" },
-			use_icons = true,
-			show_help_hints = true,
-			watch_index = true,
-			icons = {
-				folder_closed = "",
-				folder_open = "",
-			},
-			signs = {
-				fold_closed = "",
-				fold_open = "",
-				done = "✓",
-			},
-			view = {
-				default = {
-					layout = "diff2_horizontal",
-					winbar_info = false,
+			"sindrets/diffview.nvim",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+			opts = {
+				diff_binaries = false,
+				enhanced_diff_hl = true,
+				git_cmd = { "git" },
+				use_icons = true,
+				show_help_hints = true,
+				watch_index = true,
+				icons = {
+					folder_closed = "",
+					folder_open = "",
 				},
-				merge_tool = {
-					layout = "diff3_horizontal",
-					disable_diagnostics = true,
-					winbar_info = true,
+				signs = {
+					fold_closed = "",
+					fold_open = "",
+					done = "✓",
 				},
-				file_history = {
-					layout = "diff2_horizontal",
-					winbar_info = false,
+				view = {
+					default = {
+						layout = "diff2_horizontal",
+						winbar_info = false,
+					},
+					merge_tool = {
+						layout = "diff3_horizontal",
+						disable_diagnostics = true,
+						winbar_info = true,
+					},
+					file_history = {
+						layout = "diff2_horizontal",
+						winbar_info = false,
+					},
 				},
 			},
 		},
-	},
-	{
-		"lewis6991/gitsigns.nvim",
-		event = { "BufReadPre", "BufNewFile" },
-		opts = {
-			signs = {
-				add = { text = "▎" },
-				change = { text = "▎" },
-				delete = { text = "" },
-				topdelete = { text = "" },
-				changedelete = { text = "▎" },
-				untracked = { text = "▎" },
+		{
+			"lewis6991/gitsigns.nvim",
+			event = { "BufReadPre", "BufNewFile" },
+			opts = {
+				signs = {
+					add = { text = "▎" },
+					change = { text = "▎" },
+					delete = { text = "" },
+					topdelete = { text = "" },
+					changedelete = { text = "▎" },
+					untracked = { text = "▎" },
+				},
+				on_attach = function(bufnr)
+					local gitsigns = require("gitsigns")
+					local function map(mode, l, r, opts)
+						opts = opts or {}
+						opts.buffer = bufnr
+						vim.keymap.set(mode, l, r, opts)
+					end
+
+					-- Navigation
+					map("n", "]c", function()
+						if vim.wo.diff then
+							vim.cmd.normal({ "]c", bang = true })
+						else
+							gitsigns.nav_hunk("next")
+						end
+					end, { desc = "Next git hunk" })
+
+					map("n", "[c", function()
+						if vim.wo.diff then
+							vim.cmd.normal({ "[c", bang = true })
+						else
+							gitsigns.nav_hunk("prev")
+						end
+					end, { desc = "Previous git hunk" })
+
+					-- Actions
+					map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "Stage hunk" })
+					map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Reset hunk" })
+					map("v", "<leader>hs", function()
+						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end, { desc = "Stage hunk" })
+					map("v", "<leader>hr", function()
+						gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end, { desc = "Reset hunk" })
+					map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Stage buffer" })
+					map("n", "<leader>hu", gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
+					map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Reset buffer" })
+					map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview hunk" })
+					map("n", "<leader>hb", function()
+						gitsigns.blame_line({ full = true })
+					end, { desc = "Blame line" })
+					map("n", "<leader>hd", gitsigns.diffthis, { desc = "Diff this" })
+					map("n", "<leader>hD", function()
+						gitsigns.diffthis("~")
+					end, { desc = "Diff this ~" })
+
+					-- Text object
+					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })
+				end,
 			},
-			on_attach = function(bufnr)
-				local gitsigns = require("gitsigns")
-				local function map(mode, l, r, opts)
-					opts = opts or {}
-					opts.buffer = bufnr
-					vim.keymap.set(mode, l, r, opts)
-				end
-
-				-- Navigation
-				map("n", "]c", function()
-					if vim.wo.diff then
-						vim.cmd.normal({ "]c", bang = true })
-					else
-						gitsigns.nav_hunk("next")
-					end
-				end, { desc = "Next git hunk" })
-
-				map("n", "[c", function()
-					if vim.wo.diff then
-						vim.cmd.normal({ "[c", bang = true })
-					else
-						gitsigns.nav_hunk("prev")
-					end
-				end, { desc = "Previous git hunk" })
-
-				-- Actions
-				map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "Stage hunk" })
-				map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Reset hunk" })
-				map("v", "<leader>hs", function()
-					gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-				end, { desc = "Stage hunk" })
-				map("v", "<leader>hr", function()
-					gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-				end, { desc = "Reset hunk" })
-				map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Stage buffer" })
-				map("n", "<leader>hu", gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
-				map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Reset buffer" })
-				map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview hunk" })
-				map("n", "<leader>hb", function()
-					gitsigns.blame_line({ full = true })
-				end, { desc = "Blame line" })
-				map("n", "<leader>hd", gitsigns.diffthis, { desc = "Diff this" })
-				map("n", "<leader>hD", function()
-					gitsigns.diffthis("~")
-				end, { desc = "Diff this ~" })
-
-				-- Text object
-				map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })
-			end,
 		},
-	},
 		{
 			"gelguy/wilder.nvim",
 			config = function()
@@ -412,6 +412,7 @@ require("lazy").setup({
 					},
 					extensions = {
 						mcphub = {
+							enabled = false,
 							callback = "mcphub.extensions.codecompanion",
 							opts = {
 								make_vars = true,
@@ -562,7 +563,7 @@ require("lazy").setup({
 		},
 		{
 			"ravitemer/mcphub.nvim",
-			enabled = true,
+			enabled = false,
 			dependencies = {
 				"nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
 			},
@@ -590,6 +591,57 @@ require("lazy").setup({
 					},
 				})
 			end,
+		},
+		{
+			"folke/sidekick.nvim",
+			opts = {
+				-- I don't use copilot
+				nes = {
+					enabled = false,
+				},
+			},
+			keys = {
+				{
+					"<leader>ac",
+					function()
+						require("sidekick.cli").toggle({ name = "claude", focus = true })
+					end,
+					desc = "Sidekick toggle claude",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>ai",
+					function()
+						require("sidekick.cli").toggle({ name = "opencode", focus = true })
+					end,
+					desc = "Sidekick toggle opencode",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>ao",
+					function()
+						require("sidekick.cli").toggle({ name = "opencode", focus = true })
+					end,
+					desc = "Sidekick toggle opencode",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>ag",
+					function()
+						require("sidekick.cli").toggle({ name = "codex", focus = true })
+					end,
+					desc = "Sidekick toggle codex",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>ap",
+					function()
+						require("sidekick.cli").select_prompt()
+					end,
+					desc = "Sidekick ask prompt",
+					mode = { "n", "v" },
+				},
+			},
 		},
 	},
 })
