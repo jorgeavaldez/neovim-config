@@ -1,0 +1,16 @@
+# Selene configuration for Neovim Lua linting
+# https://github.com/Kampfkarren/selene
+
+std = "vim"
+
+[rules]
+# Enforce best practices
+unused_variable = "warn"
+undefined_variable = "warn"
+shadowing = "warn"
+incorrect_standard_library_use = "deny"
+unbalanced_assignments = "warn"
+
+# Style preferences
+global_usage = "allow"  # Allow vim global
+multiple_statements = "allow"
