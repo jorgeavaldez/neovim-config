@@ -218,10 +218,53 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - Supports configurable prefix for yanked paths (default: `@`)
 - Commands: `:BCStart`, `:BCStop`, `:BCToggle`, `:BCList`, `:BCYank`, `:BCYankClear`, `:BCClear`, `:BCStatus`, `:BCSetPrefix`, `:BCClearPrefix`, `:BCGetPrefix`
 
+## Linting, Formatting & Typechecking
+
+### REQUIRED: Run checks after every change
+
+After making any edits to Lua files, **always** run:
+
+```sh
+make check
+```
+
+This runs all three checks: `lint`, `typecheck`, and `format-check`. Fix any errors before considering work complete.
+
+### Available Makefile targets
+
+| Target | Description |
+|--------|-------------|
+| `make check` | Run all checks (lint + typecheck + format-check) |
+| `make lint` | Lint with selene |
+| `make typecheck` | Typecheck with lua-language-server |
+| `make format` | Auto-format with stylua (writes files) |
+| `make format-check` | Check formatting without writing |
+
+### Auto-format before finishing
+
+If `make format-check` fails, run `make format` to fix it, then re-run `make check`.
+
+### Tool installation
+
+Tools are managed via mise. Run `mise install` in the project root to install:
+- **stylua** — Lua formatter (tabs, 120 col width)
+- **selene** — Lua linter (strict rules)
+- **lua-language-server** — Lua typechecker
+
+### Code style
+
+- **Indentation**: Tabs (displayed as 4 spaces). Enforced by `.editorconfig` and `stylua.toml`.
+- **Quotes**: Double quotes preferred (enforced by stylua)
+- **Column width**: 120 characters
+- **Globals**: `vim`, `PREF`, `Obsidian` are defined in `vim.yml` (selene) and `.luarc.json` (lua-language-server)
+- **No `_G` usage**: Use module tables (`M.field`) instead of `_G.field`
+- **No unused variables**: Prefix with `_` if intentionally unused
+
 ## Important Notes
 
 ### Preferences (from options.lua)
-- **Tabwidth**: 4 spaces
+- **Indentation**: Tabs (via .editorconfig); other projects default to spaces (expandtab)
+- **Tab display width**: 4
 - **Textwidth**: 0 (no hard wrap)
 - **Theme**: catppuccin with auto-dark-mode (latte/mocha)
 - **Format on save**: Disabled by default

@@ -34,13 +34,55 @@ return {
 				end,
 				desc = "Find files (jj/git)",
 			},
-			{ "<leader>/", function() require("telescope.builtin").live_grep() end, desc = "Live grep in project" },
-			{ "<leader>*", function() require("telescope.builtin").grep_string() end, desc = "Grep word under cursor" },
-			{ "<leader>bb", function() require("telescope.builtin").buffers() end, desc = "List buffers" },
-			{ "<leader>s", function() require("telescope.builtin").lsp_document_symbols() end, desc = "Show symbols in document" },
-			{ "<leader>ps", function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end, desc = "Workspace symbols" },
-			{ "gr", function() require("telescope.builtin").lsp_references() end, desc = "Go to references" },
-			{ "gi", function() require("telescope.builtin").lsp_implementations() end, desc = "Go to implementations" },
+			{
+				"<leader>/",
+				function()
+					require("telescope.builtin").live_grep()
+				end,
+				desc = "Live grep in project",
+			},
+			{
+				"<leader>*",
+				function()
+					require("telescope.builtin").grep_string()
+				end,
+				desc = "Grep word under cursor",
+			},
+			{
+				"<leader>bb",
+				function()
+					require("telescope.builtin").buffers()
+				end,
+				desc = "List buffers",
+			},
+			{
+				"<leader>s",
+				function()
+					require("telescope.builtin").lsp_document_symbols()
+				end,
+				desc = "Show symbols in document",
+			},
+			{
+				"<leader>ps",
+				function()
+					require("telescope.builtin").lsp_dynamic_workspace_symbols()
+				end,
+				desc = "Workspace symbols",
+			},
+			{
+				"gr",
+				function()
+					require("telescope.builtin").lsp_references()
+				end,
+				desc = "Go to references",
+			},
+			{
+				"gi",
+				function()
+					require("telescope.builtin").lsp_implementations()
+				end,
+				desc = "Go to implementations",
+			},
 			{
 				"<leader>Tt",
 				function()
@@ -48,8 +90,20 @@ return {
 				end,
 				desc = "Theme picker",
 			},
-			{ "<leader><leader>", function() require("telescope.builtin").commands() end, desc = "Command palette" },
-			{ "<leader>?", function() require("telescope.builtin").keymaps() end, desc = "Search keymaps" },
+			{
+				"<leader><leader>",
+				function()
+					require("telescope.builtin").commands()
+				end,
+				desc = "Command palette",
+			},
+			{
+				"<leader>?",
+				function()
+					require("telescope.builtin").keymaps()
+				end,
+				desc = "Search keymaps",
+			},
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -114,6 +168,7 @@ return {
 			"windwp/nvim-ts-autotag",
 		},
 		config = function()
+			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
 					"javascript",

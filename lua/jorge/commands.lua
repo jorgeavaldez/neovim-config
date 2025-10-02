@@ -52,7 +52,7 @@ M.get_project_root = function()
 	return vim.fn.getcwd()
 end
 
-vim.api.nvim_create_user_command("GetProjectRoot", function (_)
+vim.api.nvim_create_user_command("GetProjectRoot", function(_)
 	print(M.get_project_root())
 end, {})
 

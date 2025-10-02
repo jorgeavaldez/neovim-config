@@ -172,9 +172,7 @@ end
 
 M.set_prefix = function(prefix)
 	state.prefix = prefix or ""
-	local msg = state.prefix ~= ""
-		and string.format("Prefix set to: '%s'", state.prefix)
-		or "Prefix cleared"
+	local msg = state.prefix ~= "" and string.format("Prefix set to: '%s'", state.prefix) or "Prefix cleared"
 	vim.notify(msg, vim.log.levels.INFO)
 end
 
@@ -184,14 +182,12 @@ M.clear_prefix = function()
 end
 
 M.get_prefix = function()
-	local msg = state.prefix ~= ""
-		and string.format("Current prefix: '%s'", state.prefix)
-		or "No prefix set"
+	local msg = state.prefix ~= "" and string.format("Current prefix: '%s'", state.prefix) or "No prefix set"
 	vim.notify(msg, vim.log.levels.INFO)
 end
 
 M.show_tracked_files = function()
-	local has_telescope, telescope = pcall(require, "telescope")
+	local has_telescope, _ = pcall(require, "telescope")
 
 	if not has_telescope then
 		vim.notify("Telescope not available", vim.log.levels.ERROR)
@@ -241,7 +237,6 @@ M.show_tracked_files = function()
 				end
 
 				local function delete_selected()
-					local picker = action_state.get_current_picker(prompt_bufnr)
 					local selection = action_state.get_selected_entry()
 
 					if selection then

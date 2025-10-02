@@ -1,0 +1,12 @@
+---
+base: lua51
+
+globals:
+  vim:
+    any: true
+  jit:
+    any: true
+  PREF:
+    any: true
+  Obsidian:
+    any: true

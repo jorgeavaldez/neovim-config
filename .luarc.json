@@ -1,0 +1,20 @@
+{
+	"runtime": {
+		"version": "LuaJIT"
+	},
+	"diagnostics": {
+		"globals": ["vim", "PREF", "Obsidian"],
+		"disable": ["different-requires"]
+	},
+	"workspace": {
+		"library": [
+			"${3rd}/luv/library",
+			"~/.local/share/nvim/lazy"
+		],
+		"checkThirdParty": false,
+		"ignoreDir": [".jj", ".git"]
+	},
+	"type": {
+		"castNumberToInteger": true
+	}
+}

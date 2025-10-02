@@ -26,7 +26,7 @@ function M.setup()
 			newUri = vim.uri_from_fname(target_file),
 		}
 		vim.lsp.buf_request(0, "workspace/willRenameFiles", {
-			files = { params }
+			files = { params },
 		}, function(err, result)
 			if err then
 				vim.notify("Error renaming file: " .. err.message, vim.log.levels.ERROR)
@@ -71,25 +71,25 @@ function M.setup()
 	})
 
 	vim.api.nvim_create_autocmd("LspAttach", {
-		group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+		group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
 		callback = function(args)
 			local client = vim.lsp.get_client_by_id(args.data.client_id)
 			if client == nil then
 				return
 			end
 
-			if client.name == 'ruff' then
+			if client.name == "ruff" then
 				-- disable hover for ruff in favor of pyright
 				client.server_capabilities.hoverProvider = false
 			end
 		end,
-		desc = 'LSP: Disable ruff hover capability',
+		desc = "LSP: Disable ruff hover capability",
 	})
 
 	-- Global LSP capabilities for all servers
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities.general.positionEncodings = { "utf-16", "utf-8" }
-	vim.lsp.config('*', {
+	vim.lsp.config("*", {
 		capabilities = capabilities,
 	})
 
@@ -112,19 +112,19 @@ function M.setup()
 	})
 
 	-- Biome formatter/linter
-	vim.lsp.config('biome', {
+	vim.lsp.config("biome", {
 		cmd = { "bunx", "biome", "lsp-proxy" },
 	})
-	vim.lsp.enable('biome')
+	vim.lsp.enable("biome")
 
 	-- HTML with templ support
-	vim.lsp.config('html', {
+	vim.lsp.config("html", {
 		filetypes = { "html", "templ" },
 	})
-	vim.lsp.enable('html')
+	vim.lsp.enable("html")
 
 	-- Python LSP (pyright)
-	vim.lsp.config('pyright', {
+	vim.lsp.config("pyright", {
 		settings = {
 			pyright = {
 				-- use ruff's import organizer
@@ -132,25 +132,25 @@ function M.setup()
 			},
 		},
 	})
-	vim.lsp.enable('pyright')
+	vim.lsp.enable("pyright")
 
 	-- don't show parse errors in a separate window
 	vim.g.zig_fmt_parse_errors = 0
 	-- disable format-on-save from `ziglang/zig.vim`
 	vim.g.zig_fmt_autosave = 0
 
-	vim.lsp.config('zls', {
+	vim.lsp.config("zls", {
 		settings = {
 			zls = {
-				semantic_tokens = "partial"
-			}
-		}
+				semantic_tokens = "partial",
+			},
+		},
 	})
-	vim.lsp.enable('zls')
+	vim.lsp.enable("zls")
 
 	-- Python linter/formatter (ruff)
-	vim.lsp.config('ruff', {})
-	vim.lsp.enable('ruff')
+	vim.lsp.config("ruff", {})
+	vim.lsp.enable("ruff")
 
 	vim.diagnostic.config({
 		virtual_text = true,
@@ -160,6 +160,7 @@ function M.setup()
 	local cmp = require("cmp")
 	local luasnip = require("luasnip")
 	local lspkind = require("lspkind")
+	---@diagnostic disable-next-line: redundant-parameter
 	lspkind.init({
 		mode = "symbol",
 		symbol_map = {
@@ -227,11 +228,11 @@ function M.setup()
 		},
 	})
 
-	cmp.setup.filetype('jjdescription', {
+	cmp.setup.filetype("jjdescription", {
 		sources = {},
 	})
 
-	cmp.setup.filetype('oil', {
+	cmp.setup.filetype("oil", {
 		sources = {
 			{
 				name = "lazydev",
@@ -246,6 +247,7 @@ function M.setup()
 	null_ls.setup({
 		debug = true,
 		sources = {
+			null_ls.builtins.formatting.stylua,
 			null_ls.builtins.formatting.djhtml,
 			null_ls.builtins.formatting.djlint,
 			null_ls.builtins.formatting.biome,

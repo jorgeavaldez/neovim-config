@@ -1,0 +1,16 @@
+std = "vim"
+
+[rules]
+unused_variable = "deny"
+undefined_variable = "deny"
+shadowing = "deny"
+incorrect_standard_library_use = "deny"
+unbalanced_assignments = "deny"
+global_usage = "deny"
+multiple_statements = "deny"
+parenthese_conditions = "deny"
+type_check_inside_call = "deny"
+# lazy.nvim specs are mixed tables by design: { "plugin-name", key = value }
+mixed_table = "allow"
+roblox_incorrect_color3_new_bounds = "allow"
+roblox_incorrect_roact_usage = "allow"
