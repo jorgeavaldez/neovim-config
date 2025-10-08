@@ -1,6 +1,6 @@
-# CLAUDE.md
+# CLAUDE.md / AGENT.md / AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) and other AI Agents when working with code in this repository.
 
 ## Architecture Overview
 
@@ -13,12 +13,13 @@ This is a personal Neovim configuration built with Lua, focused on simplicity an
 
 ### Key Configuration Files
 
-- `lua/jorge/init.lua` - Main module loader (options, remaps, commands, lazy, git)
+- `lua/jorge/init.lua` - Main module loader (options, remaps, commands, lazy, git, breadcrumbs)
 - `lua/jorge/lazy.lua` - Plugin specifications and lazy.nvim setup
 - `lua/jorge/options.lua` - Neovim options and preferences
 - `lua/jorge/remap.lua` - Key mappings and leader key setup
 - `lua/jorge/commands.lua` - Custom commands and utility functions
 - `lua/jorge/git.lua` - Enhanced git workflow integration
+- `lua/jorge/breadcrumbs.lua` - Breadcrumb trail for visited files
 - `after/plugin/` - Individual plugin configurations loaded after plugins
 
 ## Plugin Management
@@ -44,6 +45,23 @@ Uses **lazy.nvim** as the plugin manager. All plugins are defined in `lua/jorge/
 - `<C-p>` - Git files
 - `<leader>/` - Live grep across project
 - `<leader>pv` - Open file explorer (Oil)
+
+### Breadcrumbs
+The config includes a breadcrumb trail that maintains a list of visited files in order:
+
+- `<leader>bcs` - Start breadcrumb tracking
+- `<leader>bce` - Stop breadcrumb tracking
+- `<leader>bct` - Toggle breadcrumb tracking
+- `<leader>bcl` - List breadcrumbs (Telescope picker, newest first)
+- `<leader>bcy` - Yank all breadcrumbs to clipboard
+- `<leader>bcY` - Yank all and clear breadcrumbs
+- `<leader>bcD` - Clear all breadcrumbs
+
+**Telescope picker actions:**
+- `<CR>` - Yank selected files (or all if none selected)
+- `<Esc>` - Yank all files
+- `<Tab>` - Multi-select files
+- `<C-d>` - Delete file from breadcrumb list
 
 ### Git Workflow (Enhanced)
 The config includes a sophisticated git workflow integration combining fugitive, diffview, and gitsigns:
@@ -105,6 +123,16 @@ The config includes a sophisticated git workflow integration combining fugitive,
 - ripgrep as default grep program
 - Hidden files shown in telescope but respects gitignore
 - Use `.ignore` file to override gitignore for specific files
+
+### Breadcrumbs
+- `lua/jorge/breadcrumbs.lua` - Tracks visited files within project
+- Maintains ordered list of relative file paths (newest last)
+- Automatically removes duplicates by moving revisited files to end
+- Only tracks normal editable files (excludes special buffers, terminals, etc.)
+- Tracking must be explicitly started with `:BCStart` or `<leader>bcs`
+- Provides Telescope UI for viewing, selecting, and yanking file paths
+- Supports configurable prefix for yanked paths (default: `@`)
+- Commands: `:BCStart`, `:BCStop`, `:BCToggle`, `:BCList`, `:BCYank`, `:BCYankClear`, `:BCClear`, `:BCStatus`, `:BCSetPrefix`, `:BCClearPrefix`, `:BCGetPrefix`
 
 ## AI Integration
 
