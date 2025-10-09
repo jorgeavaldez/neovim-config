@@ -244,10 +244,14 @@ require("lazy").setup({
 		"obsidian-nvim/obsidian.nvim",
 		version = "*",
 		lazy = true,
+		-- Event-based loading: Only load plugin when opening markdown files in the vault
+		-- Commands (via cmd) still work globally for quick capture from anywhere
 		event = {
 			"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
 			"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
 		},
+		-- Global keymaps: Work anywhere, not just in Obsidian buffers
+		-- Useful for referencing or searching notes while browsing code
 		keys = {
 			{ "<leader>oN", ":Obsidian new ", desc = "New Obsidian Note with name", mode = "n" },
 			{ "<leader>on", "<cmd>Obsidian new<CR>", desc = "New Obsidian note", mode = "n" },
@@ -261,6 +265,7 @@ require("lazy").setup({
 			{ "<leader>ol", "<cmd>Obsidian link<CR>", desc = "Link to note", mode = "n" },
 			{ "<leader><CR>", "<cmd>Obsidian follow_link<CR>", desc = "Follow link", mode = "n" },
 		},
+		-- Allow commands to load plugin on-demand for quick capture
 		cmd = { "Obsidian", "ObsidianNewPrompt" },
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -287,8 +292,9 @@ require("lazy").setup({
 				date_format = "%Y-%m-%d",
 				time_format = "%H:%M",
 			},
-			mappings = {},
-			footer = {
+			-- Use new command format (Obsidian <subcommand>) instead of legacy (ObsidianSubcommand)
+		legacy_commands = false,
+		footer = {
 				enabled = true,
 			},
 		},
