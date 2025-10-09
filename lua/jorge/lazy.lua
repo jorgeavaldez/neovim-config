@@ -241,36 +241,55 @@ require("lazy").setup({
 			},
 		},
 		{
-			"epwalsh/obsidian.nvim",
+			"obsidian-nvim/obsidian.nvim",
 			version = "*",
 			lazy = true,
-			ft = "markdown",
+			event = {
+				"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+				"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+			},
+			keys = {
+				{ "<leader>oN",   mode = "n" },
+				{ "<leader>on",   mode = "n" },
+				{ "<leader>op",   mode = "n" },
+				{ "<leader>o/",   mode = "n" },
+				{ "<leader>of",   mode = "n" },
+				{ "<leader>ob",   mode = "n" },
+				{ "<leader>oL",   mode = "n" },
+				{ "<leader>oln",  mode = "n" },
+				{ "<leader>olN",  mode = "n" },
+				{ "<leader>ol",   mode = "n" },
+				{ "<leader><CR>", mode = "n" },
+			},
+			cmd = { "Obsidian" },
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 			},
 			opts = {
+				workspaces = {
+					{
+						name = "personal",
+						path = "~/obsidian/delvaze",
+					},
+				},
 				ui = {
 					enable = false,
 				},
-				dir = "~/obsidian/delvaze",
 				completion = {
 					nvim_cmp = true,
+					min_chars = 2,
 				},
 				daily_notes = {
 					folder = "daily",
 				},
 				templates = {
-					subdir = "templates",
-					date_format = "%Y-%M-%D",
+					folder = "templates",
+					date_format = "%Y-%m-%d",
 					time_format = "%H:%M",
 				},
-				mappings = {
-					["gf"] = {
-						action = function()
-							return require("obsidian").util.gf_passthrough()
-						end,
-						opts = { noremap = false, expr = true, buffer = true },
-					},
+				mappings = {},
+				footer = {
+					enabled = true,
 				},
 			},
 		},

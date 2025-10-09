@@ -20,7 +20,7 @@ vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
 
 vim.keymap.set("n", "<leader>ff", function()
-    vim.lsp.buf.format()
+	vim.lsp.buf.format()
 end)
 
 vim.keymap.set("n", "<leader>fc", ":call setreg('+', expand('%:.'))<CR>", { desc = "Copy file path" })
@@ -57,30 +57,3 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 -- terminal
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 -- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
-
-
-
--- obsidian
-vim.keymap.set(
-    "n",
-    "gf",
-    function()
-        if require("obsidian").util.cursor_on_markdown_link() then
-            return "<cmd>ObsidianFollowLink<CR>"
-        else
-            return "gf"
-        end
-    end,
-    { noremap = false, expr = true }
-)
-
-vim.keymap.set("n", "<leader>oN", ":ObsidianNew ", { desc = "New Obsidian Note with name" })
-vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>")
-vim.keymap.set("n", "<leader>o/", "<cmd>ObsidianSearch<CR>")
-vim.keymap.set("n", "<leader>of", "<cmd>ObsidianQuickSwitch<CR>")
-vim.keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>")
-vim.keymap.set("n", "<leader>oL", "<cmd>ObsidianLink")
-vim.keymap.set("n", "<leader>oln", "<cmd>ObsidianLinkNew")
-vim.keymap.set("n", "<leader>olN", "<cmd>ObsidianLinkNew<CR>")
-vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianLink<CR>")
-vim.keymap.set("n", "<leader><CR>", "<cmd>ObsidianFollowLink<CR>")
