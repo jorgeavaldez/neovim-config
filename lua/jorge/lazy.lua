@@ -241,58 +241,93 @@ require("lazy").setup({
 			},
 		},
 		{
-			"obsidian-nvim/obsidian.nvim",
-			version = "*",
-			lazy = true,
-			event = {
-				"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
-				"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+		"obsidian-nvim/obsidian.nvim",
+		version = "*",
+		lazy = true,
+		event = {
+			"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+			"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+		},
+		keys = {
+			{ "<leader>oN", ":Obsidian new ", desc = "New Obsidian Note with name", mode = "n" },
+			{ "<leader>on", "<cmd>Obsidian new<CR>", desc = "New Obsidian note", mode = "n" },
+			{ "<leader>op", "<cmd>ObsidianNewPrompt<CR>", desc = "New Obsidian prompt", mode = "n" },
+			{ "<leader>o/", "<cmd>Obsidian search<CR>", desc = "Search Obsidian notes", mode = "n" },
+			{ "<leader>of", "<cmd>Obsidian quick_switch<CR>", desc = "Quick switch notes", mode = "n" },
+			{ "<leader>ob", "<cmd>Obsidian backlinks<CR>", desc = "Show backlinks", mode = "n" },
+			{ "<leader>oL", ":Obsidian link ", desc = "Link to note (with query)", mode = "n" },
+			{ "<leader>oln", ":Obsidian link_new ", desc = "Link to new note (with title)", mode = "n" },
+			{ "<leader>olN", "<cmd>Obsidian link_new<CR>", desc = "Link to new note", mode = "n" },
+			{ "<leader>ol", "<cmd>Obsidian link<CR>", desc = "Link to note", mode = "n" },
+			{ "<leader><CR>", "<cmd>Obsidian follow_link<CR>", desc = "Follow link", mode = "n" },
+		},
+		cmd = { "Obsidian", "ObsidianNewPrompt" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		opts = {
+			workspaces = {
+				{
+					name = "personal",
+					path = "~/obsidian/delvaze",
+				},
 			},
-			keys = {
-				{ "<leader>oN",   mode = "n" },
-				{ "<leader>on",   mode = "n" },
-				{ "<leader>op",   mode = "n" },
-				{ "<leader>o/",   mode = "n" },
-				{ "<leader>of",   mode = "n" },
-				{ "<leader>ob",   mode = "n" },
-				{ "<leader>oL",   mode = "n" },
-				{ "<leader>oln",  mode = "n" },
-				{ "<leader>olN",  mode = "n" },
-				{ "<leader>ol",   mode = "n" },
-				{ "<leader><CR>", mode = "n" },
+			ui = {
+				enable = false,
 			},
-			cmd = { "Obsidian" },
-			dependencies = {
-				"nvim-lua/plenary.nvim",
+			completion = {
+				nvim_cmp = true,
+				min_chars = 2,
 			},
-			opts = {
-				workspaces = {
-					{
-						name = "personal",
-						path = "~/obsidian/delvaze",
-					},
-				},
-				ui = {
-					enable = false,
-				},
-				completion = {
-					nvim_cmp = true,
-					min_chars = 2,
-				},
-				daily_notes = {
-					folder = "daily",
-				},
-				templates = {
-					folder = "templates",
-					date_format = "%Y-%m-%d",
-					time_format = "%H:%M",
-				},
-				mappings = {},
-				footer = {
-					enabled = true,
-				},
+			daily_notes = {
+				folder = "daily",
+			},
+			templates = {
+				folder = "templates",
+				date_format = "%Y-%m-%d",
+				time_format = "%H:%M",
+			},
+			mappings = {},
+			footer = {
+				enabled = true,
 			},
 		},
+		config = function(_, opts)
+			require("obsidian").setup(opts)
+
+			vim.api.nvim_create_user_command("ObsidianNewPrompt", function()
+				local client = require("obsidian").get_client()
+				local vault_path = client.dir
+				local prompts_dir = vault_path / "prompts"
+
+				prompts_dir:mkdir({ parents = true, exist_ok = true })
+
+				vim.ui.input({ prompt = "Prompt note title: " }, function(title)
+					if title and title ~= "" then
+						local note = client:create_note({ title = title, dir = prompts_dir })
+						vim.cmd("edit " .. tostring(note.path))
+					end
+				end)
+			end, { desc = "Create new Obsidian prompt note" })
+
+			vim.keymap.set(
+				"n",
+				"gf",
+				function()
+					local ok, obsidian = pcall(require, "obsidian")
+					if not ok then
+						return "gf"
+					end
+					if obsidian.util.cursor_on_markdown_link() then
+						return "<cmd>Obsidian follow_link<CR>"
+					else
+						return "gf"
+					end
+				end,
+				{ noremap = false, expr = true, desc = "Follow obsidian link or file" }
+			)
+		end,
+	},
 		"tpope/vim-sleuth",
 		{
 			"ray-x/go.nvim",
