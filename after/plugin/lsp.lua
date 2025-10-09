@@ -1,5 +1,3 @@
-local lspconfig = require("lspconfig")
-
 vim.diagnostic.config({ jump = { float = true } })
 
 local function rename_file()
@@ -84,10 +82,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	desc = 'LSP: Disable ruff hover capability',
 })
 
+-- Global LSP capabilities for all servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.general.positionEncodings = { "utf-16", "utf-8" }
-
-require("typescript-tools").setup({
+vim.lsp.config('*', {
 	capabilities = capabilities,
 })
 
@@ -105,47 +103,36 @@ require("mason-lspconfig").setup({
 		"terraformls",
 	},
 	automatic_enable = {
-		exclude = {
-			"ts_ls",
-			"pyright",
-		},
-	},
-	handlers = {
-		function(server_name)
-			local caps = vim.lsp.protocol.make_client_capabilities()
-			caps.general.positionEncodings = { "utf-16", "utf-8" }
-			lspconfig[server_name].setup({
-				capabilities = caps,
-			})
-		end,
+		exclude = { "ts_ls", "gopls" },
 	},
 })
 
-lspconfig.biome.setup({
+-- Biome formatter/linter
+vim.lsp.config('biome', {
 	cmd = { "bunx", "biome", "lsp-proxy" },
-	capabilities = capabilities,
 })
+vim.lsp.enable('biome')
 
--- configure templ
-lspconfig.html.setup({
+-- HTML with templ support
+vim.lsp.config('html', {
 	filetypes = { "html", "templ" },
-	capabilities = capabilities,
 })
+vim.lsp.enable('html')
 
-lspconfig.pyright.setup({
+-- Python LSP (pyright)
+vim.lsp.config('pyright', {
 	settings = {
 		pyright = {
 			-- use ruff's import organizer
 			disableOrganizeImports = true,
 		},
 	},
-	capabilities = capabilities,
 })
+vim.lsp.enable('pyright')
 
-lspconfig.ruff.setup({
-	capabilities = capabilities,
-})
-
+-- Python linter/formatter (ruff)
+vim.lsp.config('ruff', {})
+vim.lsp.enable('ruff')
 
 require("go").setup({
 	lsp_cfg = {

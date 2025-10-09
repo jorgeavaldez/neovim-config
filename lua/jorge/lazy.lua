@@ -81,9 +81,6 @@ require("lazy").setup({
 		"tpope/vim-fugitive",
 
 		{
-			"neovim/nvim-lspconfig",
-		},
-		{
 			"hrsh7th/nvim-cmp",
 			dependencies = {
 				{ "hrsh7th/cmp-nvim-lsp" }, -- Required
@@ -97,7 +94,7 @@ require("lazy").setup({
 		},
 		{
 			"mason-org/mason-lspconfig.nvim",
-			dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
+			dependencies = { "mason-org/mason.nvim" },
 		},
 		{
 			"nvimtools/none-ls.nvim",
@@ -339,13 +336,20 @@ require("lazy").setup({
 			"ray-x/go.nvim",
 			dependencies = {
 				"ray-x/guihua.lua",
-				"neovim/nvim-lspconfig",
 				"nvim-treesitter/nvim-treesitter",
 			},
 		},
 		{
 			"pmizio/typescript-tools.nvim",
 			dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+			ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+			config = function()
+				local capabilities = vim.lsp.protocol.make_client_capabilities()
+				capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+				require("typescript-tools").setup({
+					capabilities = capabilities,
+				})
+			end,
 		},
 		{ "windwp/nvim-ts-autotag" },
 		{
