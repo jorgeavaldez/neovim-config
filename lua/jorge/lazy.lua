@@ -299,15 +299,18 @@ require("lazy").setup({
 			require("obsidian").setup(opts)
 
 			vim.api.nvim_create_user_command("ObsidianNewPrompt", function()
-				local client = require("obsidian").get_client()
-				local vault_path = client.dir
+				local obsidian = require("obsidian")
+				local vault_path = Obsidian.dir
 				local prompts_dir = vault_path / "prompts"
 
 				prompts_dir:mkdir({ parents = true, exist_ok = true })
 
 				vim.ui.input({ prompt = "Prompt note title: " }, function(title)
 					if title and title ~= "" then
-						local note = client:create_note({ title = title, dir = prompts_dir })
+						local note = obsidian.Note.create({
+							title = title,
+							dir = tostring(prompts_dir),
+						})
 						vim.cmd("edit " .. tostring(note.path))
 					end
 				end)
