@@ -238,102 +238,104 @@ require("lazy").setup({
 			},
 		},
 		{
-		"obsidian-nvim/obsidian.nvim",
-		version = "*",
-		lazy = true,
-		-- Event-based loading: Only load plugin when opening markdown files in the vault
-		-- Commands (via cmd) still work globally for quick capture from anywhere
-		event = {
-			"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
-			"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
-		},
-		-- Global keymaps: Work anywhere, not just in Obsidian buffers
-		-- Useful for referencing or searching notes while browsing code
-		keys = {
-			{ "<leader>oN", ":Obsidian new ", desc = "New Obsidian Note with name", mode = "n" },
-			{ "<leader>on", "<cmd>Obsidian new<CR>", desc = "New Obsidian note", mode = "n" },
-			{ "<leader>op", "<cmd>ObsidianNewPrompt<CR>", desc = "New Obsidian prompt", mode = "n" },
-			{ "<leader>o/", "<cmd>Obsidian search<CR>", desc = "Search Obsidian notes", mode = "n" },
-			{ "<leader>of", "<cmd>Obsidian quick_switch<CR>", desc = "Quick switch notes", mode = "n" },
-			{ "<leader>ob", "<cmd>Obsidian backlinks<CR>", desc = "Show backlinks", mode = "n" },
-			{ "<leader>oL", ":Obsidian link ", desc = "Link to note (with query)", mode = "n" },
-			{ "<leader>oln", ":Obsidian link_new ", desc = "Link to new note (with title)", mode = "n" },
-			{ "<leader>olN", "<cmd>Obsidian link_new<CR>", desc = "Link to new note", mode = "n" },
-			{ "<leader>ol", "<cmd>Obsidian link<CR>", desc = "Link to note", mode = "n" },
-			{ "<leader><CR>", "<cmd>Obsidian follow_link<CR>", desc = "Follow link", mode = "n" },
-		},
-		-- Allow commands to load plugin on-demand for quick capture
-		cmd = { "Obsidian", "ObsidianNewPrompt" },
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-		opts = {
-			workspaces = {
-				{
-					name = "personal",
-					path = "~/obsidian/delvaze",
+			"obsidian-nvim/obsidian.nvim",
+			version = "*",
+			lazy = true,
+			-- Event-based loading: Only load plugin when opening markdown files in the vault
+			-- Commands (via cmd) still work globally for quick capture from anywhere
+			event = {
+				"BufReadPre " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+				"BufNewFile " .. vim.fn.expand("~") .. "/obsidian/delvaze/*.md",
+			},
+			-- Global keymaps: Work anywhere, not just in Obsidian buffers
+			-- Useful for referencing or searching notes while browsing code
+			keys = {
+				{ "<leader>oN",   ":Obsidian new ",                 desc = "New Obsidian Note with name",              mode = "n" },
+				{ "<leader>on",   "<cmd>Obsidian new<CR>",          desc = "New Obsidian note",                        mode = "n" },
+				{ "<leader>op",   "<cmd>ObsidianNewPrompt<CR>",     desc = "New Obsidian prompt",                      mode = "n" },
+				{ "<leader>o/",   "<cmd>Obsidian search<CR>",       desc = "Search Obsidian notes",                    mode = "n" },
+				{ "<leader>of",   "<cmd>Obsidian quick_switch<CR>", desc = "Quick switch notes",                       mode = "n" },
+				{ "<leader>ot",   "<cmd>Obsidian template<CR>",     desc = "insert template from templates directory", mode = "n" },
+				{ "<leader>ob",   "<cmd>Obsidian backlinks<CR>",    desc = "Show backlinks",                           mode = "n" },
+				{ "<leader>oL",   ":Obsidian link ",                desc = "Link to note (with query)",                mode = "n" },
+				{ "<leader>oln",  ":Obsidian link_new ",            desc = "Link to new note (with title)",            mode = "n" },
+				{ "<leader>olN",  "<cmd>Obsidian link_new<CR>",     desc = "Link to new note",                         mode = "n" },
+				{ "<leader>ol",   "<cmd>Obsidian link<CR>",         desc = "Link to note",                             mode = "n" },
+				{ "<leader><CR>", "<cmd>Obsidian follow_link<CR>",  desc = "Follow link",                              mode = "n" },
+			},
+			-- Allow commands to load plugin on-demand for quick capture
+			cmd = { "Obsidian", "ObsidianNewPrompt" },
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+			},
+			opts = {
+				workspaces = {
+					{
+						name = "personal",
+						path = "~/obsidian/delvaze",
+					},
+				},
+				ui = {
+					enable = false,
+				},
+				completion = {
+					nvim_cmp = true,
+					min_chars = 2,
+				},
+				daily_notes = {
+					folder = "daily",
+				},
+				templates = {
+					folder = "templates",
+					date_format = "%Y-%m-%d",
+					time_format = "%H:%M",
+				},
+				-- Use new command format (Obsidian <subcommand>) instead of legacy (ObsidianSubcommand)
+				legacy_commands = false,
+				footer = {
+					enabled = true,
 				},
 			},
-			ui = {
-				enable = false,
-			},
-			completion = {
-				nvim_cmp = true,
-				min_chars = 2,
-			},
-			daily_notes = {
-				folder = "daily",
-			},
-			templates = {
-				folder = "templates",
-				date_format = "%Y-%m-%d",
-				time_format = "%H:%M",
-			},
-			-- Use new command format (Obsidian <subcommand>) instead of legacy (ObsidianSubcommand)
-		legacy_commands = false,
-		footer = {
-				enabled = true,
-			},
+			config = function(_, opts)
+				require("obsidian").setup(opts)
+
+				vim.api.nvim_create_user_command("ObsidianNewPrompt", function()
+					local obsidian = require("obsidian")
+					local vault_path = Obsidian.dir
+					local prompts_dir = vault_path / "prompts"
+
+					prompts_dir:mkdir({ parents = true, exist_ok = true })
+
+					vim.ui.input({ prompt = "Prompt note title: " }, function(title)
+						if title and title ~= "" then
+							local note = obsidian.Note.create({
+								title = title,
+								id = title,
+								dir = tostring(prompts_dir),
+							})
+							vim.cmd("edit " .. tostring(note.path))
+						end
+					end)
+				end, { desc = "Create new Obsidian prompt note" })
+
+				vim.keymap.set(
+					"n",
+					"gf",
+					function()
+						local ok, obsidian = pcall(require, "obsidian")
+						if not ok then
+							return "gf"
+						end
+						if obsidian.util.cursor_on_markdown_link() then
+							return "<cmd>Obsidian follow_link<CR>"
+						else
+							return "gf"
+						end
+					end,
+					{ noremap = false, expr = true, desc = "Follow obsidian link or file" }
+				)
+			end,
 		},
-		config = function(_, opts)
-			require("obsidian").setup(opts)
-
-			vim.api.nvim_create_user_command("ObsidianNewPrompt", function()
-				local obsidian = require("obsidian")
-				local vault_path = Obsidian.dir
-				local prompts_dir = vault_path / "prompts"
-
-				prompts_dir:mkdir({ parents = true, exist_ok = true })
-
-				vim.ui.input({ prompt = "Prompt note title: " }, function(title)
-					if title and title ~= "" then
-						local note = obsidian.Note.create({
-							title = title,
-							dir = tostring(prompts_dir),
-						})
-						vim.cmd("edit " .. tostring(note.path))
-					end
-				end)
-			end, { desc = "Create new Obsidian prompt note" })
-
-			vim.keymap.set(
-				"n",
-				"gf",
-				function()
-					local ok, obsidian = pcall(require, "obsidian")
-					if not ok then
-						return "gf"
-					end
-					if obsidian.util.cursor_on_markdown_link() then
-						return "<cmd>Obsidian follow_link<CR>"
-					else
-						return "gf"
-					end
-				end,
-				{ noremap = false, expr = true, desc = "Follow obsidian link or file" }
-			)
-		end,
-	},
 		"tpope/vim-sleuth",
 		{
 			"ray-x/go.nvim",
