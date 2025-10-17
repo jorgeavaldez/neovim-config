@@ -1,5 +1,4 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-local commands = require("jorge.commands")
 
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -11,6 +10,7 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
+
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
@@ -38,6 +38,22 @@ require("lazy").setup({
 			},
 		},
 		{
+			'f-person/auto-dark-mode.nvim',
+			priority = 1000,
+			lazy = false,
+			dependencies = { "catppuccin/nvim" },
+
+			config = {
+				update_interval = 1000,
+				set_dark_mode = function()
+					vim.cmd.colorscheme("catppuccin-mocha")
+				end,
+				set_light_mode = function()
+					vim.cmd.colorscheme("catppuccin-latte")
+				end,
+			},
+		},
+		{
 			"nvim-telescope/telescope.nvim",
 			branch = "0.1.x",
 			dependencies = { "nvim-lua/plenary.nvim" },
@@ -61,10 +77,6 @@ require("lazy").setup({
 				render_markdown = true,
 				which_key = true,
 			},
-			config = function()
-				vim.cmd.colorscheme("catppuccin-latte")
-				-- vim.cmd.colorscheme("catppuccin-mocha")
-			end,
 		},
 		{
 			"nvim-treesitter/nvim-treesitter",
@@ -77,15 +89,14 @@ require("lazy").setup({
 			},
 		},
 		{ "nvim-lua/plenary.nvim" },
-		"mbbill/undotree",
-		"tpope/vim-fugitive",
-
+		{ "mbbill/undotree" },
+		{ "tpope/vim-fugitive" },
 		{
 			"hrsh7th/nvim-cmp",
 			dependencies = {
-				{ "hrsh7th/cmp-nvim-lsp" }, -- Required
-				{ "L3MON4D3/LuaSnip" }, -- Required
-				{ "L3MON4D3/LuaSnip" }, -- Required
+				{ "hrsh7th/cmp-nvim-lsp" },
+				{ "L3MON4D3/LuaSnip" },
+				{ "L3MON4D3/LuaSnip" },
 				{ "onsails/lspkind.nvim" },
 			}
 		},
@@ -106,11 +117,11 @@ require("lazy").setup({
 				require("lspsaga").setup({})
 			end,
 			dependencies = {
-				"nvim-treesitter/nvim-treesitter", -- optional
-				"nvim-tree/nvim-web-devicons", -- optional
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
 			},
 		},
-		"mfussenegger/nvim-dap",
+		{ "mfussenegger/nvim-dap" },
 		{
 			"mfussenegger/nvim-dap-python",
 			dependencies = { "mfussenegger/nvim-dap" },
@@ -336,7 +347,7 @@ require("lazy").setup({
 				)
 			end,
 		},
-		"tpope/vim-sleuth",
+		{ "tpope/vim-sleuth" },
 		{
 			"ray-x/go.nvim",
 			dependencies = {
@@ -419,12 +430,6 @@ require("lazy").setup({
 			-- use the `-` key to go up a directory
 			lazy = false,
 		},
-		--[[
-	{
-		"OXY2DEV/markview.nvim",
-		lazy = false,
-	},
-	--]]
 		{
 			"olimorris/codecompanion.nvim",
 			config = function()
@@ -489,14 +494,10 @@ require("lazy").setup({
 			"yetone/avante.nvim",
 			enabled = false,
 			event = "VeryLazy",
-			-- commit = "e295fe82f0714188615a524604bdaccd266ced35",
 			version = false,
 			dev = false, -- set to true to load from local source
-			---@module 'avante'
-			---@type avante.Config
 			opts = {
 				debug = false, -- set to true for logs
-				-- provider = "openrouter",
 				provider = "gemini",
 				web_search_engine = {
 					provider = "searxng",
@@ -505,42 +506,6 @@ require("lazy").setup({
 					model = "gemini-2.5-pro-preview-05-06",
 					max_tokens = 1000000,
 				},
-				vendors = {
-					openrouter = {
-						__inherited_from = "openai",
-						endpoint = "https://openrouter.ai/api/v1",
-						api_key_name = "AVANTE_OPENROUTER_API_KEY",
-						model = "anthropic/claude-3.7-sonnet",
-						-- model = "google/gemini-2.5-pro-preview-03-25",
-						-- model = "google/gemini-2.5-pro-exp-03-25:free",
-					},
-				},
-				--[[
-				system_prompt = function()
-					local hub = require("mcphub").get_hub_instance()
-					if hub ~= nil then
-						return hub:get_active_servers_prompt()
-					end
-				end,
-				custom_tools = function()
-					return {
-						require("mcphub.extensions.avante").mcp_tool(),
-					}
-				end,
-				-- disabled because we can use the mcp hub neovim server
-				disabled_tools = {
-					"list_files",
-					"search_files",
-					"read_file",
-					"create_file",
-					"rename_file",
-					"delete_file",
-					"create_dir",
-					"rename_dir",
-					"delete_dir",
-					"bash",
-				},
-				--]]
 			},
 			build = "make",
 			dependencies = {
@@ -554,7 +519,6 @@ require("lazy").setup({
 				"hrsh7th/nvim-cmp",  -- autocompletion for avante commands and mentions
 				"ibhagwan/fzf-lua",  -- for file_selector provider fzf
 				"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-				-- "zbirenbaum/copilot.lua", -- for providers='copilot'
 				{
 					-- support for image pasting
 					"HakonHarnes/img-clip.nvim",
@@ -584,37 +548,6 @@ require("lazy").setup({
 		{
 			"stevearc/overseer.nvim",
 			opts = {},
-		},
-		{
-			"ravitemer/mcphub.nvim",
-			enabled = false,
-			dependencies = {
-				"nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
-			},
-			-- comment the following line to ensure hub will be ready at the earliest
-			cmd = "MCPHub",                                                  -- lazy load by default
-			build = "mise install npm:mcp-hub@latest && mise use npm:mcp-hub@latest", -- Installs required mcp-hub npm module
-			-- uncomment this if you don't want mcp-hub to be available globally or can't use -g
-			-- build = "bundled_build.lua",  -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
-			config = function()
-				vim.fn.setenv("MCP_PROJECT_ROOT_PATH", commands.get_project_root())
-				require("mcphub").setup({
-					config = vim.fn.expand("~/dots/mcphub/servers.json"),
-					extensions = {
-						avante = {
-							make_slash_commands = true,
-						},
-						codecompanion = {
-							callback = "mcphub.extensions.codecompanion",
-							opts = {
-								make_vars = true,
-								make_slash_commands = true,
-								show_result_in_chat = true,
-							},
-						},
-					},
-				})
-			end,
 		},
 		{
 			"folke/sidekick.nvim",
