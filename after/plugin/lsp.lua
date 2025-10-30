@@ -222,6 +222,20 @@ cmp.setup({
 	},
 })
 
+-- Disable Codeium for Oil buffers (it chokes on oil:// URI paths)
+-- Keep LSP, luasnip, and lazydev active for helpful completions
+cmp.setup.filetype('oil', {
+	sources = {
+		{
+			name = "lazydev",
+			group_index = 0,
+		},
+		{ name = "nvim_lsp" },
+		{ name = "luasnip" },
+		-- codeium omitted - doesn't handle oil:// paths
+	},
+})
+
 local null_ls = require("null-ls")
 
 null_ls.setup({
