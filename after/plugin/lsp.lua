@@ -184,7 +184,14 @@ cmp.setup({
 		end,
 	},
 	formatting = {
-		format = lspkind.cmp_format(),
+		format = lspkind.cmp_format({
+			mode = "symbol",
+			maxwidth = 50,
+			ellipsis_char = "...",
+			symbol_map = {
+				Codeium = "",
+			},
+		}),
 	},
 	mapping = default_mapping,
 	preselect = "item",
@@ -194,16 +201,21 @@ cmp.setup({
 			-- set to 0 to skip loading luals completions
 			group_index = 0,
 		},
-		-- { name = "minuet" },
-		{ name = "supermaven" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
-		per_filetype = {
-			codecompanion = { "codecompanion" },
-		},
+		{ name = "codeium" },
 	},
 	performance = {
 		fetching_timeout = 1000,
+
+		-- these are the defaults from the source
+		-- i added these here because the types don't make them optional :(
+		debounce = 60,
+		throttle = 30,
+		filtering_context_budget = 3,
+		confirm_resolve_timeout = 80,
+		async_budget = 1,
+		max_view_entries = 200,
 	},
 	completion = {
 		completeopt = "menu,menuone,noinsert",

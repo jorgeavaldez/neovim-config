@@ -369,7 +369,18 @@ require("lazy").setup({
 		},
 		{ "windwp/nvim-ts-autotag" },
 		{
+			"Exafunction/windsurf.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"hrsh7th/nvim-cmp",
+			},
+			config = function()
+				require("codeium").setup({})
+			end
+		},
+		{
 			"supermaven-inc/supermaven-nvim",
+			enabled = true,
 			config = function()
 				require("supermaven-nvim").setup({
 					keymaps = {
@@ -432,6 +443,7 @@ require("lazy").setup({
 		},
 		{
 			"olimorris/codecompanion.nvim",
+			enabled = false,
 			config = function()
 				require("codecompanion").setup({
 					-- Ensure Anthropic is the default provider for all strategies
