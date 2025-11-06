@@ -50,4 +50,8 @@ vim.api.nvim_create_user_command("GetProjectRoot", function (_)
 	print(M.get_project_root())
 end, {})
 
+vim.api.nvim_create_user_command("StripLogPrefixes", function(_)
+	vim.cmd([[%s/\d\{4\}-\d\{2\}-\d\{2\} \d*:\d*:\d*.\d* | .*| //g]])
+end, {})
+
 return M
