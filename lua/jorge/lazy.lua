@@ -612,5 +612,8 @@ require("lazy").setup({
 				},
 			},
 		},
+		{
+			"https://codeberg.org/ziglang/zig.vim",
+		},
 	},
 })

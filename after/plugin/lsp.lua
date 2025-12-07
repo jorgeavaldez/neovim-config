@@ -130,6 +130,23 @@ vim.lsp.config('pyright', {
 })
 vim.lsp.enable('pyright')
 
+
+-- don't show parse errors in a separate window
+vim.g.zig_fmt_parse_errors = 0
+-- disable format-on-save from `ziglang/zig.vim`
+vim.g.zig_fmt_autosave = 0
+
+vim.lsp.config('zls', {
+	settings = {
+		zls = {
+			-- https://zigtools.org/zls/guides/build-on-save/
+			-- enable_build_on_save = true,
+			semantic_tokens = "partial"
+		}
+	}
+})
+vim.lsp.enable('zls')
+
 -- Python linter/formatter (ruff)
 vim.lsp.config('ruff', {})
 vim.lsp.enable('ruff')
