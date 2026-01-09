@@ -59,3 +59,12 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 vim.keymap.set("t", "<Esc><Esc><Esc>", "<C-\\><C-n>")
+
+-- insert date/time
+vim.keymap.set("n", "<leader>id", function()
+	vim.api.nvim_put({ os.date("%Y-%m-%d") }, "c", true, true)
+end, { desc = "Insert date (YYYY-MM-DD)" })
+
+vim.keymap.set("n", "<leader>it", function()
+	vim.api.nvim_put({ os.date("%H:%M") }, "c", true, true)
+end, { desc = "Insert time (HH:MM)" })
