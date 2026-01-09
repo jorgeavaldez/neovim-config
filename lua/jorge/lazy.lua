@@ -261,6 +261,7 @@ require("lazy").setup({
 			-- Global keymaps: Work anywhere, not just in Obsidian buffers
 			-- Useful for referencing or searching notes while browsing code
 			keys = {
+				{ "<leader>od",   "<cmd>Obsidian today<CR>",        desc = "Open daily note",                          mode = "n" },
 				{ "<leader>oN",   ":Obsidian new ",                 desc = "New Obsidian Note with name",              mode = "n" },
 				{ "<leader>on",   "<cmd>Obsidian new<CR>",          desc = "New Obsidian note",                        mode = "n" },
 				{ "<leader>op",   "<cmd>ObsidianNewPrompt<CR>",     desc = "New Obsidian prompt",                      mode = "n" },
