@@ -114,7 +114,12 @@ require("lazy").setup({
 		{
 			"nvimdev/lspsaga.nvim",
 			config = function()
-				require("lspsaga").setup({})
+				require("lspsaga").setup({
+					-- Disable lspsaga's winbar, use dropbar.nvim instead
+					symbol_in_winbar = {
+						enable = false,
+					},
+				})
 			end,
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter",
@@ -557,6 +562,10 @@ require("lazy").setup({
 				file_types = { "markdown" },
 			},
 			ft = { "markdown" },
+		},
+		{
+			"Bekaboo/dropbar.nvim",
+			-- No dependencies required, works with builtin LSP and treesitter
 		},
 		{
 			"stevearc/overseer.nvim",
