@@ -439,6 +439,9 @@ require("lazy").setup({
 				view_options = {
 					show_hidden = true,
 				},
+				sort = {
+					{ "mtime", "desc" },
+				},
 			},
 			-- Optional dependencies
 			dependencies = { { "echasnovski/mini.icons", opts = {} } },
