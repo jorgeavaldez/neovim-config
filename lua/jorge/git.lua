@@ -144,6 +144,59 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
+-- Helper to run git commands in terminal with auto-close on success
+local function git_terminal_commit(args)
+	args = args or ""
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.cmd("botright split")
+	local win = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_buf(win, buf)
+	vim.api.nvim_win_set_height(win, 15)
+
+	vim.fn.termopen("git commit " .. args, {
+		on_exit = function(_, exit_code, _)
+			-- Map Enter to close the terminal buffer (like fugitive)
+			vim.schedule(function()
+				if vim.api.nvim_buf_is_valid(buf) then
+					vim.keymap.set("n", "<CR>", function()
+						vim.api.nvim_buf_delete(buf, { force = true })
+					end, { buffer = buf, desc = "Close terminal" })
+					vim.keymap.set("n", "q", function()
+						vim.api.nvim_buf_delete(buf, { force = true })
+					end, { buffer = buf, desc = "Close terminal" })
+					
+					-- Exit terminal mode so Enter/q work immediately
+					vim.cmd("stopinsert")
+					
+					if exit_code == 0 then
+						vim.notify("Commit successful", vim.log.levels.INFO)
+					end
+				end
+			end)
+		end,
+	})
+	vim.cmd("startinsert")
+end
+
+-- Override cc in git status buffer to run commit in a terminal (non-blocking)
+vim.api.nvim_create_autocmd("FileType", {
+	group = "GitWorkflow",
+	pattern = "fugitive",
+	callback = function()
+		vim.keymap.set("n", "cc", function()
+			git_terminal_commit()
+		end, { buffer = true, desc = "Git commit (terminal)" })
+
+		vim.keymap.set("n", "ca", function()
+			git_terminal_commit("--amend")
+		end, { buffer = true, desc = "Git commit amend (terminal)" })
+
+		vim.keymap.set("n", "ce", function()
+			git_terminal_commit("--amend --no-edit")
+		end, { buffer = true, desc = "Git commit amend no-edit (terminal)" })
+	end,
+})
+
 -- Gitsigns keymaps setup (called from lazy.lua gitsigns on_attach)
 -- Module export table
 local M = {}
