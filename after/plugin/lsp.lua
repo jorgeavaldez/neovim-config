@@ -271,6 +271,10 @@ null_ls.setup({
 
 		null_ls.builtins.formatting.biome,
 
+		null_ls.builtins.formatting.prettier.with({
+			filetypes = { "markdown" },
+		}),
+
 		null_ls.builtins.diagnostics.yamllint,
 		null_ls.builtins.formatting.yamlfmt,
 
