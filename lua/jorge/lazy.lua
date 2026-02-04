@@ -435,24 +435,36 @@ require("lazy").setup({
 			"stevearc/oil.nvim",
 			---@module 'oil'
 			---@type oil.SetupOpts
-			opts = {
-				view_options = {
-					show_hidden = true,
-					case_insensitive = true,
-					sort = {
-						{ "mtime", "desc" },
-						{ "name",  "asc" },
-						{ "type",  "asc" },
+			opts = function()
+				local detail = false
+
+				return {
+					view_options = {
+						show_hidden = true,
+						case_insensitive = true,
+						sort = {
+							{ "mtime", "desc" },
+							{ "name",  "asc" },
+							{ "type",  "asc" },
+						},
 					},
-				},
-				watch_for_changes = true,
-				delete_to_trash = true,
-				keymaps = {
-					["gd"] = function()
-						require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
-					end,
-				},
-			},
+					watch_for_changes = true,
+					delete_to_trash = true,
+					keymaps = {
+						["gd"] = {
+							desc = "Toggle file detail view",
+							callback = function()
+								detail = not detail
+								if detail then
+									require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
+								else
+									require("oil").set_columns({ "icon" })
+								end
+							end,
+						},
+					},
+				}
+			end,
 			-- Optional dependencies
 			dependencies = { { "echasnovski/mini.icons", opts = {} } },
 			-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
