@@ -438,9 +438,19 @@ require("lazy").setup({
 			opts = {
 				view_options = {
 					show_hidden = true,
+					case_insensitive = true,
+					sort = {
+						{ "mtime", "desc" },
+						{ "name",  "asc" },
+						{ "type",  "asc" },
+					},
 				},
-				sort = {
-					{ "mtime", "desc" },
+				watch_for_changes = true,
+				delete_to_trash = true,
+				keymaps = {
+					["gd"] = function()
+						require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
+					end,
 				},
 			},
 			-- Optional dependencies
