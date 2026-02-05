@@ -24,6 +24,7 @@ vim.keymap.set("n", "<leader>ff", function()
 end)
 
 vim.keymap.set("n", "<leader>fc", ":call setreg('+', expand('%:.'))<CR>", { desc = "Copy file path" })
+vim.keymap.set("n", "<leader>fC", ":call setreg('+', expand('%:p'))<CR>", { desc = "Copy full file path" })
 vim.keymap.set("n", "<leader>fD", ":%d<CR>", { desc = "Delete contents of current buffer/file" })
 
 vim.keymap.set("n", "<C-k>", ":noh<CR>", { desc = "Clear search results" })

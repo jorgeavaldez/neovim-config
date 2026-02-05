@@ -5,9 +5,18 @@ local telescope_actions = require("telescope.actions")
 
 telescope.setup({
     defaults = {
+        results_title = false, -- cleaner look, count shows in prompt
+        selection_caret = "▶ ",
+        entry_prefix = "  ",
         mappings = {
             i = { ["<c-t>"] = trouble.open },
-            n = { ["<c-t>"] = trouble.open },
+            n = {
+                ["<c-t>"] = trouble.open,
+                ["J"] = telescope_actions.results_scrolling_down,
+                ["K"] = telescope_actions.results_scrolling_up,
+                ["gg"] = telescope_actions.move_to_top,
+                ["G"] = telescope_actions.move_to_bottom,
+            },
         },
     },
     pickers = {

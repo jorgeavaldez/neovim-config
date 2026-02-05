@@ -25,3 +25,5 @@ vim.keymap.set("n", "gi", builtin.lsp_implementations, { desc = "Go to Implement
 vim.keymap.set("n", "<leader>Tt", function()
     builtin.colorscheme({ enable_preview = true })
 end, { desc = "Theme picker" });
+vim.keymap.set("n", "<leader><leader>", builtin.commands, { desc = "Command palette" });
+vim.keymap.set("n", "<leader>?", builtin.keymaps, { desc = "Search keymaps" });
