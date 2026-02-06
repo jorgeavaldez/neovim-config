@@ -36,7 +36,13 @@ vim.api.nvim_create_user_command("SortWords", function(_)
 end, { range = true })
 
 M.get_project_root = function()
-	-- Try to get git root
+	-- Try to get jj root first
+	local jj_root = vim.fn.system("jj root 2>/dev/null"):gsub("\n$", "")
+	if jj_root ~= "" and vim.v.shell_error == 0 then
+		return jj_root
+	end
+
+	-- Fall back to git root
 	local git_root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null"):gsub("\n$", "")
 	if git_root ~= "" and vim.v.shell_error == 0 then
 		return git_root

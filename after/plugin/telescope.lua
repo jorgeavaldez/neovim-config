@@ -1,6 +1,11 @@
 local builtin = require('telescope.builtin')
+local telescope = require('telescope')
+
+-- Load jj extension
+pcall(telescope.load_extension, "jj")
+
 vim.keymap.set('n', '<leader>pf', function()
-    -- show hidden files but exclude .git
+    -- show hidden files but exclude .git and .jj
     builtin.find_files {
         find_command = {
             "rg",
@@ -8,10 +13,19 @@ vim.keymap.set('n', '<leader>pf', function()
             "--hidden",
             "-g",
             "!.git",
+            "-g",
+            "!.jj",
         },
     }
 end, {})
-vim.keymap.set('n', '<C-p>', builtin.git_files, { desc = "List git files" });
+
+-- Use jj files picker with git fallback
+vim.keymap.set('n', '<C-p>', function()
+    local jj_ok, _ = pcall(telescope.extensions.jj.files)
+    if not jj_ok then
+        builtin.git_files()
+    end
+end, { desc = "Find files (jj/git)" });
 vim.keymap.set('n', '<leader>/', builtin.live_grep, { desc = "Grep across project" });
 vim.keymap.set('n', '<leader>*', builtin.grep_string, { desc = "Grep for line under cursor across project" });
 -- vim.keymap.set("n", "<leader>h", builtin.help_tags, { desc = "list all help tags" });

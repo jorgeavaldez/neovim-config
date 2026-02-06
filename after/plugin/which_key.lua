@@ -36,9 +36,8 @@ wk.add({
 	{ "<leader>fD", desc = "Delete buffer contents" },
 	{ "<leader>fR", desc = "Rename file (LSP)" },
 
-	-- Git (main group defined in lua/jorge/git.lua)
-	-- Git hunks (gitsigns) - buffer-local, defined per-buffer
-	{ "<leader>h", group = "Git Hunks" },
+	-- JJ (main group defined in lua/jorge/jj.lua)
+	{ "<leader>j", group = "JJ (jujutsu)" },
 
 	-- Obsidian
 	{ "<leader>o", group = "Obsidian" },
@@ -76,7 +75,7 @@ wk.add({
 	{ "<leader>u", desc = "Toggle undo tree" },
 
 	-- Additional top-level bindings
-	{ "<C-p>", desc = "Find git files" },
+	{ "<C-p>", desc = "Find files (jj/git)" },
 	{ "<C-h>", desc = "Signature help (LSP)", mode = "i" },
 	{ "gd", desc = "Go to definition" },
 	{ "gr", desc = "Go to references" },

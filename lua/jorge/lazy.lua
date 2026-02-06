@@ -64,11 +64,9 @@ require("lazy").setup({
 			priority = 1000,
 			setup = {
 				cmp = true,
-				gitsigns = true,
 				nvimtree = true,
 				treesitter = true,
 				notify = true,
-				diffview = true,
 				fidget = true,
 				harpoon = true,
 				lsp_saga = true,
@@ -90,7 +88,31 @@ require("lazy").setup({
 		},
 		{ "nvim-lua/plenary.nvim" },
 		{ "mbbill/undotree" },
-		{ "tpope/vim-fugitive" },
+		-- JJ (Jujutsu) plugins
+		{
+			"NicolasGB/jj.nvim",
+			version = "*",
+			config = function()
+				require("jj").setup({})
+			end,
+		},
+		{
+			"julienvincent/hunk.nvim",
+			cmd = { "DiffEditor" },
+			dependencies = { "MunifTanjim/nui.nvim" },
+			config = function()
+				require("hunk").setup()
+			end,
+		},
+		{
+			"evanphx/jjsigns.nvim",
+			config = function()
+				require("jjsigns").setup()
+			end,
+		},
+		{
+			"zschreur/telescope-jj.nvim",
+		},
 		{
 			"hrsh7th/nvim-cmp",
 			dependencies = {
@@ -166,61 +188,8 @@ require("lazy").setup({
 			event = "VeryLazy",
 			config = true,
 		},
-		{
-			"sindrets/diffview.nvim",
-			dependencies = { "nvim-lua/plenary.nvim" },
-			cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
-			opts = {
-				diff_binaries = false,
-				enhanced_diff_hl = true,
-				git_cmd = { "git" },
-				use_icons = true,
-				show_help_hints = true,
-				watch_index = true,
-				icons = {
-					folder_closed = "",
-					folder_open = "",
-				},
-				signs = {
-					fold_closed = "",
-					fold_open = "",
-					done = "✓",
-				},
-				view = {
-					default = {
-						layout = "diff2_horizontal",
-						winbar_info = false,
-					},
-					merge_tool = {
-						layout = "diff3_horizontal",
-						disable_diagnostics = true,
-						winbar_info = true,
-					},
-					file_history = {
-						layout = "diff2_horizontal",
-						winbar_info = false,
-					},
-				},
-			},
-		},
-		{
-			"lewis6991/gitsigns.nvim",
-			event = { "BufReadPre", "BufNewFile" },
-			opts = {
-				signs = {
-					add = { text = "▎" },
-					change = { text = "▎" },
-					delete = { text = "" },
-					topdelete = { text = "" },
-					changedelete = { text = "▎" },
-					untracked = { text = "▎" },
-				},
-				-- Keymaps configured in lua/jorge/git.lua
-				on_attach = function(bufnr)
-					require("jorge.git").setup_gitsigns_keymaps(bufnr)
-				end,
-			},
-		},
+
+
 		{
 			"gelguy/wilder.nvim",
 			config = function()
