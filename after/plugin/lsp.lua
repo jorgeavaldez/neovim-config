@@ -169,6 +169,12 @@ vim.diagnostic.config({
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 local lspkind = require("lspkind")
+lspkind.init({
+	mode = "symbol",
+	symbol_map = {
+		Codeium = "",
+	},
+})
 
 local default_mapping = cmp.mapping.preset.insert({
 	["<CR>"] = cmp.mapping.confirm({ select = false }),
@@ -202,12 +208,8 @@ cmp.setup({
 	},
 	formatting = {
 		format = lspkind.cmp_format({
-			mode = "symbol",
 			maxwidth = 50,
 			ellipsis_char = "...",
-			symbol_map = {
-				Codeium = "",
-			},
 		}),
 	},
 	mapping = default_mapping,
