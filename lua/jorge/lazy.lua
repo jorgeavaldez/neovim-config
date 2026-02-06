@@ -403,7 +403,7 @@ require("lazy").setup({
 		{
 			"stevearc/oil.nvim",
 			---@module 'oil'
-			---@type oil.SetupOpts
+			---@type oil.SetupOpts|fun():oil.SetupOpts
 			opts = function()
 				local detail = false
 
