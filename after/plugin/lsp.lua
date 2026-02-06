@@ -241,6 +241,12 @@ cmp.setup({
 	},
 })
 
+-- Disable all completion for jj describe buffers (jujutsu:/// URI path
+-- gets treated as a UNC path by LSP, causing "empty share name" errors)
+cmp.setup.filetype('jjdescription', {
+	sources = {},
+})
+
 -- Disable Codeium for Oil buffers (it chokes on oil:// URI paths)
 -- Keep LSP, luasnip, and lazydev active for helpful completions
 cmp.setup.filetype('oil', {
