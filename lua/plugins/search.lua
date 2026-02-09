@@ -12,6 +12,7 @@ return {
 							"rg",
 							"--files",
 							"--hidden",
+							"--no-require-git",
 							"-g",
 							"!.git",
 							"-g",
@@ -75,6 +76,16 @@ return {
 
 			telescope.setup({
 				defaults = {
+					vimgrep_arguments = {
+						"rg",
+						"--color=never",
+						"--no-heading",
+						"--with-filename",
+						"--line-number",
+						"--column",
+						"--smart-case",
+						"--no-require-git",
+					},
 					results_title = false,
 					selection_caret = "▶ ",
 					entry_prefix = "  ",
