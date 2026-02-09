@@ -56,7 +56,97 @@ require("lazy").setup({
 		{
 			"nvim-telescope/telescope.nvim",
 			branch = "0.1.x",
-			dependencies = { "nvim-lua/plenary.nvim" },
+			cmd = "Telescope",
+			keys = {
+				{
+					"<leader>pf",
+					function()
+						require("telescope.builtin").find_files({
+							find_command = {
+								"rg",
+								"--files",
+								"--hidden",
+								"-g",
+								"!.git",
+								"-g",
+								"!.jj",
+							},
+						})
+					end,
+					desc = "Find files (incl. hidden)",
+				},
+				{
+					"<C-p>",
+					function()
+						local ok = pcall(function()
+							require("telescope").extensions.jj.files()
+						end)
+						if not ok then
+							require("telescope.builtin").git_files()
+						end
+					end,
+					desc = "Find files (jj/git)",
+				},
+				{ "<leader>/", function() require("telescope.builtin").live_grep() end, desc = "Live grep in project" },
+				{ "<leader>*", function() require("telescope.builtin").grep_string() end, desc = "Grep word under cursor" },
+				{ "<leader>bb", function() require("telescope.builtin").buffers() end, desc = "List buffers" },
+				{ "<leader>s", function() require("telescope.builtin").lsp_document_symbols() end, desc = "Show symbols in document" },
+				{ "<leader>ps", function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end, desc = "Workspace symbols" },
+				{ "gr", function() require("telescope.builtin").lsp_references() end, desc = "Go to references" },
+				{ "gi", function() require("telescope.builtin").lsp_implementations() end, desc = "Go to implementations" },
+				{
+					"<leader>Tt",
+					function()
+						require("telescope.builtin").colorscheme({ enable_preview = true })
+					end,
+					desc = "Theme picker",
+				},
+				{ "<leader><leader>", function() require("telescope.builtin").commands() end, desc = "Command palette" },
+				{ "<leader>?", function() require("telescope.builtin").keymaps() end, desc = "Search keymaps" },
+			},
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"zschreur/telescope-jj.nvim",
+			},
+			config = function()
+				local telescope = require("telescope")
+				local telescope_actions = require("telescope.actions")
+				local ok_trouble, trouble = pcall(require, "trouble.sources.telescope")
+
+				local mappings = {
+					i = {},
+					n = {
+						["J"] = telescope_actions.results_scrolling_down,
+						["K"] = telescope_actions.results_scrolling_up,
+						["gg"] = telescope_actions.move_to_top,
+						["G"] = telescope_actions.move_to_bottom,
+					},
+				}
+				if ok_trouble then
+					mappings.i["<c-t>"] = trouble.open
+					mappings.n["<c-t>"] = trouble.open
+				end
+
+				telescope.setup({
+					defaults = {
+						results_title = false,
+						selection_caret = "▶ ",
+						entry_prefix = "  ",
+						mappings = mappings,
+					},
+					pickers = {
+						buffers = {
+							mappings = {
+								i = {
+									["<c-d>"] = telescope_actions.delete_buffer + telescope_actions.move_to_top,
+								},
+							},
+						},
+					},
+				})
+
+				pcall(telescope.load_extension, "jj")
+			end,
 		},
 		{
 			"catppuccin/nvim",
@@ -79,19 +169,125 @@ require("lazy").setup({
 		{
 			"nvim-treesitter/nvim-treesitter",
 			build = ":TSUpdate",
+			event = { "BufReadPost", "BufNewFile" },
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter-textobjects",
+				"windwp/nvim-ts-autotag",
+			},
+			config = function()
+				require("nvim-treesitter.configs").setup({
+					ensure_installed = {
+						"javascript",
+						"typescript",
+						"lua",
+						"vim",
+						"vimdoc",
+						"rust",
+						"markdown",
+						"markdown_inline",
+						"terraform",
+						"hcl",
+					},
+					sync_install = false,
+					auto_install = true,
+					highlight = {
+						enable = true,
+						additional_vim_regex_highlighting = false,
+					},
+					textobjects = {
+						select = {
+							enable = true,
+							lookahead = true,
+							keymaps = {
+								["af"] = "@function.outer",
+								["if"] = "@function.inner",
+								["ac"] = "@class.outer",
+								["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+								["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+							},
+							selection_modes = {
+								["@parameter.outer"] = "v",
+								["@function.outer"] = "V",
+								["@class.outer"] = "<c-v>",
+							},
+							include_surrounding_whitespace = true,
+						},
+						swap = {
+							enable = true,
+							swap_next = {
+								["<leader>J"] = "@parameter.inner",
+							},
+							swap_previous = {
+								["<leader>K"] = "@parameter.inner",
+							},
+						},
+						move = {
+							enable = true,
+							set_jumps = true,
+							goto_next_start = {
+								["]f"] = { query = "@function.outer", desc = "Next function" },
+								["]c"] = { query = "@class.outer", desc = "Next class" },
+								["]l"] = { query = "@loop.*", desc = "Next loop" },
+								["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
+								["]z"] = { query = "@fold", query_group = "folds", desc = "Next folds" },
+							},
+							goto_next_end = {
+								["]F"] = { query = "@function.outer", desc = "Next function" },
+								["]C"] = { query = "@class.outer", desc = "Next class" },
+							},
+							goto_previous_start = {
+								["[f"] = { query = "@function.outer", desc = "Previous function" },
+								["[c"] = { query = "@class.outer", desc = "Previous class" },
+								["[s"] = { query = "@scope", query_group = "locals", desc = "Prevoius scope" },
+							},
+							goto_previous_end = {
+								["[F"] = { query = "@function.outer", desc = "Previous function" },
+								["[C"] = { query = "@class.outer", desc = "Previous class" },
+							},
+							goto_next = {
+								["]i"] = { query = "@conditional.outer", desc = "Next conditional" },
+							},
+							goto_previous = {
+								["[i"] = { query = "@conditional.outer", desc = "Previous conditional" },
+							},
+						},
+						lsp_interop = {
+							enable = true,
+							border = "none",
+							floating_preview_opts = {},
+							peek_definition_code = {
+								["<leader>df"] = "@function.outer",
+								["<leader>dc"] = "@class.outer",
+							},
+						},
+					},
+				})
+
+				require("nvim-ts-autotag").setup({
+					opts = {
+						enable_close = true,
+						enable_rename = true,
+						enable_close_on_slash = false,
+					},
+				})
+			end,
 		},
 		{
 			"nvim-treesitter/nvim-treesitter-textobjects",
-			dependencies = {
-				"nvim-treesitter/nvim-treesitter",
-			},
+			lazy = true,
 		},
 		{ "nvim-lua/plenary.nvim" },
-		{ "mbbill/undotree" },
+		{
+			"mbbill/undotree",
+			keys = {
+				{ "<leader>u", "<cmd>UndotreeToggle<CR>", desc = "Toggle undo tree" },
+			},
+		},
 		-- JJ (Jujutsu) plugins
 		{
 			"NicolasGB/jj.nvim",
 			version = "*",
+			cmd = { "J", "Jdiff" },
 			config = function()
 				require("jj").setup({})
 			end,
@@ -106,35 +302,41 @@ require("lazy").setup({
 		},
 		{
 			"evanphx/jjsigns.nvim",
+			event = { "BufReadPre", "BufNewFile" },
 			config = function()
 				require("jjsigns").setup()
 			end,
 		},
 		{
 			"zschreur/telescope-jj.nvim",
+			lazy = true,
 		},
 		{
 			"hrsh7th/nvim-cmp",
+			lazy = true,
 			dependencies = {
-				{ "hrsh7th/cmp-nvim-lsp" },
-				{ "L3MON4D3/LuaSnip" },
-				{ "L3MON4D3/LuaSnip" },
-				{ "onsails/lspkind.nvim" },
+				{ "hrsh7th/cmp-nvim-lsp", lazy = true },
+				{ "L3MON4D3/LuaSnip", lazy = true },
+				{ "onsails/lspkind.nvim", lazy = true },
 			}
 		},
 		{
 			"mason-org/mason.nvim",
+			lazy = true,
 		},
 		{
 			"mason-org/mason-lspconfig.nvim",
+			lazy = true,
 			dependencies = { "mason-org/mason.nvim" },
 		},
 		{
 			"nvimtools/none-ls.nvim",
+			lazy = true,
 			dependencies = { "nvim-lua/plenary.nvim" },
 		},
 		{
 			"nvimdev/lspsaga.nvim",
+			lazy = true,
 			config = function()
 				require("lspsaga").setup({
 					-- Disable lspsaga's winbar, use dropbar.nvim instead
@@ -148,20 +350,44 @@ require("lazy").setup({
 				"nvim-tree/nvim-web-devicons",
 			},
 		},
-		{ "mfussenegger/nvim-dap" },
+		{ "mfussenegger/nvim-dap", lazy = true },
 		{
 			"mfussenegger/nvim-dap-python",
+			lazy = true,
 			dependencies = { "mfussenegger/nvim-dap" },
 		},
 		{
 			"rcarriga/nvim-dap-ui",
+			lazy = true,
 			dependencies = {
 				"mfussenegger/nvim-dap",
+				"mfussenegger/nvim-dap-python",
 				"nvim-neotest/nvim-nio",
 			},
+			keys = {
+				{
+					"<leader>md",
+					function()
+						require("dapui").toggle()
+					end,
+					desc = "Toggle debugger",
+				},
+			},
+			config = function()
+				require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
+				require("dapui").setup()
+			end,
 		},
 		{
 			"j-hui/fidget.nvim",
+			lazy = true,
+		},
+		{
+			"neovim/nvim-lspconfig",
+			event = { "BufReadPre", "BufNewFile" },
+			config = function()
+				require("jorge.plugins.lsp").setup()
+			end,
 		},
 		{
 			"folke/trouble.nvim",
@@ -173,6 +399,13 @@ require("lazy").setup({
 				},
 			},
 			cmd = "Trouble",
+			keys = {
+				{ "<leader>xx", "<cmd>Trouble<cr>", desc = "Trouble" },
+				{ "<leader>xw", "<cmd>Trouble diagnostics<cr>", desc = "Trouble diagnostics" },
+				{ "<leader>xl", "<cmd>Trouble loclist<cr>", desc = "Trouble loclist" },
+				{ "<leader>xq", "<cmd>Trouble quickfix<cr>", desc = "Trouble quickfix" },
+				{ "gR", "<cmd>Trouble lsp_references<cr>", desc = "Trouble references" },
+			},
 		},
 		{
 			"folke/which-key.nvim",
@@ -180,6 +413,53 @@ require("lazy").setup({
 			init = function()
 				vim.o.timeout = true
 				vim.o.timeoutlen = 300
+			end,
+			config = function()
+				local wk = require("which-key")
+				wk.setup({})
+				wk.add({
+					{ "<leader>a", group = "AI/Assistant" },
+					{ "<leader>b", group = "Buffers" },
+					{ "<leader>bc", group = "Breadcrumbs" },
+					{ "<leader>c", group = "Config" },
+					{ "<leader>ca", desc = "Code action (LSP)" },
+					{ "<leader>ce", desc = "Open config directory" },
+					{ "<leader>d", desc = "Open diagnostic float" },
+					{ "<leader>m", group = "Debug" },
+					{ "<leader>md", desc = "Toggle debugger" },
+					{ "<leader>k", desc = "Hover documentation (LSP)" },
+					{ "<leader>r", desc = "Rename symbol (LSP)" },
+					{ "<leader>f", group = "Files" },
+					{ "<leader>ff", desc = "Format buffer" },
+					{ "<leader>fc", desc = "Copy file path" },
+					{ "<leader>fD", desc = "Delete buffer contents" },
+					{ "<leader>fR", desc = "Rename file (LSP)" },
+					{ "<leader>j", group = "JJ (jujutsu)" },
+					{ "<leader>o", group = "Obsidian" },
+					{ "<leader>p", group = "Project" },
+					{ "<leader>pf", desc = "Find files (incl. hidden)" },
+					{ "<leader>ps", desc = "Workspace symbols" },
+					{ "<leader>pv", desc = "Open file explorer (Oil)" },
+					{ "<leader>s", desc = "Document symbols" },
+					{ "<leader>/", desc = "Live grep in project" },
+					{ "<leader>*", desc = "Grep word under cursor" },
+					{ "<leader>t", group = "Tabs" },
+					{ "<leader>T", group = "Theme" },
+					{ "<leader>Tt", desc = "Theme picker" },
+					{ "<leader>w", group = "Windows" },
+					{ "<leader>wf", group = "Workflow Files" },
+					{ "<leader>y", desc = "Yank to clipboard" },
+					{ "<leader>Y", desc = "Yank line to clipboard" },
+					{ "<leader>$", desc = "Open terminal" },
+					{ "<leader>u", desc = "Toggle undo tree" },
+					{ "<leader>x", group = "Trouble" },
+					{ "<C-p>", desc = "Find files (jj/git)" },
+					{ "<C-h>", desc = "Signature help (LSP)", mode = "i" },
+					{ "gd", desc = "Go to definition" },
+					{ "gr", desc = "Go to references" },
+					{ "gi", desc = "Go to implementations" },
+					{ "gR", desc = "Trouble references" },
+				})
 			end,
 		},
 		{
@@ -302,10 +582,21 @@ require("lazy").setup({
 		{ "tpope/vim-sleuth" },
 		{
 			"ray-x/go.nvim",
+			ft = { "go", "gomod", "gowork", "gotmpl" },
 			dependencies = {
 				"ray-x/guihua.lua",
 				"nvim-treesitter/nvim-treesitter",
 			},
+			config = function()
+				local capabilities = vim.lsp.protocol.make_client_capabilities()
+				capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+				require("go").setup({
+					lsp_cfg = {
+						capabilities = capabilities,
+					},
+					lsp_keymaps = false,
+				})
+			end,
 		},
 		{
 			"pmizio/typescript-tools.nvim",
@@ -319,9 +610,10 @@ require("lazy").setup({
 				})
 			end,
 		},
-		{ "windwp/nvim-ts-autotag" },
+		{ "windwp/nvim-ts-autotag", lazy = true },
 		{
 			"Exafunction/windsurf.nvim",
+			event = "InsertEnter",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"hrsh7th/nvim-cmp",
@@ -332,7 +624,7 @@ require("lazy").setup({
 		},
 		{
 			"supermaven-inc/supermaven-nvim",
-			enabled = true,
+			enabled = false,
 			config = function()
 				require("supermaven-nvim").setup({
 					keymaps = {
@@ -536,10 +828,12 @@ require("lazy").setup({
 		},
 		{
 			"Bekaboo/dropbar.nvim",
+			event = "VeryLazy",
 			-- No dependencies required, works with builtin LSP and treesitter
 		},
 		{
 			"stevearc/overseer.nvim",
+			cmd = { "OverseerRun", "OverseerToggle", "OverseerOpen", "OverseerQuickAction" },
 			opts = {},
 		},
 		{

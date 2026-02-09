@@ -31,9 +31,9 @@ vim.api.nvim_create_user_command("JJWorkflow", function()
 	vim.cmd("edit " .. vim.fn.stdpath("config") .. "/JJ_WORKFLOW.md")
 end, { desc = "Open JJ workflow reference" })
 
--- Which-key integration
-local ok, wk = pcall(require, "which-key")
-if ok then
+-- Which-key integration (only if already loaded)
+local wk = package.loaded["which-key"]
+if wk then
 	wk.add({
 		{ "<leader>g", group = "JJ (jujutsu)" },
 		{ "<leader>j", group = "JJ (jujutsu)" },
