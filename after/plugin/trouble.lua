@@ -1,1 +1,0 @@
--- Trouble + Telescope integration moved to lazy.nvim plugin specs in lua/jorge/lazy.lua

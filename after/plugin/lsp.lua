@@ -1,2 +1,0 @@
--- LSP setup moved to lazy.nvim config via:
---   neovim/nvim-lspconfig -> require("jorge.plugins.lsp").setup()

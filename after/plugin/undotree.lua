@@ -1,1 +1,0 @@
--- Undotree keymap moved to lazy.nvim plugin spec in lua/jorge/lazy.lua
