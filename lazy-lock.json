@@ -10,6 +10,7 @@
   "go.nvim": { "branch": "master", "commit": "421694ad11759ad22d5200cff6a8c69d223ade29" },
   "guihua.lua": { "branch": "master", "commit": "ef44ba40f12e56c1c9fa45967f2b4d142e4b97a0" },
   "hunk.nvim": { "branch": "master", "commit": "029566b4414f79508e6763a80ab6c7eda4a6dd97" },
+  "jj-diffconflicts": { "branch": "main", "commit": "6d9eedadf1fab87bccb0a4a7ceda829da8023efb" },
   "jj.nvim": { "branch": "main", "commit": "680d864e1165ac5d334eef6d69e301f2094ff4c3" },
   "jjsigns.nvim": { "branch": "main", "commit": "f5f5cefef0945cc00ba914584275f9cef8c2e792" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },

@@ -6,6 +6,7 @@
 - **hunk.nvim** — Interactive diff-editor for `jj split`, `jj squash -i`, etc.
 - **jjsigns.nvim** — Gutter signs showing changes vs parent revision
 - **telescope-jj.nvim** — Telescope picker for jj files, diffs, conflicts
+- **jj-diffconflicts** — Conflict resolution merge tool for `jj resolve`
 
 ## Core Keymaps (dual-bound: `<leader>g*` and `<leader>j*`)
 
@@ -77,6 +78,60 @@ Used automatically when jj needs a diff editor (`jj split`, `jj squash -i`).
 | `q` | Quit/abort (no changes written) |
 | `g?` | Help |
 
+## Conflict Resolution (jj-diffconflicts)
+
+Configured as the **default merge tool** in jj. When conflicts exist after a rebase or merge, `jj resolve` automatically opens Neovim with a two-way diff interface.
+
+### How It Works
+
+1. **Tab 1 — Two-way diff**: Shows the two conflicting sides. Edit the **left side** to produce the desired result.
+2. **Tab 2 — History view**: A 3-way diff between both sides and their common ancestor, for context on how the sides diverged.
+
+### Usage
+
+```bash
+# Resolve all conflicted files (uses diffconflicts by default)
+jj resolve
+
+# Resolve a specific file
+jj resolve path/to/file.rs
+```
+
+### Controls
+
+| Action | Key |
+|--------|-----|
+| Save and accept resolution | `:qa` |
+| Abort without resolving | `:cq` |
+| Switch to history tab | `gt` |
+| Switch back to merge tab | `gT` |
+
+### Can Also Be Used Inside Neovim
+
+If you have a buffer with jj conflict markers, you can invoke `:JJDiffConflicts` directly.
+
+## JJ Config
+
+Located at `~/.config/jj/config.toml` (symlinked from `~/dots/jj/config.toml`):
+
+```toml
+[ui]
+diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+merge-editor = "diffconflicts"
+
+[merge-tools.diffconflicts]
+program = "nvim"
+merge-args = [
+  "-c", "let g:jj_diffconflicts_marker_length=$marker_length",
+  "-c", "JJDiffConflicts!",
+  "$output", "$base", "$left", "$right",
+]
+merge-tool-edits-conflict-markers = true
+```
+
+- **diff-editor**: Uses hunk.nvim for interactive diff editing (`jj split`, etc.)
+- **merge-editor**: Uses jj-diffconflicts for conflict resolution (`jj resolve`)
+
 ## Common Workflows
 
 ### "What's going on?"
@@ -106,6 +161,9 @@ CLI: `jj split` → hunk.nvim opens → select hunks with `a`/`A` → `<leader><
 ### "Rebase a change"
 `<leader>gg` → navigate to change → `r` → move cursor to destination → `<CR>`
 
+### "Resolve conflicts after rebase"
+`jj resolve` → Neovim opens with two-way diff → edit left side → `:qa` to save
+
 ### "Undo a mistake"
 `<leader>gu` — or from log: `<S-u>`
 
@@ -122,14 +180,3 @@ CLI: `jj split` → hunk.nvim opens → select hunks with `a`/`A` → `<leader><
 - **Branches → Bookmarks**: Bookmarks are lightweight labels, not branches.
 - **The log is everything**: Status, diff, rebase, squash, push — all from the log buffer.
 - **`jj undo` is magic**: Almost anything can be undone.
-
-## JJ Config
-
-Located at `~/.config/jj/config.toml`:
-
-```toml
-[ui]
-diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
-```
-
-This makes `jj split`, `jj squash -i`, etc. open hunk.nvim inside Neovim.

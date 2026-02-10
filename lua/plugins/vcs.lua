@@ -28,4 +28,8 @@ return {
 		"zschreur/telescope-jj.nvim",
 		lazy = true,
 	},
+	{
+		"rafikdraoui/jj-diffconflicts",
+		cmd = { "JJDiffConflicts" },
+	},
 }
