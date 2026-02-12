@@ -132,6 +132,30 @@ return {
 		end,
 	},
 	{
+		"nvim-orgmode/orgmode",
+		ft = { "org" },
+		cmd = { "Org" },
+		keys = {
+			{ "<leader>oa", "<cmd>Org agenda<CR>", desc = "Org agenda" },
+			{ "<leader>oc", "<cmd>Org capture<CR>", desc = "Org capture" },
+		},
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = function()
+			local org_dir = vim.fn.expand("~/org")
+			if vim.fn.isdirectory(org_dir) == 0 then
+				org_dir = vim.fn.expand("~/orgfiles")
+			end
+
+			require("orgmode").setup({
+				org_agenda_files = { org_dir .. "/**/*.org" },
+				org_default_notes_file = org_dir .. "/inbox.org",
+				org_todo_keywords = { "TODO(t)", "NEXT(n)", "WAIT(w)", "|", "DONE(d)", "CANCELED(c)" },
+			})
+		end,
+	},
+	{
 		"Exafunction/windsurf.nvim",
 		event = "InsertEnter",
 		dependencies = {

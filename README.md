@@ -22,8 +22,18 @@ i'm also learning, and i'm not sure i have a good understanding of everything ye
   - `lsp.lua` — lspconfig, mason, cmp, conform.nvim, nvim-lint, lspsaga, go.nvim, typescript-tools
   - `ui.lua` — oil, which-key, trouble, undotree, surround, dropbar, render-markdown
   - `vcs.lua` — jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj, jj-diffconflicts
-  - `extras.lua` — debugging, obsidian, AI tools, overseer, zig, sidekick
+  - `extras.lua` — debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick
 - `after/plugin/` — post-plugin configuration overrides
+
+## notes
+
+this config supports both obsidian markdown notes and org files.
+
+- `<leader>o` is the notes namespace in which-key
+- `<leader>oa` opens org agenda
+- `<leader>oc` opens org capture
+- org files are loaded from `~/org` (fallback: `~/orgfiles`)
+- default org inbox file: `~/org/inbox.org` (or fallback dir equivalent)
 
 ## version control
 

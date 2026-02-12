@@ -51,7 +51,7 @@ return {
 				{ "<leader>fD", desc = "Delete buffer contents" },
 				{ "<leader>fR", desc = "Rename file (LSP)" },
 				{ "<leader>j", group = "JJ (jujutsu)" },
-				{ "<leader>o", group = "Obsidian" },
+				{ "<leader>o", group = "Notes" },
 				{ "<leader>p", group = "Project" },
 				{ "<leader>pf", desc = "Find files (incl. hidden)" },
 				{ "<leader>ps", desc = "Workspace symbols" },

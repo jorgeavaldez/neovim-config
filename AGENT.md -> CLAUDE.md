@@ -33,7 +33,7 @@ Plugin specifications are split into category files that lazy.nvim auto-imports:
 - `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, lspsaga, fidget, go.nvim, typescript-tools)
 - `lua/plugins/ui.lua` - UI plugins (oil, which-key, trouble, undotree, surround, mini.cmdline, render-markdown, dropbar)
 - `lua/plugins/vcs.lua` - Version control (jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj.nvim, jj-diffconflicts)
-- `lua/plugins/extras.lua` - Everything else (debugging, obsidian, AI tools, overseer, zig, sidekick)
+- `lua/plugins/extras.lua` - Everything else (debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick)
 
 ## Plugin Management
 
@@ -48,7 +48,7 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 
 ### Search & Navigation
 - **Telescope**: File finder, grep, LSP navigation, buffer picker, command palette
-- **Treesitter**: Syntax highlighting, textobjects, autotag
+- **Treesitter**: Syntax highlighting, textobjects, autotag (includes org parser with regex highlighting fallback)
 
 ### LSP & Completion
 - **nvim-lspconfig**: Core LSP client (configured in `lua/jorge/lsp.lua`)
@@ -82,7 +82,8 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 
 ### Extras
 - **nvim-dap + dap-ui**: Debugging (Python via debugpy)
-- **Obsidian.nvim**: Note-taking vault integration (`~/obsidian/delvaze`)
+- **Obsidian.nvim**: Markdown vault integration (`~/obsidian/delvaze`)
+- **orgmode.nvim**: Org file support with agenda/capture (`~/org`, fallback `~/orgfiles`)
 - **Overseer**: Task runner
 - **zig.vim**: Zig language support
 
@@ -162,6 +163,12 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - `<leader>ai` / `<leader>ao` - Toggle OpenCode (Sidekick)
 - `<leader>ag` - Toggle Codex (Sidekick)
 - `<leader>ap` - Sidekick prompt
+
+### Notes (Obsidian + Org)
+- `<leader>o*` - Notes namespace
+- `<leader>oa` - Org agenda
+- `<leader>oc` - Org capture
+- Org defaults: `~/org` (fallback `~/orgfiles`), inbox at `inbox.org`
 
 ### WF Workflow Manager
 - `<leader>wfp` - Add current file as wf prompt
