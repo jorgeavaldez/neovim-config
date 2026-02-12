@@ -20,7 +20,7 @@ vim.keymap.set("v", "<leader>y", '"+y')
 vim.keymap.set("n", "<leader>Y", '"+Y')
 
 vim.keymap.set("n", "<leader>ff", function()
-	vim.lsp.buf.format()
+	require("conform").format({ lsp_format = "fallback" })
 end)
 
 vim.keymap.set("n", "<leader>fc", ":call setreg('+', expand('%:.'))<CR>", { desc = "Copy file path" })

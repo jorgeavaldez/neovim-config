@@ -20,7 +20,7 @@ This is a personal Neovim configuration built with Lua, focused on simplicity an
 - `lua/jorge/commands.lua` - Custom commands and utility functions
 - `lua/jorge/jj.lua` - Jujutsu (jj) workflow keymaps and commands
 - `lua/jorge/wf.lua` - WF workflow manager integration
-- `lua/jorge/lsp.lua` - LSP configuration, completion, formatters
+- `lua/jorge/lsp.lua` - LSP configuration and completion setup
 - `lua/jorge/breadcrumbs.lua` - Breadcrumb trail for visited files
 - `after/plugin/colors.lua` - Color scheme overrides (mostly commented out)
 
@@ -30,7 +30,7 @@ Plugin specifications are split into category files that lazy.nvim auto-imports:
 
 - `lua/plugins/colors.lua` - Color scheme (catppuccin, auto-dark-mode)
 - `lua/plugins/search.lua` - Telescope, Treesitter, textobjects, autotag
-- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, none-ls, lspsaga, fidget, go.nvim, typescript-tools)
+- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, lspsaga, fidget, go.nvim, typescript-tools)
 - `lua/plugins/ui.lua` - UI plugins (oil, which-key, trouble, undotree, surround, mini.cmdline, render-markdown, dropbar)
 - `lua/plugins/vcs.lua` - Version control (jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj.nvim, jj-diffconflicts)
 - `lua/plugins/extras.lua` - Everything else (debugging, obsidian, AI tools, overseer, zig, sidekick)
@@ -54,7 +54,8 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 - **nvim-lspconfig**: Core LSP client (configured in `lua/jorge/lsp.lua`)
 - **mason.nvim + mason-lspconfig**: LSP server management
 - **nvim-cmp**: Autocompletion with LuaSnip, lspkind, codeium
-- **none-ls**: Formatters and linters (biome, djhtml, prettier, yamlfmt, sqlfmt, shfmt)
+- **conform.nvim**: Formatter orchestration with minimal-diff formatting and LSP fallback
+- **nvim-lint**: Async CLI-based lint diagnostics via `vim.diagnostic`
 - **lspsaga**: Enhanced LSP UI
 - **fidget.nvim**: LSP progress notifications
 - **go.nvim**: Go development
@@ -139,7 +140,8 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - `<leader>d` - Open diagnostic float
 - `<leader>ca` - Code actions
 - `<leader>r` - Rename symbol
-- `<leader>ff` - Format buffer
+- `<leader>ff` - Format buffer (Conform with LSP fallback)
+- `:LintInfo` - Show selected linter(s), cwd, and binary resolution for current buffer
 - `gr` - Go to references (Telescope)
 - `gd` - Go to definition
 - `gi` - Go to implementations (Telescope)
@@ -188,13 +190,20 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - **Terraform**: terraformls
 - **Zig**: zls (with semantic_tokens = "partial")
 
-### Formatters (via none-ls)
+### Formatters (via conform.nvim)
 - **Web**: Biome (JS/TS/JSON), Prettier (Markdown only)
 - **Python**: Handled by ruff LSP
-- **Templates**: djhtml, djlint
-- **YAML**: yamlfmt (+ yamllint diagnostics)
+- **Templates**: djlint
+- **YAML**: yamlfmt
 - **SQL**: sqlfmt
 - **Shell**: shfmt
+
+### Linters (via nvim-lint + LSP)
+- **JavaScript/TypeScript**: Dynamic selection (`biomejs` preferred; falls back to `eslint_d`/`eslint` when eslint config is present; otherwise global/local biome)
+- **Python**: ruff + pyright LSP diagnostics
+- **Templates**: djlint
+- **YAML**: yamllint
+- **Shell**: shellcheck
 
 ## Custom Features
 
