@@ -26,6 +26,15 @@ end)
 vim.keymap.set("n", "<leader>fc", ":call setreg('+', expand('%:.'))<CR>", { desc = "Copy file path" })
 vim.keymap.set("n", "<leader>fC", ":call setreg('+', expand('%:p'))<CR>", { desc = "Copy full file path" })
 vim.keymap.set("n", "<leader>fG", "<cmd>OpenCurrentFileInGitHub<CR>", { desc = "Open current file on GitHub" })
+vim.keymap.set("x", "<leader>fG", function()
+	local start_line = vim.fn.line("v")
+	local end_line = vim.fn.line(".")
+
+	require("jorge.commands").open_current_file_in_github({
+		start_line = start_line,
+		end_line = end_line,
+	})
+end, { desc = "Open selection on GitHub" })
 vim.keymap.set("n", "<leader>fD", ":%d<CR>", { desc = "Delete contents of current buffer/file" })
 
 vim.keymap.set("n", "<C-k>", ":noh<CR>", { desc = "Clear search results" })

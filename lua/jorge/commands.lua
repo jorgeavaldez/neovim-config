@@ -85,7 +85,9 @@ local function parse_github_remote(remote_url)
 	return "https://github.com/" .. path
 end
 
-M.open_current_file_in_github = function()
+M.open_current_file_in_github = function(opts)
+	opts = opts or {}
+
 	local file_path = vim.api.nvim_buf_get_name(0)
 	if file_path == "" then
 		vim.notify("Current buffer is not a file", vim.log.levels.ERROR)
@@ -128,9 +130,33 @@ M.open_current_file_in_github = function()
 	end
 
 	local relative_path = absolute_path:sub(#repo_prefix + 1)
+	local line_fragment
 
-	local line_number = vim.api.nvim_win_get_cursor(0)[1]
-	local url = string.format("%s/blob/%s/%s#L%d", github_repo, git_ref, relative_path, line_number)
+	local start_line = opts.start_line
+	local end_line = opts.end_line
+
+	if (not start_line or not end_line) and opts.use_visual_range then
+		start_line = vim.fn.getpos("'<")[2]
+		end_line = vim.fn.getpos("'>")[2]
+	end
+
+	if start_line and end_line and start_line > 0 and end_line > 0 then
+		if start_line > end_line then
+			start_line, end_line = end_line, start_line
+		end
+		if start_line == end_line then
+			line_fragment = string.format("#L%d", start_line)
+		else
+			line_fragment = string.format("#L%d-L%d", start_line, end_line)
+		end
+	end
+
+	if not line_fragment then
+		local line_number = vim.api.nvim_win_get_cursor(0)[1]
+		line_fragment = string.format("#L%d", line_number)
+	end
+
+	local url = string.format("%s/blob/%s/%s%s", github_repo, git_ref, relative_path, line_fragment)
 
 	local ok, err = pcall(vim.ui.open, url)
 	if not ok then
@@ -141,6 +167,10 @@ end
 vim.api.nvim_create_user_command("OpenCurrentFileInGitHub", function(_)
 	M.open_current_file_in_github()
 end, { desc = "Open current file on GitHub" })
+
+vim.api.nvim_create_user_command("OpenCurrentSelectionInGitHub", function(_)
+	M.open_current_file_in_github({ use_visual_range = true })
+end, { desc = "Open current selection on GitHub" })
 
 vim.api.nvim_create_user_command("GetProjectRoot", function(_)
 	print(M.get_project_root())
