@@ -52,6 +52,96 @@ M.get_project_root = function()
 	return vim.fn.getcwd()
 end
 
+local function trim(s)
+	return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+local function get_git_root(start_dir)
+	local output = trim(vim.fn.system({ "git", "-C", start_dir, "rev-parse", "--show-toplevel" }))
+	if vim.v.shell_error ~= 0 or output == "" then
+		return nil
+	end
+
+	return output
+end
+
+local function parse_github_remote(remote_url)
+	local host, path = remote_url:match("^https?://([^/]+)/(.+)$")
+	if not host then
+		host, path = remote_url:match("^git@([^:]+):(.+)$")
+	end
+	if not host then
+		host, path = remote_url:match("^ssh://git@([^/]+)/(.+)$")
+	end
+	if not host then
+		host, path = remote_url:match("^git://([^/]+)/(.+)$")
+	end
+
+	if host ~= "github.com" or not path then
+		return nil
+	end
+
+	path = path:gsub("%.git$", ""):gsub("/+$", "")
+	return "https://github.com/" .. path
+end
+
+M.open_current_file_in_github = function()
+	local file_path = vim.api.nvim_buf_get_name(0)
+	if file_path == "" then
+		vim.notify("Current buffer is not a file", vim.log.levels.ERROR)
+		return
+	end
+
+	local file_dir = vim.fn.fnamemodify(file_path, ":p:h")
+	local git_root = get_git_root(file_dir)
+	if not git_root then
+		vim.notify("No git repository detected", vim.log.levels.ERROR)
+		return
+	end
+
+	local remote_url = trim(vim.fn.system({ "git", "-C", git_root, "config", "--get", "remote.origin.url" }))
+	if vim.v.shell_error ~= 0 or remote_url == "" then
+		vim.notify("No git remote 'origin' configured", vim.log.levels.ERROR)
+		return
+	end
+
+	local github_repo = parse_github_remote(remote_url)
+	if not github_repo then
+		vim.notify("Remote origin is not a GitHub repository", vim.log.levels.ERROR)
+		return
+	end
+
+	local git_ref = trim(vim.fn.system({ "git", "-C", git_root, "rev-parse", "--abbrev-ref", "HEAD" }))
+	if vim.v.shell_error ~= 0 or git_ref == "" or git_ref == "HEAD" then
+		git_ref = trim(vim.fn.system({ "git", "-C", git_root, "rev-parse", "HEAD" }))
+	end
+	if vim.v.shell_error ~= 0 or git_ref == "" then
+		vim.notify("Could not determine git ref", vim.log.levels.ERROR)
+		return
+	end
+
+	local absolute_path = vim.fn.fnamemodify(file_path, ":p")
+	local repo_prefix = git_root .. "/"
+	if absolute_path:sub(1, #repo_prefix) ~= repo_prefix then
+		vim.notify("Current file is outside the repository root", vim.log.levels.ERROR)
+		return
+	end
+
+	local relative_path = absolute_path:sub(#repo_prefix + 1)
+
+	local line_number = vim.api.nvim_win_get_cursor(0)[1]
+	local url = string.format("%s/blob/%s/%s#L%d", github_repo, git_ref, relative_path, line_number)
+
+	local ok, err = pcall(vim.ui.open, url)
+	if not ok then
+		vim.notify("Failed to open URL: " .. tostring(err), vim.log.levels.ERROR)
+	end
+end
+
+vim.api.nvim_create_user_command("OpenCurrentFileInGitHub", function(_)
+	M.open_current_file_in_github()
+end, { desc = "Open current file on GitHub" })
+
 vim.api.nvim_create_user_command("GetProjectRoot", function(_)
 	print(M.get_project_root())
 end, {})

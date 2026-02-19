@@ -260,6 +260,17 @@ This runs all three checks: `lint`, `typecheck`, and `format-check`. Fix any err
 
 If `make format-check` fails, run `make format` to fix it, then re-run `make check`.
 
+### Evidence-first debugging (no lazy fixes)
+
+When diagnostics, type errors, lint failures, or runtime errors appear:
+
+- **Do not suppress first.** Do **not** add `---@diagnostic disable*`, linter ignores, or other suppressions as a first response.
+- **Find root cause with evidence.** Inspect upstream/local source, docs, and changelogs before deciding on a fix.
+- **Cite evidence explicitly.** In your summary, include exact file paths and line numbers (and links when relevant) that justify the change.
+- **Prefer real fixes over silence.** Use type-safe annotations/casts, API-correct refactors, or structural fixes instead of hiding warnings.
+- **Allow suppression only as last resort.** If a suppression is truly unavoidable, explain why, scope it to the narrowest possible line/block, and cite the evidence proving it is necessary.
+- **Do not be lazy about code quality.** Treat warning resolution as correctness work, and preserve the sanctity of the codebase.
+
 ### Tool installation
 
 Tools are managed via mise. Run `mise install` in the project root to install:
