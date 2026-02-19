@@ -1,3 +1,17 @@
+local function current_buffer_dir_or_cwd()
+	local buf_path = vim.api.nvim_buf_get_name(0)
+	if buf_path == "" then
+		return vim.fn.getcwd()
+	end
+
+	local dir = vim.fs.dirname(buf_path)
+	if dir == nil or dir == "" then
+		return vim.fn.getcwd()
+	end
+
+	return dir
+end
+
 return {
 	{
 		"nvim-telescope/telescope.nvim",
@@ -23,6 +37,25 @@ return {
 				desc = "Find files (incl. hidden)",
 			},
 			{
+				"<leader>pF",
+				function()
+					require("telescope.builtin").find_files({
+						cwd = current_buffer_dir_or_cwd(),
+						find_command = {
+							"rg",
+							"--files",
+							"--hidden",
+							"--no-require-git",
+							"-g",
+							"!.git",
+							"-g",
+							"!.jj",
+						},
+					})
+				end,
+				desc = "Find files near current buffer",
+			},
+			{
 				"<C-p>",
 				function()
 					local ok = pcall(function()
@@ -42,6 +75,13 @@ return {
 				desc = "Live grep in project",
 			},
 			{
+				"<leader>ss",
+				function()
+					require("telescope.builtin").live_grep({ cwd = current_buffer_dir_or_cwd() })
+				end,
+				desc = "Live grep near current buffer",
+			},
+			{
 				"<leader>*",
 				function()
 					require("telescope.builtin").grep_string()
@@ -56,7 +96,7 @@ return {
 				desc = "List buffers",
 			},
 			{
-				"<leader>s",
+				"<leader>sd",
 				function()
 					require("telescope.builtin").lsp_document_symbols()
 				end,
