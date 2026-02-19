@@ -8,22 +8,28 @@
 - **telescope-jj.nvim** — Telescope picker for jj files, diffs, conflicts
 - **jj-diffconflicts** — Conflict resolution merge tool for `jj resolve`
 
-## Core Keymaps (dual-bound: `<leader>g*` and `<leader>j*`)
+## Core Keymaps (`<leader>j*`)
 
 | Keymap | Command | Description |
 |--------|---------|-------------|
-| `<leader>gg` / `<leader>jj` | `:J log` | **Home base** — log view |
-| `<leader>gs` / `<leader>js` | `:J st` | Status (changed files) |
-| `<leader>gc` / `<leader>jc` | `:J commit` | Describe current change + create new |
-| `<leader>gd` / `<leader>jd` | `:J desc` | Describe current change only |
-| `<leader>gD` / `<leader>jD` | `:Jdiff` | Diff current file vs parent |
-| `<leader>gb` / `<leader>jb` | `:J annotate` | Blame/annotate file |
-| `<leader>gp` / `<leader>jp` | `:J git push` | Push to remote |
-| `<leader>gf` / `<leader>jf` | `:J git fetch` | Fetch from remote |
-| `<leader>gn` / `<leader>jn` | `:J new` | New empty change on top |
-| `<leader>gu` / `<leader>ju` | `:J undo` | Undo last operation |
-| `<leader>gB` / `<leader>jB` | `:J bookmark create ` | Create bookmark (prompts for name) |
-| `<leader>gl` / `<leader>jl` | `:J log` | Log alias |
+| `<leader>jj` | `:J log` | **Home base** — log view |
+| `<leader>js` | `:J st` | Status (changed files) |
+| `<leader>jc` | `:J commit` | Commit current change |
+| `<leader>jd` | `:J desc` | Describe current change |
+| `<leader>jD` | `:Jdiff` | Diff current file vs parent |
+| `<leader>jb` | `:J annotate` | Blame/annotate file |
+| `<leader>jp` | `:J git push` | Push to remote |
+| `<leader>jf` | `:J git fetch` | Fetch from remote |
+| `<leader>jn` | `:J new` | New empty change on top |
+| `<leader>ju` | `:J undo` | Undo last operation |
+| `<leader>jB` | `:J bookmark create ` | Create bookmark (prompts for name) |
+| `<leader>jl` | `:J log` | Log alias |
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `:JJWorkflow` | Open this `JJ_WORKFLOW.md` reference |
 
 ## Telescope
 
@@ -33,7 +39,7 @@
 
 ## Log Buffer Keys (built into jj.nvim)
 
-The log is your command center. Open it with `<leader>gg` or `<leader>jj`.
+The log is your command center. Open it with `<leader>jj`.
 
 | Key | Action |
 |-----|--------|
@@ -135,43 +141,43 @@ merge-tool-edits-conflict-markers = true
 ## Common Workflows
 
 ### "What's going on?"
-`<leader>gg` → browse log → `d` on any change to see its diff
+`<leader>jj` → browse log → `d` on any change to see its diff
 
 ### "I'm done with this change"
-`<leader>gc` → editor opens for description → save & close → new empty change created
+`<leader>jc` → editor opens for description → save & close → new empty change created
 
 ### "Just add/edit a message"
-`<leader>gd` → editor opens → save & close → keep working in same change
+`<leader>jd` → editor opens → save & close → keep working in same change
 
 ### "Push my work"
-`<leader>gp` — or from log: `<S-p>` to push all, `p` to push specific bookmark
+`<leader>jp` — or from log: `<S-p>` to push all, `p` to push specific bookmark
 
 ### "Who wrote this?"
-`<leader>gb` → annotate view → `:q` when done
+`<leader>jb` → annotate view → `:q` when done
 
 ### "Create a bookmark"
-`<leader>gB` → type name → enter. Or from log: `b` on a change.
+`<leader>jB` → type name → enter. Or from log: `b` on a change.
 
 ### "Switch to another change"
-`<leader>gg` → navigate to change → `<CR>` to edit it
+`<leader>jj` → navigate to change → `<CR>` to edit it
 
 ### "Split this change into two"
 CLI: `jj split` → hunk.nvim opens → select hunks with `a`/`A` → `<leader><CR>` to accept
 
 ### "Rebase a change"
-`<leader>gg` → navigate to change → `r` → move cursor to destination → `<CR>`
+`<leader>jj` → navigate to change → `r` → move cursor to destination → `<CR>`
 
 ### "Resolve conflicts after rebase"
 `jj resolve` → Neovim opens with two-way diff → edit left side → `:qa` to save
 
 ### "Undo a mistake"
-`<leader>gu` — or from log: `<S-u>`
+`<leader>ju` — or from log: `<S-u>`
 
 ### "See changed files"
-`<leader>gs` → status view → `<CR>` to open file, `<S-x>` to restore
+`<leader>js` → status view → `<CR>` to open file, `<S-x>` to restore
 
 ### "Diff current file"
-`<leader>gD` → split diff view against parent revision
+`<leader>jD` → split diff view against parent revision
 
 ## Key Differences from Git
 
