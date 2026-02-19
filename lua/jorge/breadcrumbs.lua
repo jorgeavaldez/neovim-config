@@ -21,7 +21,7 @@ local function get_relative_path(bufnr)
 		return nil
 	end
 
-	if not vim.fn.filereadable(abs_path) == 1 then
+	if vim.fn.filereadable(abs_path) ~= 1 then
 		return nil
 	end
 
@@ -41,8 +41,8 @@ local function is_trackable_buffer(bufnr)
 		return false
 	end
 
-	local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
-	local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+	local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+	local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
 	local name = vim.api.nvim_buf_get_name(bufnr)
 
 	if name == "" or name == nil then

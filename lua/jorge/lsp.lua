@@ -11,30 +11,39 @@ function M.setup()
 	local function rename_file()
 		-- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
 		local source_file = vim.api.nvim_buf_get_name(0)
-		local target_file
+		if source_file == "" then
+			vim.notify("Current buffer is not a file", vim.log.levels.ERROR)
+			return
+		end
 
 		vim.ui.input({
 			prompt = "Target : ",
 			completion = "file",
 			default = source_file,
 		}, function(input)
-			target_file = input
-		end)
-
-		local params = {
-			oldUri = vim.uri_from_fname(source_file),
-			newUri = vim.uri_from_fname(target_file),
-		}
-		vim.lsp.buf_request(0, "workspace/willRenameFiles", {
-			files = { params },
-		}, function(err, result)
-			if err then
-				vim.notify("Error renaming file: " .. err.message, vim.log.levels.ERROR)
+			local target_file = vim.trim(input or "")
+			if target_file == "" or target_file == source_file then
 				return
 			end
-			if result then
-				vim.lsp.util.apply_workspace_edit(result, "utf-16")
-			end
+
+			local params = {
+				oldUri = vim.uri_from_fname(source_file),
+				newUri = vim.uri_from_fname(target_file),
+			}
+
+			vim.lsp.buf_request(0, "workspace/willRenameFiles", {
+				files = { params },
+			}, function(err, result, ctx)
+				if err then
+					vim.notify("Error renaming file: " .. err.message, vim.log.levels.ERROR)
+					return
+				end
+				if result then
+					local client = ctx and vim.lsp.get_client_by_id(ctx.client_id) or nil
+					local offset_encoding = client and client.offset_encoding or "utf-16"
+					vim.lsp.util.apply_workspace_edit(result, offset_encoding)
+				end
+			end)
 		end)
 	end
 
