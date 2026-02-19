@@ -103,34 +103,16 @@ function M.setup()
 	})
 
 	require("mason").setup({})
-	require("mason-lspconfig").setup({
-		ensure_installed = {
-			"tailwindcss",
-			"eslint",
-			"pyright",
-			"rust_analyzer",
-			"lua_ls",
-			"gopls",
-			"html",
-			"bashls",
-			"terraformls",
-		},
-		automatic_enable = {
-			exclude = { "ts_ls", "gopls" },
-		},
-	})
 
-	-- Biome formatter/linter
+	-- Biome formatter/linter + code actions
 	vim.lsp.config("biome", {
 		cmd = { "bunx", "biome", "lsp-proxy" },
 	})
-	vim.lsp.enable("biome")
 
 	-- HTML with templ support
 	vim.lsp.config("html", {
 		filetypes = { "html", "templ" },
 	})
-	vim.lsp.enable("html")
 
 	-- Python LSP (pyright)
 	vim.lsp.config("pyright", {
@@ -141,7 +123,6 @@ function M.setup()
 			},
 		},
 	})
-	vim.lsp.enable("pyright")
 
 	-- don't show parse errors in a separate window
 	vim.g.zig_fmt_parse_errors = 0
@@ -155,11 +136,26 @@ function M.setup()
 			},
 		},
 	})
-	vim.lsp.enable("zls")
 
 	-- Python linter/formatter (ruff)
 	vim.lsp.config("ruff", {})
-	vim.lsp.enable("ruff")
+
+	local servers_to_enable = {
+		"bashls",
+		"biome",
+		"html",
+		"lua_ls",
+		"pyright",
+		"ruff",
+		"rust_analyzer",
+		"tailwindcss",
+		"terraformls",
+		"zls",
+	}
+
+	for _, server in ipairs(servers_to_enable) do
+		vim.lsp.enable(server)
+	end
 
 	vim.diagnostic.config({
 		virtual_text = true,

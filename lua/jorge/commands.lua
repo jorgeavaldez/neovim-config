@@ -35,34 +35,63 @@ vim.api.nvim_create_user_command("SortWords", function(_)
 	vim.api.nvim_buf_set_text(0, s_start[2] - 1, s_start[3] - 1, s_end[2] - 1, s_end[3], { new_value })
 end, { range = true })
 
+local function trim(s)
+	return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+local function run_system(cmd, opts)
+	local options = vim.tbl_extend("force", { text = true }, opts or {})
+	local ok, completed = pcall(function()
+		local system_obj = vim.system(cmd, options)
+		local wait = system_obj["wait"]
+		if type(wait) ~= "function" then
+			return { code = 1, stdout = "", stderr = "vim.system wait() unavailable" }
+		end
+		return wait(system_obj)
+	end)
+
+	if not ok then
+		return {
+			code = 1,
+			stdout = "",
+			stderr = tostring(completed),
+		}
+	end
+
+	local code = tonumber(completed["code"]) or 1
+	local stdout = trim(completed["stdout"])
+	local stderr = trim(completed["stderr"])
+	return {
+		code = code,
+		stdout = stdout,
+		stderr = stderr,
+	}
+end
+
 M.get_project_root = function()
 	-- Try to get jj root first
-	local jj_root = vim.fn.system("jj root 2>/dev/null"):gsub("\n$", "")
-	if jj_root ~= "" and vim.v.shell_error == 0 then
-		return jj_root
+	local jj = run_system({ "jj", "root" })
+	if jj.code == 0 and jj.stdout ~= "" then
+		return jj.stdout
 	end
 
 	-- Fall back to git root
-	local git_root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null"):gsub("\n$", "")
-	if git_root ~= "" and vim.v.shell_error == 0 then
-		return git_root
+	local git = run_system({ "git", "rev-parse", "--show-toplevel" })
+	if git.code == 0 and git.stdout ~= "" then
+		return git.stdout
 	end
 
 	-- Fall back to current working directory
 	return vim.fn.getcwd()
 end
 
-local function trim(s)
-	return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
-end
-
 local function get_git_root(start_dir)
-	local output = trim(vim.fn.system({ "git", "-C", start_dir, "rev-parse", "--show-toplevel" }))
-	if vim.v.shell_error ~= 0 or output == "" then
+	local result = run_system({ "git", "rev-parse", "--show-toplevel" }, { cwd = start_dir })
+	if result.code ~= 0 or result.stdout == "" then
 		return nil
 	end
 
-	return output
+	return result.stdout
 end
 
 local function parse_github_remote(remote_url)
@@ -101,8 +130,9 @@ M.open_current_file_in_github = function(opts)
 		return
 	end
 
-	local remote_url = trim(vim.fn.system({ "git", "-C", git_root, "config", "--get", "remote.origin.url" }))
-	if vim.v.shell_error ~= 0 or remote_url == "" then
+	local remote = run_system({ "git", "config", "--get", "remote.origin.url" }, { cwd = git_root })
+	local remote_url = remote.stdout
+	if remote.code ~= 0 or remote_url == "" then
 		vim.notify("No git remote 'origin' configured", vim.log.levels.ERROR)
 		return
 	end
@@ -113,13 +143,15 @@ M.open_current_file_in_github = function(opts)
 		return
 	end
 
-	local git_ref = trim(vim.fn.system({ "git", "-C", git_root, "rev-parse", "--abbrev-ref", "HEAD" }))
-	if vim.v.shell_error ~= 0 or git_ref == "" or git_ref == "HEAD" then
-		git_ref = trim(vim.fn.system({ "git", "-C", git_root, "rev-parse", "HEAD" }))
-	end
-	if vim.v.shell_error ~= 0 or git_ref == "" then
-		vim.notify("Could not determine git ref", vim.log.levels.ERROR)
-		return
+	local git_ref_result = run_system({ "git", "rev-parse", "--abbrev-ref", "HEAD" }, { cwd = git_root })
+	local git_ref = git_ref_result.stdout
+	if git_ref_result.code ~= 0 or git_ref == "" or git_ref == "HEAD" then
+		local sha_result = run_system({ "git", "rev-parse", "HEAD" }, { cwd = git_root })
+		git_ref = sha_result.stdout
+		if sha_result.code ~= 0 or git_ref == "" then
+			vim.notify("Could not determine git ref", vim.log.levels.ERROR)
+			return
+		end
 	end
 
 	local absolute_path = vim.fn.fnamemodify(file_path, ":p")

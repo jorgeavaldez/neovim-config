@@ -31,11 +31,6 @@ return {
 		lazy = true,
 	},
 	{
-		"mason-org/mason-lspconfig.nvim",
-		lazy = true,
-		dependencies = { "mason-org/mason.nvim" },
-	},
-	{
 		"stevearc/conform.nvim",
 		cmd = "ConformInfo",
 		opts = {
@@ -152,9 +147,16 @@ return {
 					local eslint_config = find_up(eslint_markers, dir)
 
 					if biome_config then
-						names = { "biomejs" }
 						cwd = vim.fs.dirname(biome_config)
-						reason = "biome config found: " .. biome_config
+						local biome_clients = vim.lsp.get_clients({ bufnr = bufnr, name = "biome" })
+						if #biome_clients > 0 then
+							names = {}
+							reason =
+								"biome config found and biome LSP attached; skip biomejs to avoid duplicate diagnostics"
+						else
+							names = { "biomejs" }
+							reason = "biome config found but biome LSP not attached: " .. biome_config
+						end
 					elseif eslint_config then
 						local eslint_root = vim.fs.dirname(eslint_config)
 						local eslint_d_bin, eslint_d_scope = resolve_bin(eslint_root, "eslint_d")
@@ -183,6 +185,7 @@ return {
 				if names == nil then
 					names = lint._resolve_linter_by_ft(filetype)
 				end
+				names = names or {}
 
 				return {
 					names = names,
@@ -203,6 +206,10 @@ return {
 				end
 
 				local selected = select_linters(bufnr)
+				if #selected.names == 0 then
+					return
+				end
+
 				vim.api.nvim_buf_call(bufnr, function()
 					lint.try_lint(selected.names, { cwd = selected.cwd })
 				end)

@@ -52,7 +52,7 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 
 ### LSP & Completion
 - **nvim-lspconfig**: Core LSP client (configured in `lua/jorge/lsp.lua`)
-- **mason.nvim + mason-lspconfig**: LSP server management
+- **mason.nvim**: LSP package management (manual installs via `:Mason` / `:MasonInstall`)
 - **nvim-cmp**: Autocompletion with LuaSnip, lspkind, codeium
 - **conform.nvim**: Formatter orchestration with minimal-diff formatting and LSP fallback
 - **nvim-lint**: Async CLI-based lint diagnostics via `vim.diagnostic`
@@ -186,13 +186,13 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 
 ## Language Support
 
-### Configured LSP Servers (via mason-lspconfig)
-- **TypeScript/JavaScript**: typescript-tools.nvim (ts_ls excluded from mason auto-enable)
+### Configured LSP Servers (explicit `vim.lsp.enable` + plugin-managed)
+- **TypeScript/JavaScript**: typescript-tools.nvim + biome LSP (Biome code actions/diagnostics when biome config is present)
 - **Python**: pyright + ruff (ruff hover disabled in favor of pyright)
-- **Go**: gopls + ray-x/go.nvim (gopls excluded from mason auto-enable, managed by go.nvim)
+- **Go**: gopls via ray-x/go.nvim (plugin-managed)
 - **Rust**: rust_analyzer
 - **Lua**: lua_ls with lazydev for Neovim API
-- **Web**: tailwindcss, eslint, html (with templ support), biome
+- **Web**: tailwindcss, html (with templ support), biome
 - **Shell**: bashls
 - **Terraform**: terraformls
 - **Zig**: zls (with semantic_tokens = "partial")
@@ -206,7 +206,7 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - **Shell**: shfmt
 
 ### Linters (via nvim-lint + LSP)
-- **JavaScript/TypeScript**: Dynamic selection (`biomejs` preferred; falls back to `eslint_d`/`eslint` when eslint config is present; otherwise global/local biome)
+- **JavaScript/TypeScript**: Dynamic selection (`biomejs` preferred; skipped when biome LSP is attached to avoid duplicate diagnostics; falls back to `eslint_d`/`eslint` when eslint config is present)
 - **Python**: ruff + pyright LSP diagnostics
 - **Templates**: djlint
 - **YAML**: yamllint

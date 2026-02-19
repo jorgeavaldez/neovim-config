@@ -20,24 +20,16 @@ local function run_wf_command(args, command_name, track_type)
 	vim.notify(start_msg)
 	require("fidget").notify(command_name .. "...")
 
-	local output_lines = {}
 	local cmd = vim.list_extend({ "wf" }, args)
 
-	vim.fn.jobstart(cmd, {
-		stdout_buffered = true,
-		stderr_buffered = true,
-		on_stdout = function(_, data)
-			if data then
-				for _, line in ipairs(data) do
-					if line ~= "" then
-						table.insert(output_lines, line)
-					end
-				end
-			end
-		end,
-		on_exit = function(_, code)
+	vim.system(cmd, { text = true }, function(result)
+		local code = tonumber(result["code"]) or 1
+		local stdout = vim.trim(result["stdout"] or "")
+		local stderr = vim.trim(result["stderr"] or "")
+
+		vim.schedule(function()
 			if code == 0 then
-				local output = table.concat(output_lines, "\n")
+				local output = stdout
 				if output ~= "" then
 					vim.notify("wf " .. args[1] .. " result: " .. output)
 				else
@@ -61,11 +53,14 @@ local function run_wf_command(args, command_name, track_type)
 					.. code
 					.. "): "
 					.. vim.fn.fnamemodify(filepath, ":t")
+				if stderr ~= "" then
+					error_msg = error_msg .. "\n" .. stderr
+				end
 				vim.notify(error_msg, vim.log.levels.ERROR)
 				require("fidget").notify("wf " .. args[1] .. " failed (code: " .. code .. ")", vim.log.levels.ERROR)
 			end
-		end,
-	})
+		end)
+	end)
 end
 
 -- Public API functions
