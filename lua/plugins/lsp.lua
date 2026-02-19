@@ -1,5 +1,9 @@
 return {
 	{
+		"DrKJeff16/wezterm-types",
+		version = false, -- Get the latest version
+	},
+	{
 		"folke/lazydev.nvim",
 		ft = "lua",
 		cmd = "LazyDev",
@@ -7,12 +11,16 @@ return {
 			dependencies = {
 				-- Manage libuv types with lazy. Plugin will never be loaded
 				{ "Bilal2453/luvit-meta", lazy = true },
+				-- https://github.com/DrKJeff16/wezterm-types?tab=readme-ov-file#using-lazydevnvim
+				{ "DrKJeff16/wezterm-types" },
 			},
 			library = {
 				-- load luvit types when the `vim.uv` word is found
 				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
 				{ path = "~/proj/avante.nvim/lua", words = { "avante" } },
 				{ path = "luvit-meta/library", words = { "vim%.uv" } },
+				-- https://github.com/DrKJeff16/wezterm-types?tab=readme-ov-file#using-lazydevnvim
+				{ path = "wezterm-types", mods = { "wezterm" } },
 				-- 'oil.nvim',
 			},
 		},
