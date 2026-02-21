@@ -4,7 +4,6 @@ return {
 	{
 		"NicolasGB/jj.nvim",
 		version = "*",
-		cmd = { "J", "Jdiff" },
 		config = function()
 			require("jj").setup({})
 		end,
