@@ -101,6 +101,33 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 --]]
 
 if vim.g.neovide then
+	vim.g.neovide_scale_factor = 1.0
+	vim.o.guifont = "JetBrains Mono:h13"
+
 	vim.g.neovide_cursor_animation_length = 0
-	vim.o.guifont = "JetBrains Mono:h10"
+	vim.g.neovide_scroll_animation_length = 0.05
+
+	-- it adds weird shadows to menus
+	vim.g.neovide_floating_shadow = false
+	vim.g.neovide_floating_z_height = 1
+	vim.g.neovide_light_angle_degrees = 30
+	vim.g.neovide_light_radius = 10
+
+    -- border radius
+	vim.g.neovide_floating_corner_radius = 0.1
+
+	-- neovide doesn't set copy/paste by default :(
+	local function save()
+		vim.cmd.write()
+	end
+	local function copy()
+		vim.cmd([[normal! "+y]])
+	end
+	local function paste()
+		vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+	end
+
+	vim.keymap.set({ "n", "i", "v" }, "<D-s>", save, { desc = "Save" })
+	vim.keymap.set("v", "<D-c>", copy, { silent = true, desc = "Copy" })
+	vim.keymap.set({ "n", "i", "v", "c", "t" }, "<D-v>", paste, { silent = true, desc = "Paste" })
 end
