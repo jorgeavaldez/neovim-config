@@ -169,7 +169,7 @@ return {
 			end
 
 			telescope.setup({
-				defaults = {
+				defaults = vim.tbl_deep_extend("force", require("telescope.themes").get_ivy({}), {
 					vimgrep_arguments = {
 						"rg",
 						"--color=never",
@@ -184,7 +184,7 @@ return {
 					selection_caret = "▶ ",
 					entry_prefix = "  ",
 					mappings = mappings,
-				},
+				}),
 				pickers = {
 					buffers = {
 						mappings = {

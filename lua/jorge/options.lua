@@ -113,7 +113,7 @@ if vim.g.neovide then
 	vim.g.neovide_light_angle_degrees = 30
 	vim.g.neovide_light_radius = 10
 
-    -- border radius
+	-- border radius
 	vim.g.neovide_floating_corner_radius = 0.1
 
 	-- neovide doesn't set copy/paste by default :(
