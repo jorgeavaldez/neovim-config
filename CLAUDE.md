@@ -42,7 +42,6 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 ### VCS Plugins (Jujutsu-first)
 - **jj.nvim**: Main jj interface — log, status, describe, commit, rebase, bookmarks, push, annotate
 - **hunk.nvim**: Interactive diff-editor for `jj split`, `jj squash -i`, etc.
-- **jjsigns.nvim**: Gutter signs showing changes vs parent revision
 - **telescope-jj.nvim**: Telescope picker for jj files
 - **jj-diffconflicts**: Conflict resolution merge tool for `jj resolve`
 

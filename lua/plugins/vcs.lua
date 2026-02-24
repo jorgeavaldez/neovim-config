@@ -17,13 +17,6 @@ return {
 		end,
 	},
 	{
-		"evanphx/jjsigns.nvim",
-		event = { "BufReadPre", "BufNewFile" },
-		config = function()
-			require("jjsigns").setup()
-		end,
-	},
-	{
 		"zschreur/telescope-jj.nvim",
 		lazy = true,
 	},
