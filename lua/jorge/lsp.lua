@@ -114,6 +114,21 @@ function M.setup()
 		filetypes = { "html", "templ" },
 	})
 
+	-- LuaLS extras for external Lua projects (like WezTerm config)
+	vim.lsp.config("lua_ls", {
+		settings = {
+			Lua = {
+				workspace = {
+					checkThirdParty = false,
+					library = {
+						vim.fn.stdpath("data") .. "/lazy/wezterm-types/lua",
+						vim.fn.stdpath("data") .. "/lazy/wezterm-types/lua/wezterm/types",
+					},
+				},
+			},
+		},
+	})
+
 	-- Python LSP (pyright)
 	vim.lsp.config("pyright", {
 		settings = {

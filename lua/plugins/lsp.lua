@@ -7,20 +7,23 @@ return {
 		"folke/lazydev.nvim",
 		ft = "lua",
 		cmd = "LazyDev",
+		dependencies = {
+			-- Manage libuv types with lazy. Plugin will never be loaded
+			{ "Bilal2453/luvit-meta", lazy = true },
+			-- https://github.com/DrKJeff16/wezterm-types?tab=readme-ov-file#using-lazydevnvim
+			{ "DrKJeff16/wezterm-types" },
+		},
 		opts = {
-			dependencies = {
-				-- Manage libuv types with lazy. Plugin will never be loaded
-				{ "Bilal2453/luvit-meta", lazy = true },
-				-- https://github.com/DrKJeff16/wezterm-types?tab=readme-ov-file#using-lazydevnvim
-				{ "DrKJeff16/wezterm-types" },
-			},
 			library = {
 				-- load luvit types when the `vim.uv` word is found
 				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
 				{ path = "~/proj/avante.nvim/lua", words = { "avante" } },
 				{ path = "luvit-meta/library", words = { "vim%.uv" } },
 				-- https://github.com/DrKJeff16/wezterm-types?tab=readme-ov-file#using-lazydevnvim
-				{ path = "wezterm-types", mods = { "wezterm" } },
+				-- map `require("wezterm")` to the metadata file at `lua/wezterm/types/wezterm.lua`
+				{ path = "wezterm-types/lua/wezterm/types", mods = { "wezterm" } },
+				-- keep module resolution for direct `wezterm.types.*` references
+				{ path = "wezterm-types", mods = { "wezterm.types" } },
 				-- 'oil.nvim',
 			},
 		},
