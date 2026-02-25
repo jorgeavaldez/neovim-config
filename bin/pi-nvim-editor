@@ -1,0 +1,322 @@
+#!/usr/bin/env bash
+
+set -u -o pipefail
+umask 077
+
+readonly OPEN_ACK_TIMEOUT_MS=3000
+readonly POLL_INTERVAL_MS=100
+readonly POLL_INTERVAL_SEC="0.1"
+readonly PROBE_INTERVAL_MS=1000
+readonly PROBE_FAILURE_LIMIT=5
+
+REQUEST_FILE=""
+ACK_FILE=""
+ACK_STATUS=""
+
+LINE_FLAG=""
+CURSOR_LINE="1"
+FILE_ARG=""
+TARGET_PATH=""
+
+usage() {
+	echo "Usage: pi-nvim-editor [+<line>] <file>" >&2
+}
+
+cleanup() {
+	if [[ -n "${REQUEST_FILE}" ]]; then
+		rm -f -- "${REQUEST_FILE}" 2>/dev/null || true
+	fi
+	if [[ -n "${ACK_FILE}" ]]; then
+		rm -f -- "${ACK_FILE}" 2>/dev/null || true
+	fi
+}
+
+on_signal() {
+	cleanup
+	exit 2
+}
+
+require_cmd() {
+	local cmd="$1"
+	if ! command -v "$cmd" >/dev/null 2>&1; then
+		echo "pi-nvim-editor: required command not found: $cmd" >&2
+		exit 2
+	fi
+}
+
+epoch_ms_now() {
+	local epoch_ms
+	epoch_ms="$(jq -nr 'now * 1000 | floor | tostring' 2>/dev/null)" || return 1
+	if [[ ! "$epoch_ms" =~ ^[0-9]{13}$ ]]; then
+		return 1
+	fi
+	printf "%s\n" "$epoch_ms"
+}
+
+rand8hex() {
+	local rand
+	rand="$(LC_ALL=C od -An -N4 -tx1 /dev/urandom 2>/dev/null | tr -d ' \n' | tr 'A-F' 'a-f')"
+	if [[ ! "$rand" =~ ^[a-f0-9]{8}$ ]]; then
+		rand="$(printf "%04x%04x" "$RANDOM" "$RANDOM")"
+		rand="${rand:0:8}"
+	fi
+	if [[ ! "$rand" =~ ^[a-f0-9]{8}$ ]]; then
+		return 1
+	fi
+	printf "%s\n" "$rand"
+}
+
+resolve_target_path() {
+	local path="$1"
+	if [[ "$path" = /* ]]; then
+		printf "%s\n" "$path"
+	else
+		printf "%s/%s\n" "$PWD" "$path"
+	fi
+}
+
+probe_host() {
+	if [[ -z "${NVIM:-}" ]]; then
+		return 1
+	fi
+	nvim --server "$NVIM" --remote-expr '1' >/dev/null 2>&1
+}
+
+dispatch_open() {
+	if [[ -z "${NVIM:-}" ]]; then
+		return 1
+	fi
+	nvim --server "$NVIM" --remote-expr "execute('PiEditOpen ${REQUEST_ID}')" >/dev/null 2>&1
+}
+
+parse_ack() {
+	local ack_path="$1"
+	local parsed version status ack_id
+
+	parsed="$(jq -er '[.version, .status, .id] | @tsv' "$ack_path" 2>/dev/null)" || return 1
+	IFS=$'\t' read -r version status ack_id <<<"$parsed"
+
+	if [[ "$version" != "1" ]]; then
+		echo "pi-nvim-editor: unsupported ack version: $version" >&2
+		return 2
+	fi
+
+	if [[ "$ack_id" != "$REQUEST_ID" ]]; then
+		echo "pi-nvim-editor: ack id mismatch: expected $REQUEST_ID, got $ack_id" >&2
+		return 2
+	fi
+
+	case "$status" in
+		opened|committed|aborted|error)
+			ACK_STATUS="$status"
+			return 0
+			;;
+		*)
+			echo "pi-nvim-editor: unsupported ack status: $status" >&2
+			return 2
+			;;
+	esac
+}
+
+status_to_exit_code() {
+	local status="$1"
+	case "$status" in
+		committed)
+			printf "0"
+			;;
+		aborted)
+			printf "1"
+			;;
+		error)
+			printf "2"
+			;;
+		*)
+			printf "2"
+			;;
+	esac
+}
+
+fallback_local_nvim() {
+	cleanup
+	if [[ -n "$LINE_FLAG" ]]; then
+		nvim "$LINE_FLAG" -- "$TARGET_PATH"
+	else
+		nvim -- "$TARGET_PATH"
+	fi
+	local rc=$?
+	exit "$rc"
+}
+
+trap on_signal INT TERM HUP
+
+require_cmd jq
+require_cmd nvim
+require_cmd mktemp
+require_cmd od
+
+if (( $# == 1 )); then
+	FILE_ARG="$1"
+elif (( $# == 2 )); then
+	if [[ "$1" =~ ^\+[0-9]+$ ]]; then
+		LINE_FLAG="$1"
+		CURSOR_LINE="${1#+}"
+		if [[ "$CURSOR_LINE" =~ ^0+$ ]]; then
+			CURSOR_LINE="1"
+		fi
+		FILE_ARG="$2"
+	else
+		usage
+		exit 2
+	fi
+else
+	usage
+	exit 2
+fi
+
+if [[ -z "$FILE_ARG" ]]; then
+	usage
+	exit 2
+fi
+
+TARGET_PATH="$(resolve_target_path "$FILE_ARG")"
+
+STATE_ROOT="${XDG_STATE_HOME:-$HOME/.local/state}/pi-nvim-rpc"
+REQUESTS_DIR="$STATE_ROOT/requests"
+ACKS_DIR="$STATE_ROOT/acks"
+
+if ! mkdir -p -- "$REQUESTS_DIR" "$ACKS_DIR"; then
+	echo "pi-nvim-editor: failed to create state directories under $STATE_ROOT" >&2
+	exit 2
+fi
+chmod 700 "$STATE_ROOT" "$REQUESTS_DIR" "$ACKS_DIR" 2>/dev/null || true
+
+EPOCH_MS="$(epoch_ms_now)" || {
+	echo "pi-nvim-editor: failed to generate epoch milliseconds" >&2
+	exit 2
+}
+RAND8HEX="$(rand8hex)" || {
+	echo "pi-nvim-editor: failed to generate random suffix" >&2
+	exit 2
+}
+REQUEST_ID="pi_${EPOCH_MS}_$$_${RAND8HEX}"
+
+if [[ ! "$REQUEST_ID" =~ ^pi_[0-9]{13}_[0-9]+_[a-f0-9]{8}$ ]]; then
+	echo "pi-nvim-editor: generated invalid request id: $REQUEST_ID" >&2
+	exit 2
+fi
+
+REQUEST_FILE="$REQUESTS_DIR/$REQUEST_ID.json"
+ACK_FILE="$ACKS_DIR/$REQUEST_ID.json"
+
+rm -f -- "$ACK_FILE" 2>/dev/null || true
+
+REQUEST_TMP="$(mktemp "$REQUESTS_DIR/.${REQUEST_ID}.tmp.XXXXXX")" || {
+	echo "pi-nvim-editor: failed to create temp request file" >&2
+	exit 2
+}
+
+if ! jq -n \
+	--arg id "$REQUEST_ID" \
+	--arg targetPath "$TARGET_PATH" \
+	--arg cursorLine "$CURSOR_LINE" \
+	--arg cwd "$PWD" \
+	--arg createdAtEpochMs "$EPOCH_MS" \
+	--arg clientPid "$$" \
+	'{
+		version: 1,
+		id: $id,
+		targetPath: $targetPath,
+		cursorLine: ($cursorLine | tonumber),
+		cwd: $cwd,
+		createdAtEpochMs: ($createdAtEpochMs | tonumber),
+		clientPid: ($clientPid | tonumber)
+	}' >"$REQUEST_TMP"; then
+	rm -f -- "$REQUEST_TMP" 2>/dev/null || true
+	echo "pi-nvim-editor: failed to write request JSON" >&2
+	exit 2
+fi
+
+chmod 600 "$REQUEST_TMP" 2>/dev/null || true
+if ! mv -f -- "$REQUEST_TMP" "$REQUEST_FILE"; then
+	rm -f -- "$REQUEST_TMP" 2>/dev/null || true
+	echo "pi-nvim-editor: failed to move request JSON into place" >&2
+	exit 2
+fi
+chmod 600 "$REQUEST_FILE" 2>/dev/null || true
+
+if [[ -z "${NVIM:-}" ]]; then
+	fallback_local_nvim
+fi
+
+if ! probe_host; then
+	fallback_local_nvim
+fi
+
+dispatch_open || true
+
+open_elapsed_ms=0
+first_ack_status=""
+
+while (( open_elapsed_ms < OPEN_ACK_TIMEOUT_MS )); do
+	if [[ -f "$ACK_FILE" ]]; then
+		if ! parse_ack "$ACK_FILE"; then
+			cleanup
+			exit 2
+		fi
+		case "$ACK_STATUS" in
+			opened)
+				first_ack_status="opened"
+				break
+				;;
+			committed|aborted|error)
+				rc="$(status_to_exit_code "$ACK_STATUS")"
+				cleanup
+				exit "$rc"
+				;;
+		esac
+	fi
+
+	sleep "$POLL_INTERVAL_SEC"
+	open_elapsed_ms=$((open_elapsed_ms + POLL_INTERVAL_MS))
+done
+
+if [[ -z "$first_ack_status" ]]; then
+	fallback_local_nvim
+fi
+
+probe_elapsed_ms=0
+consecutive_probe_failures=0
+
+while true; do
+	if [[ -f "$ACK_FILE" ]]; then
+		if ! parse_ack "$ACK_FILE"; then
+			cleanup
+			exit 2
+		fi
+		case "$ACK_STATUS" in
+			opened)
+				;;
+			committed|aborted|error)
+				rc="$(status_to_exit_code "$ACK_STATUS")"
+				cleanup
+				exit "$rc"
+				;;
+		esac
+	fi
+
+	if (( probe_elapsed_ms >= PROBE_INTERVAL_MS )); then
+		if probe_host; then
+			consecutive_probe_failures=0
+		else
+			consecutive_probe_failures=$((consecutive_probe_failures + 1))
+			if (( consecutive_probe_failures >= PROBE_FAILURE_LIMIT )); then
+				cleanup
+				exit 2
+			fi
+		fi
+		probe_elapsed_ms=0
+	fi
+
+	sleep "$POLL_INTERVAL_SEC"
+	probe_elapsed_ms=$((probe_elapsed_ms + POLL_INTERVAL_MS))
+done
