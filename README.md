@@ -46,6 +46,15 @@ i use [jujutsu (jj)](https://github.com/jj-vcs/jj) instead of raw git. the neovi
 
 see `JJ_WORKFLOW.md` for the full workflow reference.
 
+## pi external editor rpc
+pi external editing is wired to the host nvim instance (when pi is launched from `:terminal`).
+
+- wrapper: `bin/pi-nvim-editor`
+- host rpc module: `lua/jorge/pi_edit_rpc.lua`
+- runbook/troubleshooting: `PI_NVIM_RPC.md`
+
+if host rpc is unavailable (`$NVIM` missing/stale), the wrapper falls back to local nvim.
+
 ## project files and ripgrep
 i made it so ripgrep will show hidden files but also respect gitignore and hide .git and .jj directories.
 
