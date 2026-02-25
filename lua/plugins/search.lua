@@ -1,4 +1,14 @@
 local function current_buffer_dir_or_cwd()
+	if vim.bo.filetype == "oil" then
+		local ok, oil = pcall(require, "oil")
+		if ok then
+			local oil_dir = oil.get_current_dir(0)
+			if oil_dir and oil_dir ~= "" then
+				return oil_dir
+			end
+		end
+	end
+
 	local buf_path = vim.api.nvim_buf_get_name(0)
 	if buf_path == "" then
 		return vim.fn.getcwd()
