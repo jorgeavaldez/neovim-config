@@ -4,8 +4,8 @@ set -u -o pipefail
 umask 077
 
 readonly OPEN_ACK_TIMEOUT_MS=3000
-readonly POLL_INTERVAL_MS=100
-readonly POLL_INTERVAL_SEC="0.1"
+readonly POLL_INTERVAL_MS=50
+readonly POLL_INTERVAL_SEC="0.05"
 readonly PROBE_INTERVAL_MS=1000
 readonly PROBE_FAILURE_LIMIT=5
 
@@ -248,16 +248,25 @@ if [[ -z "${NVIM:-}" ]]; then
 	fallback_local_nvim
 fi
 
-if ! probe_host; then
+dispatch_sent=0
+if dispatch_open; then
+	dispatch_sent=1
+elif ! probe_host; then
 	fallback_local_nvim
 fi
-
-dispatch_open || true
 
 open_elapsed_ms=0
 first_ack_status=""
 
 while (( open_elapsed_ms < OPEN_ACK_TIMEOUT_MS )); do
+	if (( dispatch_sent == 0 )); then
+		if dispatch_open; then
+			dispatch_sent=1
+		elif ! probe_host; then
+			fallback_local_nvim
+		fi
+	fi
+
 	if [[ -f "$ACK_FILE" ]]; then
 		if ! parse_ack "$ACK_FILE"; then
 			cleanup

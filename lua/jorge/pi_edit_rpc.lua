@@ -710,6 +710,20 @@ local function finalize_if_no_windows(bufnr)
 			"PiEdit RPC: failed to finalize hidden buffer " .. context.request_id .. ": " .. tostring(finalize_err),
 			vim.log.levels.ERROR
 		)
+		return
+	end
+
+	if vim.api.nvim_buf_is_valid(bufnr) then
+		local delete_ok, delete_err = pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+		if not delete_ok then
+			vim.notify(
+				"PiEdit RPC: failed to wipe finalized hidden buffer "
+					.. context.request_id
+					.. ": "
+					.. tostring(delete_err),
+				vim.log.levels.WARN
+			)
+		end
 	end
 end
 
