@@ -59,6 +59,9 @@ vim.keymap.set("n", "<leader>wt", ":tab split<CR>", { desc = "Open buffer in new
 -- Tabs
 vim.keymap.set("n", "<leader>tn", ":tabnext<CR>", { desc = "Next tab" })
 vim.keymap.set("n", "<leader>tp", ":tabprevious<CR>", { desc = "Previous tab" })
+vim.keymap.set("n", "<leader>tq", ":tabclose<CR>", { desc = "Close tab" })
+vim.keymap.set("n", "<leader>tN", ":tabnew<CR>", { desc = "New/create tab" })
+vim.keymap.set("n", "<leader>tc", ":tabnew<CR>", { desc = "New/create tab" })
 
 -- buffers
 vim.keymap.set("n", "<leader>bC", ":bp<bar>sp<bar>bn<bar>bd<CR>", { desc = "Close Buffer" })
