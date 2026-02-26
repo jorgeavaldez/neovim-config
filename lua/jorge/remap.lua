@@ -70,7 +70,8 @@ vim.keymap.set("n", "<leader>bn", ":bn<CR>", { desc = "Next Buffer" })
 
 -- terminal
 vim.keymap.set("n", "<leader>$", ":terminal<CR>")
-vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
+-- my leader key is <C-;> in wezterm
+-- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 vim.keymap.set("t", "<Esc><Esc><Esc>", "<C-\\><C-n>")
 
 -- insert date/time
