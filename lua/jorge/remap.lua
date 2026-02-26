@@ -74,6 +74,32 @@ vim.keymap.set("n", "<leader>$", ":terminal<CR>")
 -- vim.keymap.set("t", "<C-;><C-n>", "<C-\\><C-n>")
 vim.keymap.set("t", "<Esc><Esc><Esc>", "<C-\\><C-n>")
 
+local function rename_terminal(command_opts)
+	local name = vim.trim(command_opts.args or "")
+	if name == "" then
+		name = vim.trim(vim.fn.input("Terminal name: "))
+	end
+
+	if name == "" then
+		return
+	end
+
+	vim.cmd.file("term://" .. name)
+end
+
+local terminal_commands_augroup = vim.api.nvim_create_augroup("jorge_terminal_commands", { clear = true })
+
+vim.api.nvim_create_autocmd("TermOpen", {
+	group = terminal_commands_augroup,
+	callback = function(args)
+		vim.api.nvim_buf_create_user_command(args.buf, "RenameTerminal", rename_terminal, {
+			nargs = "?",
+			desc = "Rename the terminal",
+		})
+	end,
+	desc = "Create terminal-only user commands",
+})
+
 -- insert date/time
 vim.keymap.set("n", "<leader>id", function()
 	vim.api.nvim_put({ os.date("%Y-%m-%d") }, "c", true, true)
