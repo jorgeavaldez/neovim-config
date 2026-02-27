@@ -5,8 +5,23 @@ return {
 		"NicolasGB/jj.nvim",
 		version = "*",
 		config = function()
-			require("jj").setup({})
+			require("jj").setup({
+				diff = {
+					backend = "diffview",
+				},
+			})
 		end,
+	},
+	{
+		"sindrets/diffview.nvim",
+		cmd = {
+			"DiffviewOpen",
+			"DiffviewClose",
+			"DiffviewToggleFiles",
+			"DiffviewFocusFiles",
+			"DiffviewRefresh",
+			"DiffviewFileHistory",
+		},
 	},
 	{
 		"julienvincent/hunk.nvim",
