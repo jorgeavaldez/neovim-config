@@ -5,10 +5,26 @@ return {
 		"NicolasGB/jj.nvim",
 		version = "*",
 		config = function()
-			require("jj").setup({
+			local jj = require("jj")
+			jj.setup({
 				diff = {
 					backend = "diffview",
 				},
+			})
+
+			local function reapply_jj_highlights()
+				require("jj.cmd.log").init_log_highlights()
+
+				local editor_hl = jj.config and jj.config.highlights and jj.config.highlights.editor
+				if editor_hl and editor_hl.renamed then
+					vim.api.nvim_set_hl(0, "jjRenamed", editor_hl.renamed)
+				end
+			end
+
+			local group = vim.api.nvim_create_augroup("JjNvimHighlights", { clear = true })
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				group = group,
+				callback = reapply_jj_highlights,
 			})
 		end,
 	},
