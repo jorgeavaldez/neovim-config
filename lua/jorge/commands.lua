@@ -85,6 +85,15 @@ M.get_project_root = function()
 	return vim.fn.getcwd()
 end
 
+local function get_jj_root(start_dir)
+	local result = run_system({ "jj", "root" }, { cwd = start_dir })
+	if result.code ~= 0 or result.stdout == "" then
+		return nil
+	end
+
+	return result.stdout
+end
+
 local function get_git_root(start_dir)
 	local result = run_system({ "git", "rev-parse", "--show-toplevel" }, { cwd = start_dir })
 	if result.code ~= 0 or result.stdout == "" then
@@ -92,6 +101,105 @@ local function get_git_root(start_dir)
 	end
 
 	return result.stdout
+end
+
+local function get_repository_root(start_dir)
+	return get_jj_root(start_dir) or get_git_root(start_dir)
+end
+
+local function first_non_empty_line(text)
+	for line in (text or ""):gmatch("[^\r\n]+") do
+		local value = trim(line)
+		if value ~= "" then
+			return value
+		end
+	end
+
+	return nil
+end
+
+local function get_origin_remote_url(repo_root)
+	local git_remote = run_system({ "git", "config", "--get", "remote.origin.url" }, { cwd = repo_root })
+	if git_remote.code == 0 and git_remote.stdout ~= "" then
+		return git_remote.stdout
+	end
+
+	local jj_remote = run_system({ "jj", "git", "remote", "list" }, { cwd = repo_root })
+	if jj_remote.code ~= 0 or jj_remote.stdout == "" then
+		return nil
+	end
+
+	for line in jj_remote.stdout:gmatch("[^\r\n]+") do
+		local name, url = line:match("^(%S+)%s+(.+)$")
+		if name == "origin" and url and url ~= "" then
+			return trim(url)
+		end
+	end
+
+	return nil
+end
+
+local function get_origin_remote_bookmark(repo_root, revset)
+	local cmd = {
+		"jj",
+		"bookmark",
+		"list",
+		"--remote",
+		"origin",
+	}
+
+	if revset then
+		table.insert(cmd, "-r")
+		table.insert(cmd, revset)
+	end
+
+	table.insert(cmd, "--sort")
+	table.insert(cmd, "author-date-")
+	table.insert(cmd, "-T")
+	table.insert(cmd, 'if(remote, name ++ "\\n")')
+
+	local result = run_system(cmd, { cwd = repo_root })
+	if result.code ~= 0 or result.stdout == "" then
+		return nil
+	end
+
+	return first_non_empty_line(result.stdout)
+end
+
+local function get_github_ref(repo_root)
+	local git_upstream = run_system(
+		{ "git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}" },
+		{ cwd = repo_root }
+	)
+	if git_upstream.code == 0 and git_upstream.stdout ~= "" then
+		local remote_name, branch_name = git_upstream.stdout:match("^(.-)/(.+)$")
+		if remote_name == "origin" and branch_name and branch_name ~= "" then
+			return branch_name
+		end
+	end
+
+	local jj_ancestor_remote = get_origin_remote_bookmark(repo_root, "::@")
+	if jj_ancestor_remote then
+		return jj_ancestor_remote
+	end
+
+	local git_default_remote = run_system(
+		{ "git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD" },
+		{ cwd = repo_root }
+	)
+	if git_default_remote.code == 0 and git_default_remote.stdout ~= "" then
+		local branch_name = git_default_remote.stdout:match("^origin/(.+)$")
+		if branch_name and branch_name ~= "" then
+			return branch_name
+		end
+	end
+
+	local jj_any_remote = get_origin_remote_bookmark(repo_root)
+	if jj_any_remote then
+		return jj_any_remote
+	end
+
+	return nil
 end
 
 local function parse_github_remote(remote_url)
@@ -124,16 +232,15 @@ M.open_current_file_in_github = function(opts)
 	end
 
 	local file_dir = vim.fn.fnamemodify(file_path, ":p:h")
-	local git_root = get_git_root(file_dir)
-	if not git_root then
-		vim.notify("No git repository detected", vim.log.levels.ERROR)
+	local repo_root = get_repository_root(file_dir)
+	if not repo_root then
+		vim.notify("No jj or git repository detected", vim.log.levels.ERROR)
 		return
 	end
 
-	local remote = run_system({ "git", "config", "--get", "remote.origin.url" }, { cwd = git_root })
-	local remote_url = remote.stdout
-	if remote.code ~= 0 or remote_url == "" then
-		vim.notify("No git remote 'origin' configured", vim.log.levels.ERROR)
+	local remote_url = get_origin_remote_url(repo_root)
+	if not remote_url then
+		vim.notify("No remote 'origin' configured", vim.log.levels.ERROR)
 		return
 	end
 
@@ -143,19 +250,14 @@ M.open_current_file_in_github = function(opts)
 		return
 	end
 
-	local git_ref_result = run_system({ "git", "rev-parse", "--abbrev-ref", "HEAD" }, { cwd = git_root })
-	local git_ref = git_ref_result.stdout
-	if git_ref_result.code ~= 0 or git_ref == "" or git_ref == "HEAD" then
-		local sha_result = run_system({ "git", "rev-parse", "HEAD" }, { cwd = git_root })
-		git_ref = sha_result.stdout
-		if sha_result.code ~= 0 or git_ref == "" then
-			vim.notify("Could not determine git ref", vim.log.levels.ERROR)
-			return
-		end
+	local github_ref = get_github_ref(repo_root)
+	if not github_ref then
+		vim.notify("Could not determine repository ref", vim.log.levels.ERROR)
+		return
 	end
 
 	local absolute_path = vim.fn.fnamemodify(file_path, ":p")
-	local repo_prefix = git_root .. "/"
+	local repo_prefix = repo_root .. "/"
 	if absolute_path:sub(1, #repo_prefix) ~= repo_prefix then
 		vim.notify("Current file is outside the repository root", vim.log.levels.ERROR)
 		return
@@ -188,7 +290,7 @@ M.open_current_file_in_github = function(opts)
 		line_fragment = string.format("#L%d", line_number)
 	end
 
-	local url = string.format("%s/blob/%s/%s%s", github_repo, git_ref, relative_path, line_fragment)
+	local url = string.format("%s/blob/%s/%s%s", github_repo, github_ref, relative_path, line_fragment)
 
 	local ok, err = pcall(vim.ui.open, url)
 	if not ok then
