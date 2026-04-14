@@ -38,6 +38,14 @@ return {
 			"DiffviewRefresh",
 			"DiffviewFileHistory",
 		},
+		config = function()
+			local diffview_jj = require("jorge.diffview_jj")
+
+			require("diffview").setup({
+				hooks = diffview_jj.hooks(),
+			})
+			diffview_jj.setup()
+		end,
 	},
 	{
 		"julienvincent/hunk.nvim",
