@@ -46,6 +46,7 @@ return {
 				{ "<leader>k", desc = "Hover documentation (LSP)" },
 				{ "<leader>r", desc = "Rename symbol (LSP)" },
 				{ "<leader>f", group = "Files" },
+				{ "<leader>G", group = "Github" },
 				{ "<leader>ff", desc = "Format buffer" },
 				{ "<leader>fc", desc = "Copy file path" },
 				{ "<leader>fD", desc = "Delete buffer contents" },
