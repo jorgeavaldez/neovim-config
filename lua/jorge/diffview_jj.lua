@@ -1,49 +1,31 @@
+--- Diffview integration for jj workspaces.
+---
+--- Manages GIT_DIR / GIT_WORK_TREE env vars per-tab so that diffview
+--- can operate inside jj workspaces that lack a .git directory.
+--- Uses jorge.jj_env for workspace detection and baseline resolution.
+
+local jj_env = require("jorge.jj_env")
+
 local M = {}
 
 local state = {
-	baseline = {
-		GIT_DIR = vim.env.GIT_DIR,
-		GIT_WORK_TREE = vim.env.GIT_WORK_TREE,
-	},
 	env_by_tab = {},
 	pending = nil,
 	suspend_hooks = false,
 	is_setup = false,
 }
 
-local function trim(s)
-	return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
-end
-
-local function run_system(cmd, opts)
-	local options = vim.tbl_extend("force", { text = true }, opts or {})
-	local ok, completed = pcall(function()
-		local system_obj = vim.system(cmd, options)
-		local wait = system_obj["wait"]
-		if type(wait) ~= "function" then
-			return { code = 1, stdout = "", stderr = "vim.system wait() unavailable" }
-		end
-		return wait(system_obj)
-	end)
-
-	if not ok then
-		return {
-			code = 1,
-			stdout = "",
-			stderr = tostring(completed),
-		}
-	end
-
-	return {
-		code = tonumber(completed["code"]) or 1,
-		stdout = trim(completed["stdout"]),
-		stderr = trim(completed["stderr"]),
-	}
+--- Baseline env: the workspace-level env (or nil when not in a jj workspace).
+--- Dynamic so it stays correct regardless of plugin load order.
+---@return JjGitEnv|nil
+local function get_baseline()
+	return jj_env.resolve()
 end
 
 local function apply_env(env)
-	vim.env.GIT_DIR = env and env.GIT_DIR or state.baseline.GIT_DIR
-	vim.env.GIT_WORK_TREE = env and env.GIT_WORK_TREE or state.baseline.GIT_WORK_TREE
+	local baseline = get_baseline()
+	vim.env.GIT_DIR = env and env.GIT_DIR or (baseline and baseline.GIT_DIR or nil)
+	vim.env.GIT_WORK_TREE = env and env.GIT_WORK_TREE or (baseline and baseline.GIT_WORK_TREE or nil)
 end
 
 local function get_current_tab_env()
@@ -56,10 +38,6 @@ local function sync_current_env()
 	end
 
 	apply_env(get_current_tab_env())
-end
-
-local function path_exists(path)
-	return vim.fn.isdirectory(path) == 1 or vim.fn.filereadable(path) == 1
 end
 
 local function normalize_start_dir(path)
@@ -76,7 +54,7 @@ local function normalize_start_dir(path)
 		return normalize_start_dir(buf_name)
 	end
 
-	return vim.loop.cwd()
+	return vim.uv.cwd()
 end
 
 local function get_cpath(args)
@@ -95,31 +73,16 @@ local function get_cpath(args)
 	})
 end
 
+--- Resolve env for a diffview command, supporting the -C flag.
+---@param args? table
+---@return JjGitEnv|nil
 local function resolve_diffview_env(args)
 	local start_dir = normalize_start_dir(get_cpath(args))
 	if not start_dir or start_dir == "" then
 		return nil
 	end
 
-	local jj_root = run_system({ "jj", "root" }, { cwd = start_dir })
-	if jj_root.code ~= 0 or jj_root.stdout == "" then
-		return nil
-	end
-
-	local workspace_root = jj_root.stdout
-	if path_exists(workspace_root .. "/.git") then
-		return nil
-	end
-
-	local git_root = run_system({ "jj", "git", "root" }, { cwd = workspace_root })
-	if git_root.code ~= 0 or git_root.stdout == "" then
-		return nil
-	end
-
-	return {
-		GIT_DIR = git_root.stdout,
-		GIT_WORK_TREE = workspace_root,
-	}
+	return jj_env.resolve_for_path(start_dir)
 end
 
 local function with_diffview_env(args, fn)

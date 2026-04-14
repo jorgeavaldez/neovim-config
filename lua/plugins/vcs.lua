@@ -64,15 +64,22 @@ return {
 		cmd = { "JJDiffConflicts" },
 	},
 
+	-- TODO(jj): octo features like checkout_pr and branch detection show
+	-- git-level branch info, not jj changes. Acceptable for now but may
+	-- want jj-aware wrappers in the future.
 	{
 		"pwntester/octo.nvim",
 		cmd = "Octo",
-		opts = {
-			-- or "fzf-lua" or "snacks" or "default"
-			picker = "telescope",
-			-- bare Octo command opens picker of commands
-			enable_builtin = true,
-		},
+		config = function()
+			-- Ensure GIT_DIR / GIT_WORK_TREE are set so git commands work
+			-- inside jj workspaces that lack a .git directory.
+			require("jorge.jj_env").ensure()
+
+			require("octo").setup({
+				picker = "telescope",
+				enable_builtin = true,
+			})
+		end,
 		keys = {
 			{
 				"<leader>Gi",
