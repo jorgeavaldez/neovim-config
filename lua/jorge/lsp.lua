@@ -6,7 +6,22 @@ function M.setup()
 	end
 	vim.g.jorge_lsp_setup_done = true
 
-	vim.diagnostic.config({ jump = { float = true } })
+	local function open_diagnostic_float_on_jump(diagnostic, bufnr)
+		if diagnostic == nil then
+			return
+		end
+
+		vim.diagnostic.open_float(bufnr, {
+			scope = "cursor",
+			focus = false,
+		})
+	end
+
+	vim.diagnostic.config({
+		jump = {
+			on_jump = open_diagnostic_float_on_jump,
+		},
+	})
 
 	local function rename_file()
 		-- https://github.com/neovim/neovim/issues/20784#issuecomment-1288085253
@@ -49,7 +64,7 @@ function M.setup()
 
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(args)
-			local opts = { buffer = args.buf, remap = false }
+			local opts = { buf = args.buf, remap = false }
 
 			vim.keymap.set("n", "<leader>k", function()
 				vim.lsp.buf.hover()

@@ -19,6 +19,20 @@ vim.keymap.set("n", "<leader>y", '"+y')
 vim.keymap.set("v", "<leader>y", '"+y')
 vim.keymap.set("n", "<leader>Y", '"+Y')
 
+local function toggle_builtin_undotree()
+	vim.cmd.packadd("nvim.undotree")
+
+	local ok, undotree = pcall(require, "undotree")
+	if not ok then
+		vim.notify("Failed to load builtin undotree", vim.log.levels.ERROR)
+		return
+	end
+
+	undotree.open()
+end
+
+vim.keymap.set("n", "<leader>u", toggle_builtin_undotree, { desc = "Toggle undo tree" })
+
 vim.keymap.set("n", "<leader>ff", function()
 	require("conform").format({ lsp_format = "fallback" })
 end)

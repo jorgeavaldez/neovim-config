@@ -26,7 +26,6 @@ return {
 				notify = true,
 				fidget = true,
 				harpoon = true,
-				lsp_saga = true,
 				markdown = true,
 				mason = true,
 				render_markdown = true,

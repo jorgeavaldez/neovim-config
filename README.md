@@ -19,8 +19,8 @@ i'm also learning, and i'm not sure i have a good understanding of everything ye
 - `lua/plugins/` — plugin specs split by category, auto-imported by lazy.nvim
   - `colors.lua` — catppuccin + auto-dark-mode
   - `search.lua` — telescope, treesitter, textobjects
-  - `lsp.lua` — lspconfig, mason, cmp, conform.nvim, nvim-lint, lspsaga, go.nvim, typescript-tools
-  - `ui.lua` — oil, which-key, trouble, undotree, surround, dropbar, render-markdown
+  - `lsp.lua` — lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim, typescript-tools
+  - `ui.lua` — oil, which-key, trouble, builtin undotree, surround, dropbar, render-markdown
   - `vcs.lua` — jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj, jj-diffconflicts
   - `extras.lua` — debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick
 - `after/plugin/` — post-plugin configuration overrides

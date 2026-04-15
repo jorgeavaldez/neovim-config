@@ -268,22 +268,6 @@ return {
 		end,
 	},
 	{
-		"nvimdev/lspsaga.nvim",
-		lazy = true,
-		config = function()
-			require("lspsaga").setup({
-				-- Disable lspsaga's winbar, use dropbar.nvim instead
-				symbol_in_winbar = {
-					enable = false,
-				},
-			})
-		end,
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-tree/nvim-web-devicons",
-		},
-	},
-	{
 		"j-hui/fidget.nvim",
 		lazy = true,
 	},

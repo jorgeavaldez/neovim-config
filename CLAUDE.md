@@ -30,8 +30,8 @@ Plugin specifications are split into category files that lazy.nvim auto-imports:
 
 - `lua/plugins/colors.lua` - Color scheme (catppuccin, auto-dark-mode)
 - `lua/plugins/search.lua` - Telescope, Treesitter, textobjects, autotag
-- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, lspsaga, fidget, go.nvim, typescript-tools)
-- `lua/plugins/ui.lua` - UI plugins (oil, which-key, trouble, undotree, surround, mini.cmdline, render-markdown, dropbar)
+- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim, typescript-tools)
+- `lua/plugins/ui.lua` - UI plugins (oil, which-key, trouble, builtin undotree, surround, mini.cmdline, render-markdown, dropbar)
 - `lua/plugins/vcs.lua` - Version control (jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj.nvim, jj-diffconflicts)
 - `lua/plugins/extras.lua` - Everything else (debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick)
 
@@ -55,7 +55,6 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 - **nvim-cmp**: Autocompletion with LuaSnip, lspkind, codeium
 - **conform.nvim**: Formatter orchestration with minimal-diff formatting and LSP fallback
 - **nvim-lint**: Async CLI-based lint diagnostics via `vim.diagnostic`
-- **lspsaga**: Enhanced LSP UI
 - **fidget.nvim**: LSP progress notifications
 - **go.nvim**: Go development
 - **typescript-tools.nvim**: TypeScript/JavaScript development
@@ -64,7 +63,7 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 - **Oil.nvim**: File explorer (mapped to `<leader>pv`)
 - **Which-key**: Key binding help and organization
 - **Trouble**: Diagnostics and quickfix list
-- **Undotree**: Undo history visualization
+- **Built-in undotree**: Undo history visualization via `:packadd nvim.undotree`
 - **Dropbar**: Breadcrumb/winbar navigation
 - **render-markdown**: Markdown rendering
 - **mini.cmdline**: Enhanced command line
