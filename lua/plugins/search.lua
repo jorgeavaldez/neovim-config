@@ -25,7 +25,7 @@ end
 return {
 	{
 		"nvim-telescope/telescope.nvim",
-		branch = "0.1.x",
+		branch = "master",
 		cmd = "Telescope",
 		keys = {
 			{
@@ -211,112 +211,221 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
-		event = { "BufReadPost", "BufNewFile" },
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"windwp/nvim-ts-autotag",
 		},
 		config = function()
-			---@type table<string, table>
-			local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-			parser_config.org = {
-				install_info = {
-					url = "https://github.com/milisims/tree-sitter-org",
-					revision = "main",
-					files = { "src/parser.c", "src/scanner.c" },
+			local nvim_treesitter = require("nvim-treesitter")
+			local move = require("nvim-treesitter-textobjects.move")
+			local select = require("nvim-treesitter-textobjects.select")
+			local swap = require("nvim-treesitter-textobjects.swap")
+
+			local function register_org_parser()
+				require("nvim-treesitter.parsers").org = {
+					install_info = {
+						url = "https://github.com/milisims/tree-sitter-org",
+						revision = "main",
+						files = { "src/parser.c", "src/scanner.c" },
+					},
+					filetype = "org",
+					tier = 2,
+				}
+			end
+
+			local installing = {}
+			local install_waiters = {}
+
+			local function get_lang(bufnr)
+				local filetype = vim.bo[bufnr].filetype
+				local ok, lang = pcall(vim.treesitter.language.get_lang, filetype)
+				if not ok or not lang or lang == "" then
+					return nil
+				end
+				return lang
+			end
+
+			local function parser_installed(lang)
+				return vim.tbl_contains(nvim_treesitter.get_installed("parsers"), lang)
+			end
+
+			local function ensure_parsers_installed(languages, on_done)
+				if vim.fn.executable("tree-sitter") ~= 1 then
+					return
+				end
+
+				local parsers = require("nvim-treesitter.parsers")
+				local missing = {}
+				local waiting_for_install = false
+				for _, lang in ipairs(languages) do
+					if parsers[lang] ~= nil and not parser_installed(lang) then
+						waiting_for_install = true
+						if on_done ~= nil then
+							install_waiters[lang] = install_waiters[lang] or {}
+							table.insert(install_waiters[lang], on_done)
+						end
+						if not installing[lang] then
+							installing[lang] = true
+							table.insert(missing, lang)
+						end
+					end
+				end
+
+				if #missing == 0 then
+					if not waiting_for_install and on_done ~= nil then
+						on_done()
+					end
+					return
+				end
+
+				local task = nvim_treesitter.install(missing)
+				task:await(function()
+					vim.schedule(function()
+						for _, lang in ipairs(missing) do
+							installing[lang] = nil
+							local callbacks = install_waiters[lang] or {}
+							install_waiters[lang] = nil
+							if parser_installed(lang) then
+								for _, callback in ipairs(callbacks) do
+									callback()
+								end
+							end
+						end
+					end)
+				end)
+			end
+
+			local function start_treesitter(bufnr, lang)
+				local started = pcall(vim.treesitter.start, bufnr, lang)
+				if started and vim.bo[bufnr].filetype == "org" then
+					vim.bo[bufnr].syntax = "ON"
+				end
+			end
+
+			register_org_parser()
+
+			local group = vim.api.nvim_create_augroup("jorge_treesitter", { clear = true })
+
+			vim.api.nvim_create_autocmd("User", {
+				group = group,
+				pattern = "TSUpdate",
+				callback = register_org_parser,
+			})
+
+			nvim_treesitter.setup()
+
+			vim.api.nvim_create_autocmd("FileType", {
+				group = group,
+				callback = function(args)
+					local lang = get_lang(args.buf)
+					if lang == nil then
+						return
+					end
+
+					if parser_installed(lang) then
+						start_treesitter(args.buf, lang)
+						return
+					end
+
+					ensure_parsers_installed({ lang }, function()
+						if not vim.api.nvim_buf_is_valid(args.buf) then
+							return
+						end
+
+						if get_lang(args.buf) == lang and parser_installed(lang) then
+							start_treesitter(args.buf, lang)
+						end
+					end)
+				end,
+			})
+
+			require("nvim-treesitter-textobjects").setup({
+				select = {
+					lookahead = true,
+					selection_modes = {
+						["@parameter.outer"] = "v",
+						["@function.outer"] = "V",
+						["@class.outer"] = "<c-v>",
+					},
+					include_surrounding_whitespace = true,
 				},
-				filetype = "org",
-			}
-			---@diagnostic disable-next-line: missing-fields
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"javascript",
-					"typescript",
-					"lua",
-					"vim",
-					"vimdoc",
-					"rust",
-					"markdown",
-					"markdown_inline",
-					"org",
-					"terraform",
-					"hcl",
-				},
-				sync_install = false,
-				auto_install = true,
-				highlight = {
-					enable = true,
-					additional_vim_regex_highlighting = { "org" },
-				},
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true,
-						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-							["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-						},
-						selection_modes = {
-							["@parameter.outer"] = "v",
-							["@function.outer"] = "V",
-							["@class.outer"] = "<c-v>",
-						},
-						include_surrounding_whitespace = true,
-					},
-					swap = {
-						enable = true,
-						swap_next = {
-							["<leader>J"] = "@parameter.inner",
-						},
-						swap_previous = {
-							["<leader>K"] = "@parameter.inner",
-						},
-					},
-					move = {
-						enable = true,
-						set_jumps = true,
-						goto_next_start = {
-							["]f"] = { query = "@function.outer", desc = "Next function" },
-							["]c"] = { query = "@class.outer", desc = "Next class" },
-							["]l"] = { query = "@loop.*", desc = "Next loop" },
-							["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
-							["]z"] = { query = "@fold", query_group = "folds", desc = "Next folds" },
-						},
-						goto_next_end = {
-							["]F"] = { query = "@function.outer", desc = "Next function" },
-							["]C"] = { query = "@class.outer", desc = "Next class" },
-						},
-						goto_previous_start = {
-							["[f"] = { query = "@function.outer", desc = "Previous function" },
-							["[c"] = { query = "@class.outer", desc = "Previous class" },
-							["[s"] = { query = "@scope", query_group = "locals", desc = "Prevoius scope" },
-						},
-						goto_previous_end = {
-							["[F"] = { query = "@function.outer", desc = "Previous function" },
-							["[C"] = { query = "@class.outer", desc = "Previous class" },
-						},
-						goto_next = {
-							["]i"] = { query = "@conditional.outer", desc = "Next conditional" },
-						},
-						goto_previous = {
-							["[i"] = { query = "@conditional.outer", desc = "Previous conditional" },
-						},
-					},
-					lsp_interop = {
-						enable = true,
-						border = "none",
-						floating_preview_opts = {},
-						peek_definition_code = {
-							["<leader>df"] = "@function.outer",
-							["<leader>dc"] = "@class.outer",
-						},
-					},
+				move = {
+					set_jumps = true,
 				},
 			})
+
+			local function map(modes, lhs, rhs, desc)
+				vim.keymap.set(modes, lhs, rhs, { desc = desc })
+			end
+
+			map({ "x", "o" }, "af", function()
+				select.select_textobject("@function.outer", "textobjects")
+			end, "Select function")
+			map({ "x", "o" }, "if", function()
+				select.select_textobject("@function.inner", "textobjects")
+			end, "Select inner function")
+			map({ "x", "o" }, "ac", function()
+				select.select_textobject("@class.outer", "textobjects")
+			end, "Select class")
+			map({ "x", "o" }, "ic", function()
+				select.select_textobject("@class.inner", "textobjects")
+			end, "Select inner class")
+			map({ "x", "o" }, "as", function()
+				select.select_textobject("@local.scope", "locals")
+			end, "Select language scope")
+
+			map("n", "<leader>J", function()
+				swap.swap_next("@parameter.inner", "textobjects")
+			end, "Swap next parameter")
+			map("n", "<leader>K", function()
+				swap.swap_previous("@parameter.inner", "textobjects")
+			end, "Swap previous parameter")
+
+			map({ "n", "x", "o" }, "]f", function()
+				move.goto_next_start("@function.outer", "textobjects")
+			end, "Next function")
+			map({ "n", "x", "o" }, "]c", function()
+				move.goto_next_start("@class.outer", "textobjects")
+			end, "Next class")
+			map({ "n", "x", "o" }, "]l", function()
+				move.goto_next_start({ "@loop.inner", "@loop.outer" }, "textobjects")
+			end, "Next loop")
+			map({ "n", "x", "o" }, "]s", function()
+				move.goto_next_start("@local.scope", "locals")
+			end, "Next scope")
+			map({ "n", "x", "o" }, "]z", function()
+				move.goto_next_start("@fold", "folds")
+			end, "Next fold")
+			map({ "n", "x", "o" }, "]F", function()
+				move.goto_next_end("@function.outer", "textobjects")
+			end, "Next function end")
+			map({ "n", "x", "o" }, "]C", function()
+				move.goto_next_end("@class.outer", "textobjects")
+			end, "Next class end")
+			map({ "n", "x", "o" }, "[f", function()
+				move.goto_previous_start("@function.outer", "textobjects")
+			end, "Previous function")
+			map({ "n", "x", "o" }, "[c", function()
+				move.goto_previous_start("@class.outer", "textobjects")
+			end, "Previous class")
+			map({ "n", "x", "o" }, "[s", function()
+				move.goto_previous_start("@local.scope", "locals")
+			end, "Previous scope")
+			map({ "n", "x", "o" }, "[F", function()
+				move.goto_previous_end("@function.outer", "textobjects")
+			end, "Previous function end")
+			map({ "n", "x", "o" }, "[C", function()
+				move.goto_previous_end("@class.outer", "textobjects")
+			end, "Previous class end")
+			map({ "n", "x", "o" }, "]i", function()
+				move.goto_next("@conditional.outer", "textobjects")
+			end, "Next conditional")
+			map({ "n", "x", "o" }, "[i", function()
+				move.goto_previous("@conditional.outer", "textobjects")
+			end, "Previous conditional")
 
 			require("nvim-ts-autotag").setup({
 				opts = {
@@ -335,6 +444,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
+		branch = "main",
 		lazy = true,
 	},
 	{
