@@ -50,12 +50,7 @@ return {
 			{ "<leader>op", "<cmd>ObsidianNewPrompt<CR>", desc = "New Obsidian prompt", mode = "n" },
 			{ "<leader>o/", "<cmd>Obsidian search<CR>", desc = "Search Obsidian notes", mode = "n" },
 			{ "<leader>of", "<cmd>Obsidian quick_switch<CR>", desc = "Quick switch notes", mode = "n" },
-			{
-				"<leader>ot",
-				"<cmd>Obsidian template<CR>",
-				desc = "insert template from templates directory",
-				mode = "n",
-			},
+			-- Template insertion moved to jorge.templates (works in any buffer)
 			{ "<leader>ob", "<cmd>Obsidian backlinks<CR>", desc = "Show backlinks", mode = "n" },
 			{ "<leader>oL", ":Obsidian link ", desc = "Link to note (with query)", mode = "n" },
 			{ "<leader>oln", ":Obsidian link_new ", desc = "Link to new note (with title)", mode = "n" },

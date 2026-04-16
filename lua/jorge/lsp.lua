@@ -6,6 +6,30 @@ function M.setup()
 	end
 	vim.g.jorge_lsp_setup_done = true
 
+	-- Workaround: Neovim 0.12 document_color has a bug where stale client IDs
+	-- in the provider's client_state cause an assertion failure on LSP restart.
+	-- The capability cleanup runs in a deferred vim.schedule, but the on_lines
+	-- callback fires synchronously. Force eager cleanup on LspDetach.
+	-- See: document_color.lua:225 assert(lsp.get_client_by_id(id))
+	vim.api.nvim_create_autocmd("LspDetach", {
+		group = vim.api.nvim_create_augroup("jorge_document_color_cleanup", { clear = true }),
+		callback = function(args)
+			local client_id = args.data.client_id
+			local caps = vim.lsp._capability.all
+			local dc = caps and caps["document_color"]
+			if not dc then
+				return
+			end
+			local provider = dc.active[args.buf]
+			if provider and provider.client_state[client_id] then
+				provider:on_detach(client_id)
+				if not next(provider.client_state) then
+					provider:destroy()
+				end
+			end
+		end,
+	})
+
 	local function open_diagnostic_float_on_jump(diagnostic, bufnr)
 		if diagnostic == nil then
 			return

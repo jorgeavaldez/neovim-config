@@ -125,3 +125,8 @@ end, { desc = "Insert date (YYYY-MM-DD)" })
 vim.keymap.set("n", "<leader>it", function()
 	vim.api.nvim_put({ os.date("%H:%M") }, "c", true, true)
 end, { desc = "Insert time (HH:MM)" })
+
+-- templates
+vim.keymap.set("n", "<leader>ot", function()
+	require("jorge.templates").pick()
+end, { desc = "Insert template" })
