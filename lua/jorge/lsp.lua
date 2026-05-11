@@ -194,6 +194,29 @@ function M.setup()
 	-- Python linter/formatter (ruff)
 	vim.lsp.config("ruff", {})
 
+	vim.lsp.config("terraformls", {
+		root_dir = function(bufnr, on_dir)
+			local filename = vim.api.nvim_buf_get_name(bufnr)
+			local start_path = filename ~= "" and vim.fs.dirname(filename) or vim.fn.getcwd()
+			local marker =
+				vim.fs.find({ ".terraform", ".terraform.lock.hcl", "versions.tf", "providers.tf", "main.tf" }, {
+					path = start_path,
+					upward = true,
+				})[1]
+
+			on_dir(marker and vim.fs.dirname(marker) or start_path)
+		end,
+		init_options = {
+			ignoreSingleFileWarning = true,
+			indexing = {
+				ignoreDirectoryNames = { ".jj", "node_modules" },
+			},
+		},
+		on_attach = function(client)
+			client.server_capabilities.semanticTokensProvider = nil
+		end,
+	})
+
 	local servers_to_enable = {
 		"bashls",
 		"biome",
