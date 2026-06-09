@@ -249,7 +249,8 @@ return {
 			end
 
 			local function parser_installed(lang)
-				return vim.tbl_contains(nvim_treesitter.get_installed("parsers"), lang)
+				pcall(vim.treesitter.language.add, lang)
+				return pcall(vim.treesitter.language.inspect, lang)
 			end
 
 			local function ensure_parsers_installed(languages, on_done)

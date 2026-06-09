@@ -74,7 +74,6 @@ return {
 				enable = false,
 			},
 			completion = {
-				nvim_cmp = true,
 				min_chars = 2,
 			},
 			daily_notes = {

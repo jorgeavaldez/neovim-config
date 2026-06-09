@@ -24,6 +24,48 @@ PREF = {
 
 local tabwidth = PREF.common.tabwidth
 
+-- Nvim's automatic OSC 52 detection is intentionally bypassed when 'clipboard'
+-- is set. Since this config sets unnamedplus below, force OSC 52 copy for
+-- SSH/headless TUI sessions so "+ operations work without xclip. Pasting uses
+-- a local cache to avoid hanging on terminals that do not answer OSC 52 reads.
+local use_osc52_clipboard = vim.env.SSH_TTY ~= nil
+	or vim.env.SSH_CONNECTION ~= nil
+	or (not vim.g.neovide and vim.env.DISPLAY == nil and vim.env.WAYLAND_DISPLAY == nil)
+if use_osc52_clipboard and vim.g.clipboard == nil then
+	local osc52 = require("vim.ui.clipboard.osc52")
+	local cache = {
+		["+"] = { {}, "v" },
+		["*"] = { {}, "v" },
+	}
+
+	local function copy(reg)
+		local osc52_copy = osc52.copy(reg)
+		return function(lines, regtype)
+			cache[reg] = { lines, regtype }
+			osc52_copy(lines, regtype)
+		end
+	end
+
+	local function paste(reg)
+		return function()
+			return cache[reg]
+		end
+	end
+
+	vim.g.clipboard = {
+		name = "OSC 52 (copy only)",
+		copy = {
+			["+"] = copy("+"),
+			["*"] = copy("*"),
+		},
+		paste = {
+			["+"] = paste("+"),
+			["*"] = paste("*"),
+		},
+		cache_enabled = 0,
+	}
+end
+
 local options = {
 	-- ==========================================================================
 	-- Indents, spaces, tabulation
