@@ -24,80 +24,98 @@ end
 
 return {
 	{
-		"nvim-telescope/telescope.nvim",
-		branch = "master",
-		cmd = "Telescope",
+		"dmtrKovalenko/fff.nvim",
+		build = function()
+			require("fff.download").download_or_build_binary()
+		end,
+		lazy = false,
 		keys = {
 			{
 				"<leader>pf",
 				function()
-					require("telescope.builtin").find_files({
-						find_command = {
-							"rg",
-							"--files",
-							"--hidden",
-							"--no-require-git",
-							"-g",
-							"!.git",
-							"-g",
-							"!.jj",
-						},
-					})
+					require("fff").find_files()
 				end,
-				desc = "Find files (incl. hidden)",
+				desc = "FFF find files",
 			},
 			{
 				"<leader>pF",
 				function()
-					require("telescope.builtin").find_files({
-						cwd = current_buffer_dir_or_cwd(),
-						find_command = {
-							"rg",
-							"--files",
-							"--hidden",
-							"--no-require-git",
-							"-g",
-							"!.git",
-							"-g",
-							"!.jj",
-						},
-					})
+					require("fff").find_files_in_dir(current_buffer_dir_or_cwd())
 				end,
-				desc = "Find files near current buffer",
+				desc = "FFF find files near current buffer",
+			},
+			{
+				"<leader>pm",
+				function()
+					require("fff").find_files({ query = "git:modified" })
+				end,
+				desc = "FFF find modified files",
 			},
 			{
 				"<C-p>",
 				function()
-					local ok = pcall(function()
-						require("telescope").extensions.jj.files()
-					end)
-					if not ok then
-						require("telescope.builtin").git_files()
-					end
+					require("fff").find_files()
 				end,
-				desc = "Find files (jj/git)",
+				desc = "FFF find files",
 			},
 			{
 				"<leader>/",
 				function()
-					require("telescope.builtin").live_grep()
+					require("fff").live_grep()
 				end,
-				desc = "Live grep in project",
+				desc = "FFF live grep in project",
 			},
 			{
 				"<leader>ss",
 				function()
-					require("telescope.builtin").live_grep({ cwd = current_buffer_dir_or_cwd() })
+					require("fff").live_grep({
+						cwd = current_buffer_dir_or_cwd(),
+						title = "Live Grep near current buffer",
+					})
 				end,
-				desc = "Live grep near current buffer",
+				desc = "FFF live grep near current buffer",
+			},
+			{
+				"<leader>sf",
+				function()
+					require("fff").live_grep({
+						grep = { modes = { "fuzzy", "plain" } },
+						title = "Fuzzy Grep",
+					})
+				end,
+				desc = "FFF fuzzy grep",
+			},
+			{
+				"<leader>sm",
+				function()
+					require("fff").live_grep({ query = "git:modified " })
+				end,
+				desc = "FFF grep modified files",
 			},
 			{
 				"<leader>*",
 				function()
-					require("telescope.builtin").grep_string()
+					require("fff").live_grep({ query = vim.fn.expand("<cword>") })
 				end,
-				desc = "Grep word under cursor",
+				desc = "FFF grep word under cursor",
 			},
+		},
+		opts = {
+			layout = {
+				prompt_position = "bottom",
+				path_shorten_strategy = "middle_number",
+			},
+			grep = {
+				smart_case = true,
+				modes = { "plain", "regex", "fuzzy" },
+			},
+		},
+	},
+	{
+		"nvim-telescope/telescope.nvim",
+		branch = "master",
+		cmd = "Telescope",
+		keys = {
 			{
 				"<leader>bb",
 				function()
@@ -157,7 +175,6 @@ return {
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"zschreur/telescope-jj.nvim",
 		},
 		config = function()
 			local telescope = require("telescope")
@@ -180,16 +197,6 @@ return {
 
 			telescope.setup({
 				defaults = vim.tbl_deep_extend("force", require("telescope.themes").get_ivy({}), {
-					vimgrep_arguments = {
-						"rg",
-						"--color=never",
-						"--no-heading",
-						"--with-filename",
-						"--line-number",
-						"--column",
-						"--smart-case",
-						"--no-require-git",
-					},
 					results_title = false,
 					selection_caret = "▶ ",
 					entry_prefix = "  ",
@@ -205,8 +212,6 @@ return {
 					},
 				},
 			})
-
-			pcall(telescope.load_extension, "jj")
 		end,
 	},
 	{
