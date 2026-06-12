@@ -25,12 +25,13 @@ PREF = {
 local tabwidth = PREF.common.tabwidth
 
 -- Nvim's automatic OSC 52 detection is intentionally bypassed when 'clipboard'
--- is set. Since this config sets unnamedplus below, force OSC 52 copy for
--- SSH/headless TUI sessions so "+ operations work without xclip. Pasting uses
--- a local cache to avoid hanging on terminals that do not answer OSC 52 reads.
-local use_osc52_clipboard = vim.env.SSH_TTY ~= nil
-	or vim.env.SSH_CONNECTION ~= nil
-	or (not vim.g.neovide and vim.env.DISPLAY == nil and vim.env.WAYLAND_DISPLAY == nil)
+-- is set. Since this config sets unnamedplus below, force OSC 52 copy only for
+-- SSH sessions so "+ operations work without xclip (for example, Termius into
+-- tmux). Do not infer this from missing DISPLAY/WAYLAND_DISPLAY: local macOS
+-- terminals like WezTerm do not set those, and should use Nvim's native
+-- pbcopy/pbpaste provider instead. Pasting uses a local cache to avoid hanging
+-- on terminals that do not answer OSC 52 reads.
+local use_osc52_clipboard = vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil
 if use_osc52_clipboard and vim.g.clipboard == nil then
 	local osc52 = require("vim.ui.clipboard.osc52")
 	local cache = {
