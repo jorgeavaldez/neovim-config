@@ -1,8 +1,11 @@
+local is_ssh = vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil
+
 return {
 	{
 		"f-person/auto-dark-mode.nvim",
 		priority = 1000,
 		lazy = false,
+		enabled = not is_ssh,
 		dependencies = { "catppuccin/nvim" },
 		config = {
 			update_interval = 1000,
@@ -18,6 +21,7 @@ return {
 		"catppuccin/nvim",
 		name = "catppuccin",
 		priority = 1000,
+		lazy = false,
 		opts = {
 			integrations = {
 				cmp = true,
@@ -32,5 +36,12 @@ return {
 				which_key = true,
 			},
 		},
+		config = function(_, opts)
+			require("catppuccin").setup(opts)
+
+			if is_ssh then
+				vim.cmd.colorscheme("catppuccin-mocha")
+			end
+		end,
 	},
 }
