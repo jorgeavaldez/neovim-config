@@ -68,6 +68,7 @@ return {
 				django = { "djlint" },
 				["jinja.html"] = { "djlint" },
 				htmldjango = { "djlint" },
+				toml = { "taplo" },
 			},
 		},
 	},
