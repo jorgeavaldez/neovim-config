@@ -151,6 +151,7 @@ return {
 	},
 	{
 		"Exafunction/windsurf.nvim",
+		enabled = vim.env.TERMUX_VERSION == nil,
 		event = "InsertEnter",
 		dependencies = {
 			"nvim-lua/plenary.nvim",

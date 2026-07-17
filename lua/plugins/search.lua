@@ -25,6 +25,7 @@ end
 return {
 	{
 		"dmtrKovalenko/fff.nvim",
+		version = "0.9.6",
 		build = function()
 			require("fff.download").download_or_build_binary()
 		end,
