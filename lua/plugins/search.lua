@@ -255,6 +255,10 @@ return {
 			end
 
 			local function parser_installed(lang)
+				if not vim.list_contains(nvim_treesitter.get_installed("parsers"), lang) then
+					return false
+				end
+
 				pcall(vim.treesitter.language.add, lang)
 				return pcall(vim.treesitter.language.inspect, lang)
 			end

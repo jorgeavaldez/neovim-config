@@ -62,8 +62,12 @@ return {
 		cmd = { "Obsidian", "ObsidianNewPrompt" },
 		dependencies = {
 			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
 		},
 		opts = {
+			picker = {
+				name = "telescope.nvim",
+			},
 			workspaces = {
 				{
 					name = "personal",
