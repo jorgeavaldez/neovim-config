@@ -43,7 +43,7 @@ if use_osc52_clipboard and vim.g.clipboard == nil then
 		local osc52_copy = osc52.copy(reg)
 		return function(lines, regtype)
 			cache[reg] = { lines, regtype }
-			osc52_copy(lines, regtype)
+			osc52_copy(lines)
 		end
 	end
 

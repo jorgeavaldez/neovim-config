@@ -8,7 +8,8 @@ lint: ## Lint with selene
 	selene $(SRC)
 
 typecheck: ## Typecheck with lua-language-server
-	lua-language-server --check . --logpath /tmp/nvim-config-lls-check
+	VIMRUNTIME="$$(nvim --clean --headless --cmd 'lua io.write(vim.env.VIMRUNTIME)' +qa 2>/dev/null)" \
+		lua-language-server --check . --logpath /tmp/nvim-config-lls-check
 
 format: ## Format with stylua
 	stylua $(SRC)

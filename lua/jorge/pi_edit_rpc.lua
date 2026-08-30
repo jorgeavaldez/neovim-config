@@ -95,7 +95,7 @@ local function ensure_dir(path)
 		return true
 	end
 
-	local mkdir_result = vim.fn.mkdir(path, "p", DIR_MODE)
+	local mkdir_result = vim.api.nvim_call_function("mkdir", { path, "p", DIR_MODE })
 	if mkdir_result == 0 then
 		return false
 	end
@@ -649,7 +649,9 @@ local function commit_current_buffer()
 		return
 	end
 
-	local write_ok, write_err = pcall(vim.cmd, "write!")
+	local write_ok, write_err = pcall(function()
+		vim.cmd("write!")
+	end)
 	if not write_ok then
 		vim.notify("PiEditCommit: failed to write buffer: " .. tostring(write_err), vim.log.levels.ERROR)
 		return

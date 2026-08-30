@@ -119,11 +119,11 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
 -- insert date/time
 vim.keymap.set("n", "<leader>id", function()
-	vim.api.nvim_put({ os.date("%Y-%m-%d") }, "c", true, true)
+	vim.api.nvim_put({ vim.fn.strftime("%Y-%m-%d") }, "c", true, true)
 end, { desc = "Insert date (YYYY-MM-DD)" })
 
 vim.keymap.set("n", "<leader>it", function()
-	vim.api.nvim_put({ os.date("%H:%M") }, "c", true, true)
+	vim.api.nvim_put({ vim.fn.strftime("%H:%M") }, "c", true, true)
 end, { desc = "Insert time (HH:MM)" })
 
 -- templates

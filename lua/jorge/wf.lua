@@ -42,7 +42,7 @@ local function run_wf_command(args, command_name, track_type)
 					table.insert(M.added_files, {
 						type = track_type,
 						file = filepath,
-						time = os.date("%H:%M:%S"),
+						time = vim.fn.strftime("%H:%M:%S"),
 						id = id,
 					})
 				end

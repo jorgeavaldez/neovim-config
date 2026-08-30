@@ -8,6 +8,7 @@
 	},
 	"workspace": {
 		"library": [
+			"$VIMRUNTIME/lua",
 			"${3rd}/luv/library",
 			"~/.local/share/nvim/lazy"
 		],
