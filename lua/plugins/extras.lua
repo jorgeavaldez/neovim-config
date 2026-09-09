@@ -95,6 +95,18 @@ return {
 			},
 		},
 		config = function(_, opts)
+			-- Register before Obsidian's save hook: :saveas can leave its buffer flag set outside the vault.
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = vim.api.nvim_create_augroup("jorge_obsidian_vault", { clear = true }),
+				callback = function(ev)
+					if vim.b[ev.buf].obsidian_buffer then
+						local api = require("obsidian.api")
+						local workspace = api.find_workspace(ev.file)
+						vim.b[ev.buf].obsidian_buffer = workspace ~= nil and api.path_is_note(ev.file, workspace)
+					end
+				end,
+			})
+
 			require("obsidian").setup(opts)
 
 			vim.api.nvim_create_user_command("ObsidianNewPrompt", function()

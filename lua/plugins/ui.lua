@@ -147,4 +147,5 @@ return {
 		event = "VeryLazy",
 		-- No dependencies required, works with builtin LSP and treesitter
 	},
+	{ "folke/zen-mode.nvim", event = "VeryLazy" },
 }
