@@ -52,6 +52,7 @@ return {
 				quiet = false,
 			},
 			formatters_by_ft = {
+				astro = { "prettier" },
 				lua = { "stylua" },
 				javascript = { "biome" },
 				javascriptreact = { "biome" },

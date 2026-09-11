@@ -35,6 +35,38 @@ this config supports both obsidian markdown notes and org files.
 - org files are loaded from `~/org` (fallback: `~/orgfiles`)
 - default org inbox file: `~/org/inbox.org` (or fallback dir equivalent)
 
+## astro
+
+- `.astro` files use the Astro language server for completion, diagnostics, hover, navigation, rename, and code actions.
+- Treesitter installs Astro and its embedded TypeScript, JavaScript, and CSS parsers on first open. Neovim supplies
+  file detection and indentation; nvim-ts-autotag supplies tag closing/renaming. Existing Tailwind support includes Astro.
+- On a new machine, run `:MasonInstall astro-language-server prettier` (Node.js is required; parser installation also
+  needs the `tree-sitter` CLI and a C compiler).
+- Install the project's dependencies before editing: the language server resolves TypeScript from the project's
+  `node_modules`. If TypeScript is missing, install a compatible version (`typescript@~6`; the language server
+  currently needs the JavaScript-based TypeScript SDK, not TypeScript 7).
+- `<leader>ff` formats with project-local Prettier when available. Format-on-save remains disabled.
+
+For formatting, install these in the Astro project using its package manager (npm example):
+
+```sh
+npm install --save-dev --save-exact prettier prettier-plugin-astro
+```
+
+Merge this into the project's Prettier configuration:
+
+```json
+{
+  "plugins": ["prettier-plugin-astro"],
+  "overrides": [
+    { "files": "*.astro", "options": { "parser": "astro" } }
+  ]
+}
+```
+
+If using `prettier-plugin-tailwindcss`, keep it last in the `plugins` array.
+See the [Astro editor setup guide](https://docs.astro.build/en/editor-setup/).
+
 ## version control
 
 i use [jujutsu (jj)](https://github.com/jj-vcs/jj) instead of raw git. the neovim integration includes:

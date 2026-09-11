@@ -336,12 +336,14 @@ return {
 						return
 					end
 
-					if parser_installed(lang) then
+					-- Astro injects these languages without declaring them as parser dependencies.
+					local languages = lang == "astro" and { "astro", "typescript", "javascript", "css" } or { lang }
+					if vim.iter(languages):all(parser_installed) then
 						start_treesitter(args.buf, lang)
 						return
 					end
 
-					ensure_parsers_installed({ lang }, function()
+					ensure_parsers_installed(languages, function()
 						if not vim.api.nvim_buf_is_valid(args.buf) then
 							return
 						end

@@ -135,7 +135,11 @@ function M.setup()
 	})
 
 	-- Global LSP capabilities for all servers
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	local capabilities = vim.tbl_deep_extend(
+		"force",
+		vim.lsp.protocol.make_client_capabilities(),
+		require("cmp_nvim_lsp").default_capabilities()
+	)
 	capabilities.general.positionEncodings = { "utf-16", "utf-8" }
 	vim.lsp.config("*", {
 		capabilities = capabilities,
@@ -218,6 +222,7 @@ function M.setup()
 	})
 
 	local servers_to_enable = {
+		"astro",
 		"bashls",
 		"biome",
 		"html",
