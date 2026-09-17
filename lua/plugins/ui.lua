@@ -89,7 +89,7 @@ return {
 		config = true,
 	},
 	{
-		"git@github.com:nvim-mini/mini.cmdline.git",
+		"nvim-mini/mini.cmdline",
 		name = "mini.cmdline",
 		version = "*",
 		event = "CmdlineEnter",

@@ -30,12 +30,98 @@ return {
 	},
 	{
 		"hrsh7th/nvim-cmp",
-		lazy = true,
+		event = "InsertEnter",
 		dependencies = {
 			{ "hrsh7th/cmp-nvim-lsp", lazy = true },
 			{ "L3MON4D3/LuaSnip", lazy = true },
 			{ "onsails/lspkind.nvim", lazy = true },
 		},
+		config = function()
+			local cmp = require("cmp")
+			local luasnip = require("luasnip")
+			local lspkind = require("lspkind")
+			lspkind.init({
+				mode = "symbol",
+				symbol_map = {
+					Codeium = "",
+				},
+			})
+
+			local default_mapping = cmp.mapping.preset.insert({
+				["<CR>"] = cmp.mapping.confirm({ select = false }),
+				["<C-Space>"] = cmp.mapping.complete(),
+				["<Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_next_item()
+					elseif luasnip.locally_jumpable(1) then
+						luasnip.jump(1)
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+				["<S-Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_prev_item()
+					elseif luasnip.locally_jumpable(-1) then
+						luasnip.jump(-1)
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+			})
+
+			cmp.setup({
+				snippet = {
+					expand = function(args)
+						luasnip.lsp_expand(args.body)
+					end,
+				},
+				formatting = {
+					format = lspkind.cmp_format({
+						maxwidth = 50,
+						ellipsis_char = "...",
+					}),
+				},
+				mapping = default_mapping,
+				preselect = "item",
+				sources = {
+					{
+						name = "lazydev",
+						group_index = 0,
+					},
+					{ name = "nvim_lsp" },
+					{ name = "luasnip" },
+					{ name = "codeium" },
+				},
+				performance = {
+					fetching_timeout = 1000,
+					debounce = 60,
+					throttle = 30,
+					filtering_context_budget = 3,
+					confirm_resolve_timeout = 80,
+					async_budget = 1,
+					max_view_entries = 200,
+				},
+				completion = {
+					completeopt = "menu,menuone,noinsert",
+				},
+			})
+
+			cmp.setup.filetype("jjdescription", {
+				sources = {},
+			})
+
+			cmp.setup.filetype("oil", {
+				sources = {
+					{
+						name = "lazydev",
+						group_index = 0,
+					},
+					{ name = "nvim_lsp" },
+					{ name = "luasnip" },
+				},
+			})
+		end,
 	},
 	{
 		"mason-org/mason.nvim",
@@ -275,7 +361,75 @@ return {
 	},
 	{
 		"neovim/nvim-lspconfig",
-		event = { "BufReadPre", "BufNewFile" },
+		-- Filetypes supported by the servers in jorge.lsp, plus plugin-managed Go/TS.
+		ft = {
+			"aspnetcorerazor",
+			"astro",
+			"astro-markdown",
+			"bash",
+			"blade",
+			"clojure",
+			"css",
+			"django-html",
+			"edge",
+			"eelixir",
+			"ejs",
+			"elixir",
+			"erb",
+			"eruby",
+			"go",
+			"gohtml",
+			"gohtmltmpl",
+			"gomod",
+			"gotmpl",
+			"gowork",
+			"graphql",
+			"haml",
+			"handlebars",
+			"hbs",
+			"heex",
+			"html",
+			"html-eex",
+			"htmlangular",
+			"htmldjango",
+			"jade",
+			"javascript",
+			"javascriptreact",
+			"json",
+			"jsonc",
+			"leaf",
+			"less",
+			"liquid",
+			"lua",
+			"markdown",
+			"mdx",
+			"mustache",
+			"njk",
+			"nunjucks",
+			"php",
+			"postcss",
+			"python",
+			"razor",
+			"reason",
+			"rescript",
+			"rust",
+			"sass",
+			"scss",
+			"sh",
+			"slim",
+			"stylus",
+			"sugarss",
+			"svelte",
+			"templ",
+			"terraform",
+			"terraform-vars",
+			"twig",
+			"typescript",
+			"typescriptreact",
+			"vue",
+			"zig",
+			"zir",
+		},
 		config = function()
 			require("jorge.lsp").setup()
 		end,
@@ -284,6 +438,7 @@ return {
 		"ray-x/go.nvim",
 		ft = { "go", "gomod", "gowork", "gotmpl" },
 		dependencies = {
+			"neovim/nvim-lspconfig",
 			"ray-x/guihua.lua",
 			"nvim-treesitter/nvim-treesitter",
 		},

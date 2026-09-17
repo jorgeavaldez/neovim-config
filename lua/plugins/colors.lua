@@ -11,10 +11,14 @@ return {
 		config = {
 			update_interval = 1000,
 			set_dark_mode = function()
-				vim.cmd.colorscheme("catppuccin-mocha")
+				if vim.g.colors_name ~= "catppuccin-mocha" then
+					vim.cmd.colorscheme("catppuccin-mocha")
+				end
 			end,
 			set_light_mode = function()
-				vim.cmd.colorscheme("catppuccin-latte")
+				if vim.g.colors_name ~= "catppuccin-latte" then
+					vim.cmd.colorscheme("catppuccin-latte")
+				end
 			end,
 		},
 	},
@@ -40,8 +44,12 @@ return {
 		config = function(_, opts)
 			require("catppuccin").setup(opts)
 
-			if is_ssh or is_termux then
+			-- WezTerm already detected the appearance before starting this process.
+			local appearance = vim.env.WEZTERM_APPEARANCE
+			if is_ssh or is_termux or appearance == "dark" then
 				vim.cmd.colorscheme("catppuccin-mocha")
+			elseif appearance == "light" then
+				vim.cmd.colorscheme("catppuccin-latte")
 			end
 		end,
 	},

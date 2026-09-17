@@ -117,7 +117,7 @@ local options = {
 	-- winbar = ' ',
 	spell = false,
 	spelllang = "en_us",
-	termguicolors = true,
+	termguicolors = false, -- Use terminal colors until Catppuccin enables truecolor.
 	scrolloff = 8,
 	conceallevel = 2,
 	-- avante?
@@ -129,7 +129,7 @@ for option_name, value in pairs(options) do
 end
 
 if not vim.g.colors_name then
-	pcall(vim.cmd.colorscheme, "vim")
+	pcall(vim.cmd.colorscheme, "default")
 end
 -- vim.cmd.colorscheme("catppuccin-latte")
 -- vim.wo.foldmethod = 'expr';
