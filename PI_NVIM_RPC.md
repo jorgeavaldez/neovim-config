@@ -2,7 +2,7 @@
 
 ## What this owns
 - Host RPC commands in Neovim
-- External editor wrapper used by Pi
+- Portable Node.js external editor client used by Pi (Windows, macOS, Linux, Android/Termux)
 
 Files:
 - `lua/jorge/pi_edit_rpc.lua`
@@ -17,8 +17,19 @@ Files:
 5. Host writes final ack (`committed|aborted|error`)
 6. Wrapper exits (`0|1|2`) and cleans state files
 
+Requirements: `node` and `nvim` on PATH; no Bash, jq, or Unix utilities needed.
+Pi's `editor-env.ts` locates the client under the Neovim config directory
+(`XDG_CONFIG_HOME`, Windows `LOCALAPPDATA`, or the user's `.config` directory),
+respects `NVIM_APPNAME`, and invokes it with Node. Windows does not need `HOME`
+or an executable bit. Devices without the client retain their configured editor,
+defaulting to local Neovim.
+
 State root:
-- `${XDG_STATE_HOME:-$HOME/.local/state}/pi-nvim-rpc`
+- `XDG_STATE_HOME/pi-nvim-rpc` when set
+- Otherwise `<home>/.local/state/pi-nvim-rpc` (`HOME`, or the OS home directory)
+
+The client uses headless RPC calls through `$NVIM` (Unix sockets or Windows named
+pipes). If no host is available, it opens local Neovim in the current terminal.
 
 ## Host commands
 - `:PiEditOpen {request_id}`
@@ -38,11 +49,11 @@ Buffer vars on Pi-edit buffers:
 
 ## Fast health checks
 ```bash
-# wrapper exists/executable
-ls -l ~/.config/nvim/bin/pi-nvim-editor
+# client syntax (substitute your Neovim config path on Windows)
+node --check ~/.config/nvim/bin/pi-nvim-editor
 
 # command registered in current host
-nvim --server "$NVIM" --remote-expr "exists(':PiEditOpen')"
+nvim --headless --server "$NVIM" --remote-expr "exists(':PiEditOpen')"
 
 # inspect protocol files
 find "${XDG_STATE_HOME:-$HOME/.local/state}/pi-nvim-rpc" -maxdepth 2 -type f
@@ -55,7 +66,7 @@ Cause: host unavailable (`$NVIM` missing/stale) or dispatch failed.
 - Check `$NVIM` in Pi process context.
 - Check host liveness:
   ```bash
-  nvim --server "$NVIM" --remote-expr '1'
+  nvim --headless --server "$NVIM" --remote-expr '1'
   ```
 - If probe fails, fallback is expected.
 
@@ -83,6 +94,18 @@ Current settings:
 - dispatch-first (probe only on dispatch failure)
 
 Tradeoff: lower latency vs more polling wakeups.
+
+## Regression tests
+
+From the Neovim config directory, on any supported platform with Node and Neovim:
+
+```text
+node --test tests/pi-nvim-editor.test.cjs
+```
+
+This starts isolated headless hosts and checks cursor positioning, paths with
+spaces, commit/abort, malformed acknowledgements, local fallback, host loss,
+and protocol-file cleanup. No personal Neovim plugins are loaded.
 
 ## Polling caveats + mitigation
 Potential downside of 50ms polling:

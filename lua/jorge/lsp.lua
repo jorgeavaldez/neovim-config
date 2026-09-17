@@ -227,6 +227,7 @@ function M.setup()
 		"biome",
 		"html",
 		"lua_ls",
+		"nushell",
 		"pyright",
 		"ruff",
 		"rust_analyzer",

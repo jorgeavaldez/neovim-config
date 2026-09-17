@@ -206,7 +206,13 @@ local function validate_request(request_id, payload)
 	if type(payload.targetPath) ~= "string" or payload.targetPath == "" then
 		return nil, "missing required field: targetPath"
 	end
-	if payload.targetPath:sub(1, 1) ~= "/" then
+	local is_absolute = payload.targetPath:sub(1, 1) == "/"
+	if vim.fn.has("win32") == 1 then
+		is_absolute = is_absolute
+			or payload.targetPath:match("^%a:[/\\]") ~= nil
+			or payload.targetPath:match("^\\\\[^\\]+\\[^\\]+") ~= nil
+	end
+	if not is_absolute then
 		return nil, "targetPath must be absolute"
 	end
 
