@@ -67,66 +67,60 @@ if use_osc52_clipboard and vim.g.clipboard == nil then
 	}
 end
 
-local options = {
-	-- ==========================================================================
-	-- Indents, spaces, tabulation
-	-- ==========================================================================
-	expandtab = true,
-	cindent = true,
-	smarttab = true,
-	smartindent = true,
-	shiftwidth = tabwidth,
-	tabstop = tabwidth,
-	softtabstop = tabwidth,
-	-- ==========================================================================
-	-- UI
-	-- ==========================================================================
-	number = true,
-	relativenumber = true,
-	signcolumn = "yes",
-	-- colorcolumn = "80",
-	-- background = PREF.ui.background,
-	-- colorscheme = "vim",
-	-- ==========================================================================
-	-- Text
-	-- ==========================================================================
-	textwidth = PREF.common.textwidth,
-	wrap = true,
-	linebreak = true,
-	-- ==========================================================================
-	-- Search
-	-- ==========================================================================
-	ignorecase = true,
-	smartcase = true,
-	hlsearch = true,
-	incsearch = true,
-	infercase = true,
-	grepprg = "rg --vimgrep",
-	-- ==========================================================================
-	-- Other
-	-- ==========================================================================
-	updatetime = 50,
-	undofile = true,
-	splitright = true,
-	splitbelow = true,
-	mouse = "a",
-	clipboard = "unnamedplus",
-	backup = false,
-	swapfile = false,
-	completeopt = { "menuone", "noselect" },
-	-- winbar = ' ',
-	spell = false,
-	spelllang = "en_us",
-	termguicolors = false, -- Use terminal colors until Catppuccin enables truecolor.
-	scrolloff = 8,
-	conceallevel = 2,
-	-- avante?
-	laststatus = 3,
-}
-
-for option_name, value in pairs(options) do
-	vim.opt[option_name] = value
-end
+-- ==========================================================================
+-- Indents, spaces, tabulation
+-- ==========================================================================
+vim.opt.expandtab = true
+vim.opt.cindent = true
+vim.opt.smarttab = true
+vim.opt.smartindent = true
+vim.opt.shiftwidth = tabwidth
+vim.opt.tabstop = tabwidth
+vim.opt.softtabstop = tabwidth
+-- ==========================================================================
+-- UI
+-- ==========================================================================
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.signcolumn = "yes"
+-- colorcolumn = "80",
+-- background = PREF.ui.background,
+-- colorscheme = "vim",
+-- ==========================================================================
+-- Text
+-- ==========================================================================
+vim.opt.textwidth = PREF.common.textwidth
+vim.opt.wrap = true
+vim.opt.linebreak = true
+-- ==========================================================================
+-- Search
+-- ==========================================================================
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
+vim.opt.infercase = true
+vim.opt.grepprg = "rg --vimgrep"
+-- ==========================================================================
+-- Other
+-- ==========================================================================
+vim.opt.updatetime = 50
+vim.opt.undofile = true
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.mouse = "a"
+vim.opt.clipboard = "unnamedplus"
+vim.opt.backup = false
+vim.opt.swapfile = false
+vim.opt.completeopt = { "menuone", "noselect" }
+-- winbar = ' ',
+vim.opt.spell = false
+vim.opt.spelllang = "en_us"
+vim.opt.termguicolors = false -- Use terminal colors until Catppuccin enables truecolor.
+vim.opt.scrolloff = 8
+vim.opt.conceallevel = 2
+-- avante?
+vim.opt.laststatus = 3
 
 if not vim.g.colors_name then
 	pcall(vim.cmd.colorscheme, "default")

@@ -1,6 +1,8 @@
 {
 	"runtime": {
-		"version": "LuaJIT"
+		"version": "LuaJIT",
+		"path": ["?.lua", "?/init.lua", "lua/?.lua", "lua/?/init.lua"],
+		"pathStrict": true
 	},
 	"diagnostics": {
 		"globals": ["vim", "PREF", "Obsidian"],
@@ -9,8 +11,7 @@
 	"workspace": {
 		"library": [
 			"$VIMRUNTIME/lua",
-			"${3rd}/luv/library",
-			"~/.local/share/nvim/lazy"
+			"${3rd}/luv/library"
 		],
 		"checkThirdParty": false,
 		"ignoreDir": [".jj", ".git"]

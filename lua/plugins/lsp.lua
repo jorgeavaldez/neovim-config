@@ -40,12 +40,7 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
-			lspkind.init({
-				mode = "symbol",
-				symbol_map = {
-					Codeium = "",
-				},
-			})
+			lspkind.init({ mode = "symbol" })
 
 			local default_mapping = cmp.mapping.preset.insert({
 				["<CR>"] = cmp.mapping.confirm({ select = false }),

@@ -148,20 +148,22 @@ function M.setup()
 	state.is_setup = true
 
 	local diffview = require("diffview")
-	local original_open = diffview.open
-	local original_file_history = diffview.file_history
+	local arg_parser = require("diffview.arg_parser")
 
-	diffview.open = function(args)
-		return with_diffview_env(args, function()
-			return original_open(args)
+	vim.api.nvim_create_user_command("DiffviewOpen", function(ctx)
+		local args = arg_parser.scan(ctx.args).args
+		with_diffview_env(args, function()
+			diffview.open(args)
 		end)
-	end
+	end, { nargs = "*", complete = diffview.completion })
 
-	diffview.file_history = function(range, args)
-		return with_diffview_env(args, function()
-			return original_file_history(range, args)
+	vim.api.nvim_create_user_command("DiffviewFileHistory", function(ctx)
+		local args = arg_parser.scan(ctx.args).args
+		local range = ctx.range > 0 and { ctx.line1, ctx.line2 } or nil
+		with_diffview_env(args, function()
+			diffview.file_history(range, args)
 		end)
-	end
+	end, { nargs = "*", complete = diffview.completion, range = true })
 
 	local group = vim.api.nvim_create_augroup("JorgeDiffviewJjEnv", { clear = true })
 	vim.api.nvim_create_autocmd({ "BufEnter", "TabEnter" }, {
