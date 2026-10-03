@@ -56,7 +56,14 @@ return {
 			{ "<leader>oln", ":Obsidian link_new ", desc = "Link to new note (with title)", mode = "n" },
 			{ "<leader>olN", "<cmd>Obsidian link_new<CR>", desc = "Link to new note", mode = "n" },
 			{ "<leader>ol", "<cmd>Obsidian link<CR>", desc = "Link to note", mode = "n" },
-			{ "<leader><CR>", "<cmd>Obsidian follow_link<CR>", desc = "Follow link", mode = "n" },
+			{
+				"<leader><CR>",
+				function()
+					require("obsidian").actions.follow_link()
+				end,
+				desc = "Follow link",
+				mode = "n",
+			},
 		},
 		-- Allow commands to load plugin on-demand for quick capture
 		cmd = { "Obsidian", "ObsidianNewPrompt" },
@@ -129,16 +136,11 @@ return {
 			end, { desc = "Create new Obsidian prompt note" })
 
 			vim.keymap.set("n", "gf", function()
-				local ok, obsidian = pcall(require, "obsidian")
-				if not ok then
-					return "gf"
+				if require("obsidian").api.cursor_link() then
+					return "<cmd>lua require('obsidian').actions.follow_link()<CR>"
 				end
-				if obsidian.util.cursor_on_markdown_link() then
-					return "<cmd>Obsidian follow_link<CR>"
-				else
-					return "gf"
-				end
-			end, { noremap = false, expr = true, desc = "Follow obsidian link or file" })
+				return "gf"
+			end, { expr = true, desc = "Follow obsidian link or file" })
 		end,
 	},
 	{
