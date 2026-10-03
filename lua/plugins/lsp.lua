@@ -402,7 +402,6 @@ return {
 			"less",
 			"liquid",
 			"lua",
-			"markdown",
 			"mdx",
 			"mustache",
 			"njk",

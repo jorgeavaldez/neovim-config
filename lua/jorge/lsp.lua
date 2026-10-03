@@ -152,6 +152,13 @@ function M.setup()
 		cmd = { "bunx", "biome", "lsp-proxy" },
 	})
 
+	-- Plain Markdown is documentation, not a Tailwind source file.
+	vim.lsp.config("tailwindcss", {
+		filetypes = vim.tbl_filter(function(filetype)
+			return filetype ~= "markdown"
+		end, vim.lsp.config.tailwindcss.filetypes),
+	})
+
 	-- HTML with templ support
 	vim.lsp.config("html", {
 		filetypes = { "html", "templ" },
