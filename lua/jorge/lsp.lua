@@ -157,6 +157,33 @@ function M.setup()
 		filetypes = vim.tbl_filter(function(filetype)
 			return filetype ~= "markdown"
 		end, vim.lsp.config.tailwindcss.filetypes),
+		root_dir = function(bufnr, on_dir)
+			local root = vim.fs.root(bufnr, function(name, path)
+				if name:match("^tailwind%.config%.[cm]?js$") or name == "tailwind.config.ts" then
+					return true
+				end
+
+				local pattern
+				if name == "package.json" or name == "package.json5" then
+					pattern = "[\"']tailwindcss[\"']%s*:"
+				elseif name == "Gemfile.lock" or name == "mix.lock" then
+					pattern = "tailwind"
+				else
+					return false
+				end
+
+				local file = io.open(vim.fs.joinpath(path, name), "r")
+				if not file then
+					return false
+				end
+				local contents = file:read("*a")
+				file:close()
+				return contents:find(pattern) ~= nil
+			end)
+			if root then
+				on_dir(root)
+			end
+		end,
 	})
 
 	-- HTML with templ support
