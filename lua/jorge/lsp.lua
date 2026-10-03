@@ -240,6 +240,7 @@ function M.setup()
 		"rust_analyzer",
 		"tailwindcss",
 		"terraformls",
+		"tsc", -- TypeScript 7+ native LSP; project-local binary, then PATH.
 		"zls",
 	}
 

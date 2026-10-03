@@ -30,7 +30,7 @@ Plugin specifications are split into category files that lazy.nvim auto-imports:
 
 - `lua/plugins/colors.lua` - Color scheme (catppuccin, auto-dark-mode)
 - `lua/plugins/search.lua` - Telescope, Treesitter, textobjects, autotag
-- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim, typescript-tools)
+- `lua/plugins/lsp.lua` - LSP ecosystem (lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim)
 - `lua/plugins/ui.lua` - UI plugins (oil, which-key, trouble, builtin undotree, surround, mini.cmdline, render-markdown, dropbar)
 - `lua/plugins/vcs.lua` - Version control (jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj.nvim, jj-diffconflicts)
 - `lua/plugins/extras.lua` - Everything else (debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick)
@@ -57,7 +57,7 @@ Uses **lazy.nvim** as the plugin manager. Specs are defined in `lua/plugins/*.lu
 - **nvim-lint**: Async CLI-based lint diagnostics via `vim.diagnostic`
 - **fidget.nvim**: LSP progress notifications
 - **go.nvim**: Go development
-- **typescript-tools.nvim**: TypeScript/JavaScript development
+- **Native `tsc` LSP**: TypeScript/JavaScript development (TypeScript 7+, project-local binary then PATH)
 
 ### UI
 - **Oil.nvim**: File explorer (mapped to `<leader>pv`)
@@ -185,7 +185,7 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 ## Language Support
 
 ### Configured LSP Servers (explicit `vim.lsp.enable` + plugin-managed)
-- **TypeScript/JavaScript**: typescript-tools.nvim + biome LSP (Biome code actions/diagnostics when biome config is present)
+- **TypeScript/JavaScript**: native `tsc` LSP (TypeScript 7+) + biome LSP (Biome code actions/diagnostics when biome config is present)
 - **Python**: pyright + ruff (ruff hover disabled in favor of pyright)
 - **Go**: gopls via ray-x/go.nvim (plugin-managed)
 - **Rust**: rust_analyzer

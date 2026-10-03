@@ -357,7 +357,7 @@ return {
 	},
 	{
 		"neovim/nvim-lspconfig",
-		-- Filetypes supported by the servers in jorge.lsp, plus plugin-managed Go/TS.
+		-- Filetypes supported by the servers in jorge.lsp, plus plugin-managed Go.
 		ft = {
 			"aspnetcorerazor",
 			"astro",
@@ -446,18 +446,6 @@ return {
 					capabilities = capabilities,
 				},
 				lsp_keymaps = false,
-			})
-		end,
-	},
-	{
-		"pmizio/typescript-tools.nvim",
-		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-		ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-		config = function()
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities.general.positionEncodings = { "utf-16", "utf-8" }
-			require("typescript-tools").setup({
-				capabilities = capabilities,
 			})
 		end,
 	},

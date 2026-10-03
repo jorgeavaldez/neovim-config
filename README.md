@@ -19,7 +19,7 @@ i'm also learning, and i'm not sure i have a good understanding of everything ye
 - `lua/plugins/` — plugin specs split by category, auto-imported by lazy.nvim
   - `colors.lua` — catppuccin + auto-dark-mode
   - `search.lua` — telescope, treesitter, textobjects
-  - `lsp.lua` — lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim, typescript-tools
+  - `lsp.lua` — lspconfig, mason, cmp, conform.nvim, nvim-lint, fidget, go.nvim
   - `ui.lua` — oil, which-key, trouble, builtin undotree, surround, dropbar, render-markdown
   - `vcs.lua` — jj.nvim, hunk.nvim, jjsigns.nvim, telescope-jj, jj-diffconflicts
   - `extras.lua` — debugging, obsidian, orgmode, AI tools, overseer, zig, sidekick
@@ -34,6 +34,13 @@ this config supports both obsidian markdown notes and org files.
 - `<leader>oc` opens org capture
 - org files are loaded from `~/org` (fallback: `~/orgfiles`)
 - default org inbox file: `~/org/inbox.org` (or fallback dir equivalent)
+
+## typescript / javascript
+
+- Uses Neovim's native LSP with nvim-lspconfig's `tsc` configuration (TypeScript 7+).
+- Discovers a project-local compiler supporting `--lsp`, with PATH fallback (for example, mise-managed TypeScript).
+- TypeScript 5/6 projects need a separate TS7+ installation on PATH; no legacy tsserver plugin is configured.
+- Existing LSP mappings and Biome formatting/linting remain unchanged.
 
 ## astro
 
