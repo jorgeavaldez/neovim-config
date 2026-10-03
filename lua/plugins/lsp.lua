@@ -1,3 +1,10 @@
+local oxfmt_markers = { ".oxfmtrc.json", ".oxfmtrc.jsonc", "oxfmt.config.ts" }
+
+---@param bufnr integer
+local function web_formatters(bufnr)
+	return vim.fs.root(bufnr, oxfmt_markers) and { "oxfmt" } or { "biome" }
+end
+
 return {
 	{
 		"DrKJeff16/wezterm-types",
@@ -135,12 +142,12 @@ return {
 			formatters_by_ft = {
 				astro = { "prettier" },
 				lua = { "stylua" },
-				javascript = { "biome" },
-				javascriptreact = { "biome" },
-				typescript = { "biome" },
-				typescriptreact = { "biome" },
-				json = { "biome" },
-				jsonc = { "biome" },
+				javascript = web_formatters,
+				javascriptreact = web_formatters,
+				typescript = web_formatters,
+				typescriptreact = web_formatters,
+				json = web_formatters,
+				jsonc = web_formatters,
 				markdown = { "prettier" },
 				nu = { "nufmt" },
 				yaml = { "yamlfmt" },
@@ -177,6 +184,8 @@ return {
 				typescript = true,
 				typescriptreact = true,
 			}
+
+			local oxlint_markers = { ".oxlintrc.json", ".oxlintrc.jsonc", "oxlint.config.ts" }
 
 			local biome_markers = {
 				"biome.json",
@@ -238,10 +247,15 @@ return {
 				local reason = "filetype linters"
 
 				if js_filetypes[filetype] then
+					local oxlint_config = find_up(oxlint_markers, dir)
 					local biome_config = find_up(biome_markers, dir)
 					local eslint_config = find_up(eslint_markers, dir)
 
-					if biome_config then
+					if oxlint_config or #vim.lsp.get_clients({ bufnr = bufnr, name = "oxlint" }) > 0 then
+						names = {}
+						cwd = oxlint_config and vim.fs.dirname(oxlint_config) or dir
+						reason = "oxlint project; diagnostics and fixes use the native oxlint LSP"
+					elseif biome_config then
 						cwd = vim.fs.dirname(biome_config)
 						local biome_clients = vim.lsp.get_clients({ bufnr = bufnr, name = "biome" })
 						if #biome_clients > 0 then

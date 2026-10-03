@@ -185,7 +185,7 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 ## Language Support
 
 ### Configured LSP Servers (explicit `vim.lsp.enable` + plugin-managed)
-- **TypeScript/JavaScript**: native `tsc` LSP (TypeScript 7+) + biome LSP (Biome code actions/diagnostics when biome config is present)
+- **TypeScript/JavaScript**: native `tsc` LSP (TypeScript 7+) + project-specific oxlint/biome LSP diagnostics and code actions
 - **Python**: pyright + ruff (ruff hover disabled in favor of pyright)
 - **Go**: gopls via ray-x/go.nvim (plugin-managed)
 - **Rust**: rust_analyzer
@@ -196,7 +196,7 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - **Zig**: zls (with semantic_tokens = "partial")
 
 ### Formatters (via conform.nvim)
-- **Web**: Biome (JS/TS/JSON), Prettier (Markdown only)
+- **Web**: Oxfmt (JS/TS/JSON when Oxfmt config is present), otherwise Biome; Prettier (Markdown only)
 - **Python**: Handled by ruff LSP
 - **Templates**: djlint
 - **YAML**: yamlfmt
@@ -204,7 +204,7 @@ See `JJ_WORKFLOW.md` for full workflow documentation including log buffer keys a
 - **Shell**: shfmt
 
 ### Linters (via nvim-lint + LSP)
-- **JavaScript/TypeScript**: Dynamic selection (`biomejs` preferred; skipped when biome LSP is attached to avoid duplicate diagnostics; falls back to `eslint_d`/`eslint` when eslint config is present)
+- **JavaScript/TypeScript**: Oxlint projects use native oxlint LSP, without CLI fallback; otherwise dynamic selection (`biomejs` preferred; skipped when biome LSP is attached to avoid duplicate diagnostics; falls back to `eslint_d`/`eslint` when eslint config is present)
 - **Python**: ruff + pyright LSP diagnostics
 - **Templates**: djlint
 - **YAML**: yamllint

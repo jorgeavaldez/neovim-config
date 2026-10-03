@@ -235,6 +235,7 @@ function M.setup()
 		"html",
 		"lua_ls",
 		"nushell",
+		"oxlint",
 		"pyright",
 		"ruff",
 		"rust_analyzer",

@@ -40,7 +40,11 @@ this config supports both obsidian markdown notes and org files.
 - Uses Neovim's native LSP with nvim-lspconfig's `tsc` configuration (TypeScript 7+).
 - Discovers a project-local compiler supporting `--lsp`, with PATH fallback (for example, mise-managed TypeScript).
 - TypeScript 5/6 projects need a separate TS7+ installation on PATH; no legacy tsserver plugin is configured.
-- Existing LSP mappings and Biome formatting/linting remain unchanged.
+- TS/JS/JSON formatting uses project-local Oxfmt when an `.oxfmtrc.json`, `.oxfmtrc.jsonc`, or `oxfmt.config.ts`
+  is present; otherwise it retains Biome.
+- Oxlint projects use its native LSP for diagnostics and code actions, without the CLI linter's Biome fallback.
+  Use `<leader>ff` to format, `<leader>ca` for fixes, and `:LspOxlintFixAll` to apply all automatic fixes.
+- Existing Biome/ESLint projects retain their linting behavior. Format-on-save remains disabled.
 
 ## astro
 
