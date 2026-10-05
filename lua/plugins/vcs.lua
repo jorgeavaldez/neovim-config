@@ -48,7 +48,8 @@ return {
 		end,
 	},
 	{
-		"julienvincent/hunk.nvim",
+		"jorgeavaldez/hunk.nvim",
+		branch = "fix/windows-split",
 		cmd = { "DiffEditor" },
 		dependencies = { "MunifTanjim/nui.nvim" },
 		config = function()

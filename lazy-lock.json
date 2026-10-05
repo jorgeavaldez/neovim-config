@@ -10,7 +10,7 @@
   "fidget.nvim": { "branch": "main", "commit": "9e0201673e08e997e7cf52afca5565c70bd117f3" },
   "go.nvim": { "branch": "master", "commit": "0768d79bbebdb1a112a845f9cd6293bfbd544dab" },
   "guihua.lua": { "branch": "master", "commit": "4c513d5dac550af77034cced421967b393261509" },
-  "hunk.nvim": { "branch": "master", "commit": "c8a8e7b6973576f63e5bf39aa8338d7f37f4dc53" },
+  "hunk.nvim": { "branch": "fix/windows-split", "commit": "20f781038723421ccaaad4b94b3bccb9bb6c551d" },
   "jj-diffconflicts": { "branch": "main", "commit": "a2aa9a247b56d2c1a6f6be81bcf41c5450cc82ff" },
   "jj.nvim": { "branch": "main", "commit": "cffc74128a80398469085e01ff2e4001e330b800" },
   "lazy.nvim": { "branch": "main", "commit": "85c7ff3711b730b4030d03144f6db6375044ae82" },
